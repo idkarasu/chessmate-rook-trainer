@@ -1,4 +1,4 @@
-/* rook.core.js – v30 */
+/* rook.core.js – v40 */
 
 (function(window,document){'use strict';
 
