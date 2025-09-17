@@ -1,0 +1,67 @@
+<!-- kale-egitimi.html – v1 -->
+
+<!-- 1 - Stil dosyaları -->
+<link rel="stylesheet" href="/wp-content/uploads/chess/libs/chessboard-1.0.0.min.css">
+<link rel="stylesheet" href="/wp-content/uploads/rook/rook.css?v=rook.css-13">
+<link rel="stylesheet" href="/wp-content/uploads/rook/rook.theme.css?v=rook.theme.css-1">
+
+<!-- 2 - Uygulama kapsayıcısı -->
+<main class="rk-wrap cm-wrap" id="cm-app" role="main" aria-label="Rook Trainer" data-avatar="/wp-content/uploads/2025/08/avatar.png">
+<div class="rk-head">
+<div class="cm-toolbar rk-toolbar-wrap" role="toolbar" aria-label="Oyun Kontrolleri">
+<div class="rk-toolbar rk-toolbar--top" role="toolbar" aria-label="Üst toolbar">
+<div class="rk-group rk-group--side" aria-label="Taraf">
+<label for="rk-side-select" class="rk-ctl-label" style="margin-right:8px;font-weight:700;">Taraf:</label>
+<select id="rk-side-select" class="cm-sel" aria-label="Taraf">
+<option value="white">Beyaz</option>
+<option value="black">Siyah</option>
+</select>
+</div>
+<div class="rk-group rk-group--mode" aria-label="Oyun Modu" style="margin-left:6px;">
+<label for="rk-mode-select" class="rk-ctl-label" style="margin-right:8px;font-weight:700;">Oyun Modu:</label>
+<select id="rk-mode-select" class="cm-sel" aria-label="Oyun Modu">
+<option value="timed">⏱️ Zamana Karşı</option>
+<option value="levels">🌊 Sekiz Dalga</option>
+</select>
+</div>
+<div class="rk-group rk-group--start" style="margin-left:8px;">
+<button id="rk-start" class="cm-btn rk-btn rk-btn--primary" type="button">▶ Start</button>
+</div>
+</div>
+<div class="rk-toolbar rk-toolbar--bottom" role="toolbar" aria-label="Alt toolbar">
+<div class="rk-group rk-group--new">
+<button id="rk-reset" class="cm-btn rk-btn" type="button">Yeni Oyun</button>
+</div>
+<div class="rk-group rk-group--icons" style="display:inline-flex;gap:8px;">
+<button id="cm-hints" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="true" title="Hamle ipuçları">🎯</button>
+<button id="cm-sound-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="true" title="Sesi aç/kapat">🔊</button>
+<button id="cm-board-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-label="Tahtayı değiştir">♟️</button>
+<button id="cm-theme-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="false" title="Tema değiştir">🌙</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 3 - İçerik: tahta -->
+<div class="rk-grid">
+<div id="cm-board" aria-label="Satranç Tahtası"></div>
+</div>
+</main>
+
+<!-- 4 - Scriptler -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>if(!window.jQuery){var s=document.createElement('script');s.src='/wp-includes/js/jquery/jquery.min.js';document.head.appendChild(s)}</script>
+<script src="/wp-content/uploads/chess/libs/chessboard-1.0.0.min.js"></script>
+<script src="/wp-content/uploads/rook/rook.core.js?v=3"></script>
+<script src="/wp-content/uploads/rook/rook.modes.js?v=1"></script>
+<script src="/wp-content/uploads/rook/rook.theme.js?v=1"></script>
+<script src="/wp-content/uploads/rook/rook.ui.js?v=1"></script>
+
+<!-- 5 - Noscript -->
+<noscript>
+<div style="padding:20px;margin:20px;border:2px solid #ff6b6b;border-radius:8px;background:#fff2f2;color:#d63031;text-align:center;font-family:Arial,sans-serif;">
+<h2>⚠️ JavaScript Gerekli</h2>
+<p><strong>Kale Eğitimi</strong> uygulaması çalışması için JavaScript'in etkin olması gerekiyor.</p>
+<p>Lütfen tarayıcınızdan JavaScript'i etkinleştirip sayfayı yenileyin.</p>
+</div>
+</noscript>
