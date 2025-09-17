@@ -1,4 +1,4 @@
-/* rook.core.js – v45 */
+/* rook.core.js – v46 */
 
 (function(window,document){'use strict';
 
@@ -42,12 +42,14 @@ startTimer(dir){if(this.st.timer)return;this.st.timerDir=(dir==='up')?'up':'down
 /* 12 - İpucu sistemi ------------------------------------------------------ */
 boardEl(){return document.getElementById('cm-board')},squareEl(sq){return document.querySelector(`#cm-board .square-${sq}`)},_hintMarks:[],_srcMarked:null,_setHintsActive(on){const el=this.boardEl();if(el)el.classList.toggle('hints-active',!!on)},addHintClass(sq,cls){const el=this.squareEl(sq);if(!el)return;el.classList.add(cls);this._hintMarks.push({sq,cls})},clearHints(){this._hintMarks.forEach(({sq,cls})=>{const el=this.squareEl(sq);if(el)el.classList.remove(cls)});this._hintMarks.length=0;if(this._srcMarked){const el=this.squareEl(this._srcMarked);if(el)el.classList.remove('square-highlight');this._srcMarked=null}this._setHintsActive(false)},showHintsFor(from){if(!this.st.hintsOn)return;this.clearHints();const elFrom=this.squareEl(from);if(elFrom){elFrom.classList.add('square-highlight');this._srcMarked=from}this.allSquares().forEach(sq=>{if(sq===from)return;if(this.pathClear(from,sq)){if(this.st.pawns.includes(sq)){this.addHintClass(sq,'square-hint-cap')}else{this.addHintClass(sq,'square-hint')}}});this._setHintsActive(true)},applyHints(on){this.st.hintsOn=!!on;try{localStorage.setItem('cm-hints',on?'on':'off')}catch(err){console.warn('Hints localStorage failed:',err)}if(!on)this.clearHints();emit('cm-hints',{on:this.st.hintsOn});emit('rk:hints',{on:this.st.hintsOn})},toggleHints(){this.applyHints(!this.st.hintsOn)},
 
-/* 13 - Ses (Koç Eğitimi sistemi + Capture ses) ---------------------------------------------------------------- */
+/* 13 - Ses (Koç Eğitimi sistemi + Capture ses + Volume kontrolü) ---------------------------------------------------------------- */
 initAudio(){
   const moveAudio = new Audio('/wp-content/uploads/chess/sounds/move.wav'); 
   const captureAudio = new Audio('/wp-content/uploads/chess/sounds/capture.wav');
   moveAudio.preload='auto';
   captureAudio.preload='auto';
+  moveAudio.volume=0.7;      // Volume kontrolü
+  captureAudio.volume=0.6;   // Capture biraz daha düşük
   let audioCtx=null, moveBuf=null, captureBuf=null, audioPrimed=false;
   
   const installAudioUnlock=()=>{
@@ -130,9 +132,12 @@ playMove(){
   
   if(audioCtx&&moveBuf){ 
     try{ 
-      const src=audioCtx.createBufferSource(); 
+      const src=audioCtx.createBufferSource();
+      const gainNode=audioCtx.createGain();
+      gainNode.gain.value=0.7;
       src.buffer=moveBuf; 
-      src.connect(audioCtx.destination); 
+      src.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
       src.start(0); 
       return; 
     }catch(_){ } 
@@ -153,19 +158,20 @@ playCapture(){
   
   if(audioCtx&&captureBuf){ 
     try{ 
-      const src=audioCtx.createBufferSource(); 
+      const src=audioCtx.createBufferSource();
+      const gainNode=audioCtx.createGain();
+      gainNode.gain.value=0.6;  // Capture daha düşük
       src.buffer=captureBuf; 
-      src.connect(audioCtx.destination); 
+      src.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
       src.start(0); 
       return; 
     }catch(_){ } 
   }
-  // Fallback HTML Audio
   try{ 
     A.captureAudio.currentTime=0; 
     A.captureAudio.play().catch(()=>{});
   }catch(_){
-    // Eğer capture ses yüklenemezse move sesini çal
     this.playMove();
   }
 },
