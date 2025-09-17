@@ -1,4 +1,4 @@
-/* rook.core.js – v40 */
+/* rook.core.js – v45 */
 
 (function(window,document){'use strict';
 
@@ -42,11 +42,256 @@ startTimer(dir){if(this.st.timer)return;this.st.timerDir=(dir==='up')?'up':'down
 /* 12 - İpucu sistemi ------------------------------------------------------ */
 boardEl(){return document.getElementById('cm-board')},squareEl(sq){return document.querySelector(`#cm-board .square-${sq}`)},_hintMarks:[],_srcMarked:null,_setHintsActive(on){const el=this.boardEl();if(el)el.classList.toggle('hints-active',!!on)},addHintClass(sq,cls){const el=this.squareEl(sq);if(!el)return;el.classList.add(cls);this._hintMarks.push({sq,cls})},clearHints(){this._hintMarks.forEach(({sq,cls})=>{const el=this.squareEl(sq);if(el)el.classList.remove(cls)});this._hintMarks.length=0;if(this._srcMarked){const el=this.squareEl(this._srcMarked);if(el)el.classList.remove('square-highlight');this._srcMarked=null}this._setHintsActive(false)},showHintsFor(from){if(!this.st.hintsOn)return;this.clearHints();const elFrom=this.squareEl(from);if(elFrom){elFrom.classList.add('square-highlight');this._srcMarked=from}this.allSquares().forEach(sq=>{if(sq===from)return;if(this.pathClear(from,sq)){if(this.st.pawns.includes(sq)){this.addHintClass(sq,'square-hint-cap')}else{this.addHintClass(sq,'square-hint')}}});this._setHintsActive(true)},applyHints(on){this.st.hintsOn=!!on;try{localStorage.setItem('cm-hints',on?'on':'off')}catch(err){console.warn('Hints localStorage failed:',err)}if(!on)this.clearHints();emit('cm-hints',{on:this.st.hintsOn});emit('rk:hints',{on:this.st.hintsOn})},toggleHints(){this.applyHints(!this.st.hintsOn)},
 
-/* 13 - Ses ---------------------------------------------------------------- */
-initAudio(){const A=this.audio||(this.audio={});try{A.htmlMove=new Audio('/wp-content/uploads/chess/sounds/move.wav');A.htmlCapture=new Audio('/wp-content/uploads/chess/sounds/capture.wav');A.htmlMove.preload='auto';A.htmlCapture.preload='auto';A.htmlMove.volume=0.70;A.htmlCapture.volume=0.70}catch(err){console.warn('Audio initialization failed:',err)}},playMove(){if(!this.st.soundOn)return;const A=this.audio||{};if(A.htmlMove){try{A.htmlMove.currentTime=0;A.htmlMove.play()}catch(err){console.warn('Audio play failed:',err)}}},playCapture(){if(!this.st.soundOn)return;const A=this.audio||{};if(A.htmlCapture){try{A.htmlCapture.currentTime=0;A.htmlCapture.play()}catch(err){console.warn('Audio play failed:',err)}}else{this.playMove()}},setSound(on){this.st.soundOn=!!on;try{localStorage.setItem('cm-sound',this.st.soundOn?'on':'off')}catch(err){console.warn('Sound localStorage failed:',err)}emit('cm-sound',{on:this.st.soundOn});emit('rk:sound',{on:this.st.soundOn})},toggleSound(){this.setSound(!this.st.soundOn)},
+/* 13 - Ses (Koç Eğitimi sistemi + Capture ses) ---------------------------------------------------------------- */
+initAudio(){
+  const moveAudio = new Audio('/wp-content/uploads/chess/sounds/move.wav'); 
+  const captureAudio = new Audio('/wp-content/uploads/chess/sounds/capture.wav');
+  moveAudio.preload='auto';
+  captureAudio.preload='auto';
+  let audioCtx=null, moveBuf=null, captureBuf=null, audioPrimed=false;
+  
+  const installAudioUnlock=()=>{
+    if(audioPrimed) return;
+    const prime=async()=>{
+      audioPrimed=true;
+      try{
+        const Ctx=window.AudioContext||window.webkitAudioContext;
+        if(Ctx){
+          if(!audioCtx) audioCtx=new Ctx();
+          if(audioCtx.state==='suspended'){ 
+            try{ await audioCtx.resume(); }catch(_){ } 
+          }
+          // Move ses buffer
+          if(!moveBuf){
+            const resp=await fetch('/wp-content/uploads/chess/sounds/move.wav',{cache:'force-cache'});
+            const arr=await resp.arrayBuffer();
+            moveBuf=await new Promise((res,rej)=>{ 
+              const p=audioCtx.decodeAudioData(arr,res,rej); 
+              if(p&&p.then)p.then(res).catch(rej); 
+            });
+          }
+          // Capture ses buffer
+          if(!captureBuf){
+            const resp2=await fetch('/wp-content/uploads/chess/sounds/capture.wav',{cache:'force-cache'});
+            const arr2=await resp2.arrayBuffer();
+            captureBuf=await new Promise((res,rej)=>{ 
+              const p=audioCtx.decodeAudioData(arr2,res,rej); 
+              if(p&&p.then)p.then(res).catch(rej); 
+            });
+          }
+        }
+        // HTML Audio unlock
+        try{ 
+          moveAudio.muted=true; 
+          await moveAudio.play().catch(()=>{}); 
+          moveAudio.pause(); 
+          moveAudio.currentTime=0; 
+          moveAudio.muted=false; 
+        }catch(_){}
+        try{ 
+          captureAudio.muted=true; 
+          await captureAudio.play().catch(()=>{}); 
+          captureAudio.pause(); 
+          captureAudio.currentTime=0; 
+          captureAudio.muted=false; 
+        }catch(_){}
+      }finally{
+        window.removeEventListener('pointerdown',prime,true);
+        window.removeEventListener('touchend',prime,true);
+        window.removeEventListener('keydown',prime,true);
+      }
+    };
+    window.addEventListener('pointerdown',prime,true);
+    window.addEventListener('touchend',prime,true);
+    window.addEventListener('keydown',prime,true);
+  };
+
+  // Audio objesini this.audio'ya ata
+  this.audio = {
+    moveAudio,
+    captureAudio,
+    audioCtx: () => audioCtx,
+    moveBuf: () => moveBuf,
+    captureBuf: () => captureBuf,
+    audioPrimed: () => audioPrimed,
+    installAudioUnlock
+  };
+
+  installAudioUnlock();
+},
+
+playMove(){
+  if(!this.st.soundOn)return;
+  const A=this.audio;
+  if(!A)return;
+  
+  const audioCtx = A.audioCtx();
+  const moveBuf = A.moveBuf();
+  
+  if(audioCtx&&moveBuf){ 
+    try{ 
+      const src=audioCtx.createBufferSource(); 
+      src.buffer=moveBuf; 
+      src.connect(audioCtx.destination); 
+      src.start(0); 
+      return; 
+    }catch(_){ } 
+  }
+  try{ 
+    A.moveAudio.currentTime=0; 
+    A.moveAudio.play().catch(()=>{});
+  }catch(_){}
+},
+
+playCapture(){
+  if(!this.st.soundOn)return;
+  const A=this.audio;
+  if(!A)return;
+  
+  const audioCtx = A.audioCtx();
+  const captureBuf = A.captureBuf();
+  
+  if(audioCtx&&captureBuf){ 
+    try{ 
+      const src=audioCtx.createBufferSource(); 
+      src.buffer=captureBuf; 
+      src.connect(audioCtx.destination); 
+      src.start(0); 
+      return; 
+    }catch(_){ } 
+  }
+  // Fallback HTML Audio
+  try{ 
+    A.captureAudio.currentTime=0; 
+    A.captureAudio.play().catch(()=>{});
+  }catch(_){
+    // Eğer capture ses yüklenemezse move sesini çal
+    this.playMove();
+  }
+},
+
+setSound(on){
+  this.st.soundOn=!!on;
+  try{localStorage.setItem('cm-sound',this.st.soundOn?'on':'off')}catch(err){console.warn('Sound localStorage failed:',err)}
+  emit('cm-sound',{on:this.st.soundOn});
+  emit('rk:sound',{on:this.st.soundOn})
+},
+
+toggleSound(){
+  this.setSound(!this.st.soundOn)
+},
 
 /* 14 - Tahta kurulumu ----------------------------------------------------- */
-_dragRookEl(){const code=this.st.rookPiece;return document.querySelector(`#cm-board .piece-417db.dragging-31d41[data-piece="${code}"]`)},_clearDragCenter(){document.querySelectorAll('#cm-board .piece-417db.rk-drag-center').forEach(el=>el.classList.remove('rk-drag-center'))},_touchLockHandler:null,_touchLocked:false,_enableTouchLock(){if(this._touchLocked)return;this._touchLocked=true;this._touchLockHandler=(e)=>{if(e?.cancelable)e.preventDefault()};this._addTrackedListener(window,'touchmove',this._touchLockHandler,{passive:false});document.body.classList.add('rk-drag-lock')},_disableTouchLock(){if(!this._touchLocked)return;this._touchLocked=false;if(this._touchLockHandler){window.removeEventListener('touchmove',this._touchLockHandler,{passive:false})}this._touchLockHandler=null;document.body.classList.remove('rk-drag-lock')},initBoard(){const self=this;this.st.board=Chessboard('cm-board',{position:this.makePosition(),pieceTheme:this.pieceTheme.bind(this),draggable:true,moveSpeed:0,snapSpeed:0,snapbackSpeed:0,appearSpeed:0,onDragStart(source,piece){if(piece!==self.st.rookPiece)return false;if(!self.st.playing)self.updateInfo("Önce Start'a basın.");self.showHintsFor(source);self._enableTouchLock();let tries=0;(function waitDrag(){const el=self._dragRookEl();if(el){self._clearDragCenter();el.classList.add('rk-drag-center')}else if(++tries<6){requestAnimationFrame(waitDrag)}})();return true},onDrop(source,target){self._clearDragCenter();self.clearHints();if(source===target){return 'snapback'}if(target===self.st.rookSq){return 'snapback'}if(!self.pathClear(source,target)){return 'snapback'}const captured=self.st.pawns.includes(target);self.st.rookSq=target;if(captured){self.st.score++;emit('rk:score',{score:self.st.score});self.playCapture();if(self.modes?.onCapture){self.modes.onCapture(self,target)}self.draw();self.updateInfo('Harika! Skor +1')}else{self.playMove();self.draw()}},onSnapEnd(){self._disableTouchLock();self._clearDragCenter();self.st.board.position(self.makePosition())}});const host=this.boardEl();const doResize=()=>{if(self.st.board)self.st.board.resize()};if(host){if('ResizeObserver'in window){const observer=new ResizeObserver(()=>doResize());observer.observe(host);this._observers.push(observer)}this._addTrackedListener(window,'resize',doResize,{passive:true});requestAnimationFrame(doResize)}},
+_dragRookEl(){
+  const code=this.st.rookPiece;
+  return document.querySelector(`#cm-board .piece-417db.dragging-31d41[data-piece="${code}"]`)
+},
+_clearDragCenter(){
+  document.querySelectorAll('#cm-board .piece-417db.rk-drag-center').forEach(el=>el.classList.remove('rk-drag-center'))
+},
+_touchLockHandler:null,
+_touchLocked:false,
+_enableTouchLock(){
+  if(this._touchLocked)return;
+  this._touchLocked=true;
+  this._touchLockHandler=(e)=>{if(e?.cancelable)e.preventDefault()};
+  this._addTrackedListener(window,'touchmove',this._touchLockHandler,{passive:false});
+  document.body.classList.add('rk-drag-lock')
+},
+_disableTouchLock(){
+  if(!this._touchLocked)return;
+  this._touchLocked=false;
+  if(this._touchLockHandler){
+    window.removeEventListener('touchmove',this._touchLockHandler,{passive:false})
+  }
+  this._touchLockHandler=null;
+  document.body.classList.remove('rk-drag-lock')
+},
+initBoard(){
+  const self=this;
+  this.st.board=Chessboard('cm-board',{
+    position:this.makePosition(),
+    pieceTheme:this.pieceTheme.bind(this),
+    draggable:true,
+    moveSpeed:0,
+    snapSpeed:0,
+    snapbackSpeed:0,
+    appearSpeed:0,
+    onDragStart(source,piece){
+      if(piece!==self.st.rookPiece)return false;
+      if(!self.st.playing)self.updateInfo("Önce Start'a basın.");
+      
+      // Audio hazırlığı (gecikme önleme)
+      if(self.audio&&!self.audio.initialized){
+        try{
+          const AudioContext=window.AudioContext||window.webkitAudioContext;
+          if(AudioContext&&self.audio.audioCtx&&self.audio.audioCtx.state==='suspended'){
+            self.audio.audioCtx.resume();
+          }
+        }catch(_){}
+      }
+      
+      self.showHintsFor(source);
+      self._enableTouchLock();
+      let tries=0;
+      (function waitDrag(){
+        const el=self._dragRookEl();
+        if(el){
+          self._clearDragCenter();
+          el.classList.add('rk-drag-center')
+        }else if(++tries<6){
+          requestAnimationFrame(waitDrag)
+        }
+      })();
+      return true
+    },
+    onDrop(source,target){
+      self._clearDragCenter();
+      self.clearHints();
+      if(source===target){return 'snapback'}
+      if(target===self.st.rookSq){return 'snapback'}
+      if(!self.pathClear(source,target)){return 'snapback'}
+      
+      // SES HEMEN ÇALSIN (mobil gecikme önleme)
+      const captured=self.st.pawns.includes(target);
+      if(captured){
+        self.playCapture(); // SES ÖNCELİKLE
+      }else{
+        self.playMove(); // SES ÖNCELİKLE
+      }
+      
+      // Sonra oyun mantığı
+      self.st.rookSq=target;
+      if(captured){
+        self.st.score++;
+        emit('rk:score',{score:self.st.score});
+        if(self.modes?.onCapture){self.modes.onCapture(self,target)}
+        self.draw();
+        self.updateInfo('Harika! Skor +1')
+      }else{
+        self.draw();
+      }
+    },
+    onSnapEnd(){
+      self._disableTouchLock();
+      self._clearDragCenter();
+      self.st.board.position(self.makePosition())
+      // Ses burada TEKRAR çalmasın (zaten onDrop'ta çaldı)
+    }
+  });
+
+  const host=this.boardEl();
+  const doResize=()=>{if(self.st.board)self.st.board.resize()};
+  if(host){
+    if('ResizeObserver'in window){
+      const observer=new ResizeObserver(()=>doResize());
+      observer.observe(host);
+      this._observers.push(observer)
+    }
+    this._addTrackedListener(window,'resize',doResize,{passive:true});
+    requestAnimationFrame(doResize)
+  }
+},
 
 /* 15 - Oyun kontrolleri --------------------------------------------------- */
 hardReset(){this.stopTimer();this.st.playing=false;this.st.score=0;const p=this._startForSide(this.st.side);this.st.rookPiece=p.rookPiece;this.st.pawnPiece=p.pawnPiece;this.setWave(1);this.st.levelsStartAt=null;if(this.st.mode==='levels'){this.st.timeLeft=0;this.st.timerDir='up'}else{this.st.timeLeft=60;this.st.timerDir='down'}if(this.modes?.reset){this.modes.reset(this)}else{this.st.rookSq=p.rookSq;const pool=this.allSquares().filter(sq=>sq!==this.st.rookSq);this.st.pawns=[pool[Math.floor(Math.random()*pool.length)]]}this.updateInfo('—');this.draw()},start(){this.hardReset();this.st.score=0;emit('rk:score',{score:0});this.updateInfo('—');if(this.st.mode==='levels'){this.st.levelsStartAt=Date.now()}if(this.modes?.onStart)this.modes.onStart(this);if(!this.st.timer)this.startTimer(this.st.timerDir);this.st.playing=true;emit('rk:start',{mode:this.st.mode})},stop(){this.st.playing=false;this.stopTimer();this.updateInfo('Duraklatıldı.');emit('rk:stop',{})},
