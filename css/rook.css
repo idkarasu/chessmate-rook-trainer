@@ -1,4 +1,4 @@
-/* rook.css — v41 (Header/Footer uyumlu) */
+/* rook.css — v44 (Header/Footer uyumlu) */
 
 /* 1 - CSS Variables (Koç Eğitimi uyumlu sistem) -------------------------- */
 :root{
@@ -89,20 +89,54 @@ body{
 }
 
 /* Ortalamayı ve genişliği tahta ile hizala */
-.rk-toolbar-wrap, .cm-bar{
+.rk-toolbar-wrap{
+  width:var(--rk-board-w);
+  max-width:92vw;
+  margin:0 auto;
+  overflow:hidden;
+}
+
+.rk-toolbar{
   display:flex; 
   flex-wrap:wrap; 
   align-items:center; 
   justify-content:center;
   gap:10px;
-  width:600px; 
-  max-width:92vw;
-  margin-left:auto; 
-  margin-right:auto;
+  padding:3px 4px;
 }
 
-.rk-toolbar--top{ margin-bottom:6px; }
-.rk-toolbar--bottom{ margin-top:6px; }
+.rk-toolbar--top{ 
+  margin-bottom:6px; 
+  flex-wrap:nowrap;
+  min-width:0;
+}
+
+.rk-toolbar--bottom{ 
+  margin-top:6px; 
+  flex-wrap:wrap;
+}
+
+/* Grup düzeni */
+.rk-group{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  flex:0 1 auto;
+  min-width:0;
+}
+
+.rk-group--mode{
+  margin-left:6px;
+}
+
+.rk-group--start{
+  margin-left:8px;
+}
+
+.rk-group--icons{
+  display:inline-flex;
+  gap:8px;
+}
 
 /* Label ve kontrol stilleri */
 .cm-toolbar label, .rk-ctl-label{
@@ -455,6 +489,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
   margin:0 0 8px 0;
   font:800 clamp(22px,3.2vw,28px)/1.25 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   text-align:center;
+  color:var(--gold); /* DÜZELTME: Başlık her zaman altın rengi */
 }
 
 .rk-modal-desc{
@@ -462,6 +497,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
   font:700 clamp(16px,2.4vw,20px)/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   opacity:.98;
   text-align:center;
+  color:var(--text); /* DÜZELTME: Açıklama metin rengi */
 }
 
 .rk-modal-actions{
@@ -696,8 +732,21 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
   --pattern-color: var(--pattern-dark);
 }
 
+/* Light tema için arka plan değişkenleri - DÜZELTME */
 body.cm-theme-light,
 body.light, body.light-mode, .theme-light, [data-theme="light"], .cm-light, [data-theme="day"], .day, .day-mode{
+  --bg-grad-top: var(--bg-grad-top-light);
+  --bg-grad-bot: var(--bg-grad-bot-light);
+  --pattern-color: var(--pattern-light);
+}
+
+/* HTML arka plan selektörleri - DÜZELTME */
+html.cm-theme-light,
+html:has(body.cm-theme-light),
+html.light,
+html:has(body.light),
+html.light-mode,
+html:has(body.light-mode){
   --bg-grad-top: var(--bg-grad-top-light);
   --bg-grad-bot: var(--bg-grad-bot-light);
   --pattern-color: var(--pattern-light);
