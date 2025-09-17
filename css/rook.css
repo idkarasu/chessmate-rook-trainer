@@ -1,4 +1,4 @@
-/* rook.css — v13 */
+/* rook.css — v14 */
 
 /* 1 - Temel tema değişkenleri --------------------------------------------- */
 :root{--line:#232831;--panel:#0f1216;--txt:#e9edf1;--muted:#a7b0ba;--gold:#ffd700;--btn:#12151a;--btn-hov:#171c23;--hint:#3aa9ff;--hintA:rgba(58,169,255,.9);--focus:#3AA9FF;--cm-dur:180ms;--rk-board-w-base:600px;--rk-board-w:var(--rk-board-w-base)}
