@@ -1,4 +1,4 @@
-/* rook.css — v49 (Header/Footer uyumlu) */
+/* rook.css — v50 (Header/Footer uyumlu) */
 
 /* 1 - CSS Variables (Koç Eğitimi uyumlu sistem) -------------------------- */
 :root{
@@ -971,6 +971,83 @@ input, textarea, [contenteditable="true"]{
 @media (hover:none) and (pointer:coarse){
   .rk-wrap, .cm-btn, .rk-btn, .cm-sel{ touch-action: manipulation; }
   a, button, .cm-sel{ -webkit-tap-highlight-color: rgba(0,0,0,0); }
+}
+
+/* 19 - Mobil performans optimizasyonları --------------------------------- */
+
+/* GPU ivmesi için transform3d kullanımı */
+#cm-board,
+.rk-wrap,
+.cm-btn,
+.rk-btn,
+.rk-modal,
+#rk-countdown-back{
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* Touch gecikmelerini azalt */
+@media (hover: none) and (pointer: coarse){
+  .cm-btn, .rk-btn, .cm-sel, .cm-ico{
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+    user-select: none;
+  }
+  
+  /* Animasyon hızlandırma */
+  .cm-btn, .rk-btn{
+    transition: transform 0.1s ease-out, background 0.15s ease;
+  }
+  
+  /* Touch feedback iyileştirme */
+  .cm-btn:active, .rk-btn:active{
+    transform: scale(0.98) translateZ(0);
+  }
+}
+
+/* Audio context optimizasyonu için */
+body{
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Tahta sürükleme optimizasyonu */
+#cm-board .piece-417db{
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform, left, top;
+}
+
+/* iOS Safari için özel optimizasyonlar */
+@supports (-webkit-touch-callout: none){
+  #cm-board{
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-text-size-adjust: none;
+  }
+  
+  /* Audio lag azaltma */
+  audio{
+    preload: auto;
+    volume: 0.7;
+  }
+}
+
+/* Animasyon performansı */
+@media (max-width: 768px){
+  .rk-btn, .cm-btn{
+    transition-duration: 0.1s;
+  }
+  
+  /* Geri sayım animasyonu hızlandırma */
+  #rk-countdown{
+    will-change: transform, opacity;
+    -webkit-font-smoothing: antialiased;
+  }
 }
 
 /* Bölüm sonu --------------------------------------------------------------- */
