@@ -1,4 +1,4 @@
-/* rook.css — v19 */
+/* rook.css — v21 */
 
 /* 1 - Temel tema değişkenleri --------------------------------------------- */
 :root{--line:#232831;--panel:#0f1216;--txt:#e9edf1;--muted:#a7b0ba;--gold:#ffd700;--btn:#12151a;--btn-hov:#171c23;--hint:#3aa9ff;--hintA:rgba(58,169,255,.9);--focus:#3AA9FF;--cm-dur:180ms;--rk-board-w-base:600px;--rk-board-w:var(--rk-board-w-base)}
@@ -175,26 +175,42 @@ html::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
 @media (max-width:560px){html::before{background-image:linear-gradient(180deg,var(--bg-grad-top),var(--bg-grad-bot))}}
 
 /* 23 - Header ve Footer --------------------------------------------------- */
-.cm-nav{background:transparent;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1);position:relative}
-.cm-container{max-width:1200px;margin:0 auto;padding:0 16px}
-.cm-nav-inner{display:flex;align-items:center;justify-content:space-between}
-.cm-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--txt,#e9edf1);font-weight:700;font-size:18px;transition:opacity .2s ease}
-.cm-brand:hover{opacity:.8}
-.cm-logo-img{width:32px;height:32px;border-radius:6px;object-fit:cover}
-.cm-brand-text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-.cm-menu{display:flex;align-items:center;gap:24px}
-.cm-footer{background:transparent;padding:24px 0;border-top:1px solid rgba(255,255,255,.1);margin-top:40px}
-.cm-social{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:16px}
-.cm-ico{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.05);color:var(--txt,#e9edf1);text-decoration:none;transition:background .2s ease,transform .1s ease}
-.cm-ico:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
-.cm-ico svg{width:20px;height:20px}
-.cm-copy{text-align:center;color:var(--muted,#a7b0ba);font-size:14px;margin:0;opacity:.8}
-body.cm-theme-light .cm-nav{border-bottom-color:rgba(0,0,0,.1)}
-body.cm-theme-light .cm-footer{border-top-color:rgba(0,0,0,.1)}
+.cm-container{max-width:1200px;margin:0 auto;padding:0 5%}
+.cm-nav{
+  position:static;z-index:auto;
+  background:color-mix(in oklab,var(--bg-grad-top) 92%,transparent);
+  border-bottom:none !important;
+  box-shadow:none !important;
+}
+.cm-nav-inner{
+  display:grid;align-items:center;height:68px;
+  grid-template-columns:1fr auto 1fr;
+}
+.cm-brand{
+  display:flex;gap:12px;align-items:center;font-weight:800;color:var(--txt,#e9edf1);text-decoration:none;
+  grid-column:2;justify-self:center;
+}
+.cm-brand:hover{opacity:.95}
+.cm-logo-img{width:28px;height:28px;border-radius:6px;object-fit:cover;box-shadow:0 0 14px rgba(255,215,0,.25)}
+.cm-brand-text{letter-spacing:.2px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.cm-menu{display:flex;gap:12px;align-items:center;justify-self:end}
+.cm-footer{border-top:1px solid var(--line,#232831);background:var(--panel,#0f1216);margin-top:0}
+.cm-footer .cm-container{padding:12px 5%}
+.cm-social{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:8px 0 12px}
+.cm-ico{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:60px;height:60px;border-radius:999px;background:var(--btn,#12151a);
+  border:1px solid var(--line,#232831);color:var(--txt,#e9edf1);text-decoration:none;
+  transition:transform .15s,box-shadow .2s,background .2s,border-color .2s
+}
+.cm-ico svg{width:30px;height:30px;display:block}
+.cm-ico:hover{background:var(--gold,#ffd700);color:#000;border-color:transparent;transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.cm-copy{color:var(--muted,#a7b0ba);font-size:13px;margin:0;text-align:center}
+body.cm-theme-light .cm-nav{background:color-mix(in oklab,var(--bg-grad-top-light) 92%,transparent)}
 body.cm-theme-light .cm-brand{color:#0E1116}
-body.cm-theme-light .cm-ico{background:rgba(0,0,0,.05);color:#0E1116}
-body.cm-theme-light .cm-ico:hover{background:rgba(0,0,0,.1)}
+body.cm-theme-light .cm-footer{border-top-color:#D6DEE8;background:#F6F8FB}
+body.cm-theme-light .cm-ico{background:#FFFFFF;border-color:#D6DEE8;color:#0E1116}
 body.cm-theme-light .cm-copy{color:#6B7280}
-@media (max-width:560px){.cm-nav{padding:8px 0}.cm-brand{font-size:16px}.cm-logo-img{width:28px;height:28px}.cm-social{gap:12px}.cm-ico{width:36px;height:36px}.cm-ico svg{width:18px;height:18px}.cm-footer{padding:20px 0;margin-top:24px}}
+@media (max-width:560px){.cm-nav-inner{height:56px}.cm-brand{font-size:16px}.cm-logo-img{width:24px;height:24px}.cm-social{gap:8px}.cm-ico{width:48px;height:48px}.cm-ico svg{width:24px;height:24px}}
 
 /* Bölüm sonu --------------------------------------------------------------- */
