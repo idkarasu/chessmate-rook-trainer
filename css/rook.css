@@ -1,4 +1,4 @@
-/* rook.css — v18 */
+/* rook.css — v19 */
 
 /* 1 - Temel tema değişkenleri --------------------------------------------- */
 :root{--line:#232831;--panel:#0f1216;--txt:#e9edf1;--muted:#a7b0ba;--gold:#ffd700;--btn:#12151a;--btn-hov:#171c23;--hint:#3aa9ff;--hintA:rgba(58,169,255,.9);--focus:#3AA9FF;--cm-dur:180ms;--rk-board-w-base:600px;--rk-board-w:var(--rk-board-w-base)}
@@ -173,5 +173,28 @@ html,body{background:transparent}
 html{position:relative;isolation:isolate}
 html::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(120% 70% at 50% 0%,var(--bg-spot) 0%,transparent 60%),linear-gradient(45deg,var(--pattern-color) 25%,transparent 25%),linear-gradient(-45deg,var(--pattern-color) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--pattern-color) 75%),linear-gradient(-45deg,transparent 75%,var(--pattern-color) 75%),linear-gradient(180deg,var(--bg-grad-top),var(--bg-grad-bot));background-size:100% 100%,var(--pattern-size) var(--pattern-size),var(--pattern-size) var(--pattern-size),var(--pattern-size) var(--pattern-size),var(--pattern-size) var(--pattern-size),auto;background-position:0 0,0 0,0 calc(var(--pattern-size)/2),calc(var(--pattern-size)/2) calc(-1 * var(--pattern-size)/2),calc(-1 * var(--pattern-size)/2) 0,0 0}
 @media (max-width:560px){html::before{background-image:linear-gradient(180deg,var(--bg-grad-top),var(--bg-grad-bot))}}
+
+/* 23 - Header ve Footer --------------------------------------------------- */
+.cm-nav{background:transparent;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1);position:relative}
+.cm-container{max-width:1200px;margin:0 auto;padding:0 16px}
+.cm-nav-inner{display:flex;align-items:center;justify-content:space-between}
+.cm-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--txt,#e9edf1);font-weight:700;font-size:18px;transition:opacity .2s ease}
+.cm-brand:hover{opacity:.8}
+.cm-logo-img{width:32px;height:32px;border-radius:6px;object-fit:cover}
+.cm-brand-text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.cm-menu{display:flex;align-items:center;gap:24px}
+.cm-footer{background:transparent;padding:24px 0;border-top:1px solid rgba(255,255,255,.1);margin-top:40px}
+.cm-social{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:16px}
+.cm-ico{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.05);color:var(--txt,#e9edf1);text-decoration:none;transition:background .2s ease,transform .1s ease}
+.cm-ico:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
+.cm-ico svg{width:20px;height:20px}
+.cm-copy{text-align:center;color:var(--muted,#a7b0ba);font-size:14px;margin:0;opacity:.8}
+body.cm-theme-light .cm-nav{border-bottom-color:rgba(0,0,0,.1)}
+body.cm-theme-light .cm-footer{border-top-color:rgba(0,0,0,.1)}
+body.cm-theme-light .cm-brand{color:#0E1116}
+body.cm-theme-light .cm-ico{background:rgba(0,0,0,.05);color:#0E1116}
+body.cm-theme-light .cm-ico:hover{background:rgba(0,0,0,.1)}
+body.cm-theme-light .cm-copy{color:#6B7280}
+@media (max-width:560px){.cm-nav{padding:8px 0}.cm-brand{font-size:16px}.cm-logo-img{width:28px;height:28px}.cm-social{gap:12px}.cm-ico{width:36px;height:36px}.cm-ico svg{width:18px;height:18px}.cm-footer{padding:20px 0;margin-top:24px}}
 
 /* Bölüm sonu --------------------------------------------------------------- */
