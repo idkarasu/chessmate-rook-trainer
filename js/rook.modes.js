@@ -1,4 +1,4 @@
-/* rook.modes.js — v1 */
+/* rook.modes.js — v30 */
 
 (function(window,document){'use strict';
 
