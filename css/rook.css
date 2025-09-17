@@ -1,238 +1,844 @@
-/* rook.css — v30 */
+/* rook.css — v40 (Header/Footer uyumlu) */
 
-/* 1 - CSS Variables - Koç Eğitimi Uyumlu --------------------------------- */
+/* 1 - CSS Variables (Koç Eğitimi uyumlu sistem) -------------------------- */
 :root{
-  --bg:#0D0F12;
-  --text:#E9EDF1;
-  --muted:#A7B0BA;
-  --line:#232831;
-  --panel:#0F1216;
+  --bg:#0D0F12; 
+  --text:#E9EDF1; 
+  --muted:#A7B0BA; 
+  --line:#232831; 
+  --panel:#11151b; 
   --gold:#FFD700;
-  --btn:#12151a;
-  --btn-hov:#171c23;
+  --btn:#12151a; 
   --btn-border:#232831;
-  /* Eski değişkenler (backward compatibility) */
-  --txt:var(--text);
-  --rk-board-w-base:600px;
-  --rk-board-w:var(--rk-board-w-base);
-  --cm-dur:180ms;
   --hint:#3aa9ff;
   --hintA:rgba(58,169,255,.9);
+  --modal-backdrop: rgba(0,0,0,.55);
+  --vh: 100dvh;
+  --hdr: 68px;
+  --ftr: 84px;
+  --ab: 0px;
+  --fit-epsilon: 2px;
+  --radius-lg:16px;
+  --radius-md:12px;
+  --shadow-sm:0 1px 2px rgba(16,24,40,.05);
+  --shadow-md:0 8px 24px rgba(16,24,40,.18);
   --focus:#3AA9FF;
+  --cm-dur:180ms;
+  --rk-board-w-base:600px;
+  --rk-board-w:var(--rk-board-w-base);
 }
 
-body.cm-theme-light{
-  --bg:#F6F8FB;
-  --text:#0E1116;
-  --muted:#4B5563;
-  --line:#D6DEE8;
+/* Tema değişkenleri */
+html { -webkit-text-size-adjust: 100%; }
+body.cm-theme-light,
+body.light, body.light-mode, .theme-light, [data-theme="light"], .cm-light, [data-theme="day"], .day, .day-mode{
+  --bg:#F5F7FA;
+  --text:#0D0F12;
+  --muted:#556072;
+  --line:#DCE2EA;
   --panel:#FFFFFF;
-  --btn:#FFFFFF;
-  --btn-hov:#F5F7FA;
-  --btn-border:#D6DEE8;
-  --txt:var(--text);
-  background:linear-gradient(180deg,#EEF3F9 0%,var(--bg) 100%) !important;
+  --btn:#F3F6FB;
+  --btn-border:#D8E0EA;
+  --modal-backdrop: rgba(255,255,255,.60);
+}
+body.cm-theme-dark,
+body.dark, body.dark-mode, .theme-dark, [data-theme="dark"], .cm-dark{
+  --modal-backdrop: rgba(0,0,0,.55);
 }
 
-/* 2 - Sayfa görünümü ve düzen --------------------------------------------- */
-.rk-wrap{position:relative;max-width:min(820px,calc(100% - 16px));margin:24px auto;padding:16px;border:1px solid var(--line,#232831);border-radius:14px;background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.16));color:var(--txt,#e9edf1);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.18);will-change:transform}
-.rk-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;flex-direction:column;text-align:center}
+/* 2 - Sayfa düzeni ve temel stiller --------------------------------------- */
+html, body { height:100%; }
+body{
+  margin:0; 
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",Arial,sans-serif;
+  background:linear-gradient(180deg,#0b0e12 0%,var(--bg) 100%);
+  min-height: var(--vh);
+}
+
+.rk-wrap{
+  position:relative;
+  max-width:900px;
+  margin:0 auto;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  padding:20px;
+  box-shadow:var(--shadow-md);
+  min-height: calc(var(--vh) - var(--ab) - var(--hdr) - var(--ftr) - var(--fit-epsilon));
+}
+
+.rk-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:6px;
+  flex-direction:column;
+  text-align:center;
+}
 .rk-title{font-weight:800;font-size:18px;margin:0}
 .rk-grid{display:grid;grid-template-columns:1fr;justify-items:center}
 
-/* 3 - Araç çubuğu --------------------------------------------------------- */
-.cm-toolbar{width:var(--rk-board-w);max-width:var(--rk-board-w);margin:3px auto 1px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding:6px 10px;border:none;border-radius:0;background:transparent;box-shadow:none;overflow:hidden}
-.cm-toolbar>*{flex:0 0 auto;min-width:auto}
-@media (min-width:600px){.cm-toolbar{flex-wrap:nowrap}}
-.rk-ctl-label{font-weight:700;font-size:14px;letter-spacing:.02em;color:var(--muted,#a7b0ba);align-self:center}
-body.cm-theme-light .cm-toolbar,body.cm-theme-dark .cm-toolbar{background:transparent;border:none;box-shadow:none}
+/* 3 - Araç çubuğu (Koç Eğitimi tarzı 2-satır) ---------------------------- */
+.cm-toolbar{
+  display:block;
+  -webkit-user-select:none; 
+  user-select:none;
+  margin-bottom:12px;
+}
 
-/* 4 - Butonlar ------------------------------------------------------------- */
-.cm-btn,.rk-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;height:38px;min-width:44px;border:1px solid var(--line,#232831);background:var(--btn,#12151a);color:var(--txt,#e9edf1);border-radius:12px;padding:0 12px;cursor:pointer;font:600 12px/1 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,Arial,sans-serif;letter-spacing:.02em;transition:transform .06s ease,background var(--cm-dur,180ms) ease,box-shadow var(--cm-dur,180ms) ease,border-color var(--cm-dur,180ms) ease;will-change:transform,background}
-.cm-btn:hover,.rk-btn:hover{background:var(--btn-hov,#171c23);transform:translateY(-1px)}
-.cm-btn:active,.rk-btn:active{transform:none}
-.cm-btn:focus,.rk-btn:focus{outline:none}
-.cm-btn:focus-visible,.rk-btn:focus-visible{outline:2px solid var(--focus,#3aa9ff);outline-offset:2px;box-shadow:0 0 0 3px rgba(58,169,255,.25)}
+/* Ortalamayı ve genişliği tahta ile hizala */
+.rk-toolbar-wrap, .cm-bar{
+  display:flex; 
+  flex-wrap:wrap; 
+  align-items:center; 
+  justify-content:center;
+  gap:10px;
+  width:600px; 
+  max-width:92vw;
+  margin-left:auto; 
+  margin-right:auto;
+}
 
-/* 5 - Tahta kabı ----------------------------------------------------------- */
-#cm-board{position:relative;width:var(--rk-board-w);max-width:92vw;aspect-ratio:1/1;height:auto;border:none;border-radius:12px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.28);outline:none;contain:layout paint size;-ms-touch-action:none;touch-action:none;overscroll-behavior:contain;will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden;transform:translateZ(0);margin:2px auto}
+.rk-toolbar--top{ margin-bottom:6px; }
+.rk-toolbar--bottom{ margin-top:6px; }
 
-/* 6 - Yumuşak kapsül paneller --------------------------------------------- */
-:root{--rk-softbar-bg:rgba(0,0,0,.08);--rk-softbar-mask:rgba(0,0,0,.08)}
-body.cm-theme-light{--rk-softbar-bg:#F6F8FB;--rk-softbar-mask:#F6F8FB}
-body.cm-theme-dark{--rk-softbar-bg:rgba(0,0,0,.16);--rk-softbar-mask:#0F1216}
-.rk-softbar{width:var(--rk-board-w);max-width:92vw;box-sizing:border-box;margin:4px auto;padding:10px 14px;border:1px solid var(--line,#232831);border-radius:999px;background:var(--rk-softbar-bg,rgba(0,0,0,.08));box-shadow:inset 0 -1px 0 rgba(255,255,255,.06);color:var(--txt,#e9edf1)}
-body.cm-theme-light .rk-softbar{border-color:#D6DEE8;color:#0E1116;box-shadow:inset 0 -1px 0 rgba(255,255,255,.9)}
-body.cm-theme-dark .rk-softbar{border-color:#232831;color:#E9EDF1}
-@media (max-width:560px){.rk-softbar{width:100%}}
+/* Label ve kontrol stilleri */
+.cm-toolbar label, .rk-ctl-label{
+  font-size:12px; 
+  font-weight:800; 
+  color:var(--muted); 
+  text-transform:uppercase; 
+  letter-spacing:.2px;
+  align-self:center;
+}
 
-/* 7 - Toolbar (iki sıralı, responsive) ------------------------------------ */
-.rk-toolbar-wrap{width:var(--rk-board-w);max-width:var(--rk-board-w);margin:0 auto;overflow:hidden}
-.rk-toolbar{display:flex;justify-content:center;align-items:center;gap:4px;padding:3px 4px}
-.rk-toolbar--top{margin-bottom:3px;flex-wrap:nowrap;min-width:0}
-.rk-toolbar--bottom{margin-top:3px;flex-wrap:wrap}
-.rk-group{display:inline-flex;align-items:center;gap:2px;flex:0 1 auto;min-width:0}
-.rk-group--mode{display:inline-flex;align-items:center;gap:4px;flex:0 1 auto;min-width:0;margin-left:4px}
-.rk-ctl-label,.rk-label{white-space:nowrap;font:700 14px/1.15 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;opacity:.9}
-.rk-group--mode .rk-ctl-label{white-space:normal;line-height:1.1;text-align:center}
-.rk-btn,.cm-btn,.cm-sel{height:38px;border-radius:12px;border:1px solid var(--line,#232831);font:700 14px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding:0 12px;background:var(--rk-softbar-bg,rgba(0,0,0,.08));color:var(--txt,#e9edf1);display:inline-flex;align-items:center;box-sizing:border-box;transition:transform .06s ease,box-shadow .12s ease,background .12s ease,border-color .12s ease;will-change:transform}
-.rk-btn--primary,#rk-start.cm-btn{border-color:var(--gold,#ffd700);background:linear-gradient(to bottom,#FFEFAE,#FFD700);color:#0D0F12}
-.cm-sel{width:auto;min-width:max-content;max-width:180px;-webkit-appearance:auto;appearance:auto;background:linear-gradient(to bottom,rgba(255,255,255,.06),rgba(255,255,255,0));background-repeat:no-repeat;background-size:100% 100%}
-.rk-btn--icon{width:38px;min-width:38px;height:38px;padding:0;border-radius:10px;font-size:16px}
-.rk-toolbar :is(.rk-btn,.cm-btn,.cm-sel):focus-visible{outline:3px solid var(--gold,#ffd700);outline-offset:2px}
-@media (max-width:560px){.rk-ctl-label,.rk-label{font-size:12px}.rk-group--mode .rk-ctl-label{font-size:11px;line-height:1.05}.cm-sel{max-width:110px;font-size:12px;padding:0 8px}.rk-toolbar--top .rk-group{flex-direction:column;align-items:center;gap:4px}.rk-toolbar--top{align-items:flex-end}}
-body.cm-theme-light :is(.rk-btn,.cm-btn,.cm-sel){border-color:#D6DEE8;background:#F4F7FB;color:#0E1116}
-body.cm-theme-dark :is(.rk-btn,.cm-btn,.cm-sel){border-color:#2B3038;background:#171A20;color:#E9EDF1}
+/* 4 - Butonlar ve seçim kutuları ------------------------------------------ */
+button.cm-btn, button.rk-btn, select.cm-sel{
+  height:38px; 
+  padding:0 12px; 
+  border-radius:12px; 
+  border:1px solid var(--line);
+  background:var(--btn); 
+  color:var(--text); 
+  font-weight:800; 
+  letter-spacing:.2px;
+  cursor:pointer; 
+  transition:.18s ease, transform .06s ease;
+  box-shadow:var(--shadow-sm);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;
+  min-width:44px;
+  font:600 12px/1 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,Arial,sans-serif;
+}
 
-/* 8 - Zaman barı — MASKE tekniği ------------------------------------------ */
-.rk-softbar .rk-timebar{position:relative;width:100%;max-width:none;height:12px;border-radius:999px;background:var(--rk-softbar-bg,rgba(0,0,0,.08));border:1px solid rgba(0,0,0,.15);overflow:hidden;background-clip:padding-box;isolation:isolate;will-change:transform}
-body.cm-theme-dark .rk-softbar .rk-timebar{background:var(--rk-softbar-bg,rgba(0,0,0,.16));border-color:rgba(255,255,255,.12)}
-.rk-timebar::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#dc2626 0%,#f59e0b 50%,#16a34a 100%);z-index:0;pointer-events:none}
-.rk-timefill{position:absolute;inset:0;width:100%;height:100%;background:var(--rk-softbar-mask,rgba(0,0,0,.08));transform-origin:right center;transform:scaleX(0);transition:none;will-change:transform;z-index:1}
+button.cm-btn:hover, button.rk-btn:hover, select.cm-sel:hover{ 
+  background:var(--btn-border); 
+  transform:translateY(-1px); 
+}
+button.cm-btn:active, button.rk-btn:active{ transform:translateY(0); }
+button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{ 
+  outline:2px solid var(--gold); 
+  outline-offset:2px; 
+}
 
-/* 9 - Seviyeler: satır içi seviye şeridi ---------------------------------- */
-#rk-levels-inline{display:none;gap:6px;align-items:center;justify-content:center}
-#rk-levels-inline .lvl{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 12px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#E9EDF1;background:rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 1px 2px rgba(0,0,0,.25);opacity:.9;transition:transform .12s ease,background var(--cm-dur,180ms) ease,color var(--cm-dur,180ms) ease,opacity var(--cm-dur,180ms) ease}
-#rk-levels-inline .lvl.todo{opacity:.60}
-#rk-levels-inline .lvl.done{background:linear-gradient(180deg,#34d399,#10b981);color:#061510;opacity:1}
-#rk-levels-inline .lvl.active{background:var(--gold,#ffd700);color:#0E1116;transform:translateY(-1px)}
-body.cm-theme-light #rk-levels-inline .lvl{color:#0E1116;background:rgba(0,0,0,.06)}
-body.cm-theme-light #rk-levels-inline .lvl.done{background:linear-gradient(180deg,#86efac,#34d399);color:#053018}
-body.cm-theme-light #rk-levels-inline .lvl.active{background:var(--gold,#ffd700);color:#0E1116}
+/* Primary buton (Start) */
+.rk-btn--primary, #rk-start.cm-btn{
+  border-color:var(--gold);
+  background:linear-gradient(to bottom,#FFEFAE,#FFD700);
+  color:#0D0F12;
+}
 
-/* 10 - HUD (3 kutucuk) ---------------------------------------------------- */
-#rk-hud{margin-top:4px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;justify-items:center;text-align:center;gap:clamp(6px,1.2vw,12px);font-weight:800;font-size:clamp(14px,2.6vw,20px);line-height:1.35}
-#rk-hud .hud-chip{display:inline-flex;align-items:center;justify-content:center;gap:clamp(6px,1vw,10px);padding:.55em .8em;border:1px solid var(--line,#232831);border-radius:12px;background:var(--btn,#12151a);color:var(--txt,#e9edf1);white-space:nowrap;max-width:100%}
-#rk-hud .hud-left{justify-self:center}
-#rk-hud .hud-center{justify-self:center}
-#rk-hud .hud-right{justify-self:center}
-#rk-hud .hud-chip .lbl{font:600 clamp(11px,1.4vw,12px)/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;letter-spacing:.01em;opacity:.9;margin-inline:.2em .35em}
+/* İkon-only butonlar */
+.rk-btn--icon, 
+#cm-theme-toggle,
+#cm-board-toggle,
+#cm-sound-toggle,
+#cm-hints{
+  width:38px; 
+  height:38px; 
+  padding:0; 
+  display:inline-grid; 
+  place-items:center; 
+  font-size:18px; 
+  line-height:1;
+  border-radius:10px;
+  min-width:38px;
+}
+
+/* 5 - Tahta -------------------------------------------------------------- */
+#cm-board{
+  position:relative;
+  width:var(--rk-board-w);
+  max-width:92vw;
+  aspect-ratio:1/1;
+  height:auto;
+  border:none;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 6px 20px rgba(0,0,0,.28);
+  outline:1px solid var(--line);
+  background:#0b0e12;
+  contain:layout paint size;
+  -ms-touch-action:none;
+  touch-action:none;
+  overscroll-behavior:contain;
+  will-change:transform;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  transform:translateZ(0);
+  margin:6px auto 10px;
+}
+
+@media (hover: none) and (pointer: coarse){
+  #cm-board img{
+    -webkit-touch-callout:none; 
+    -webkit-user-drag:none;
+    -webkit-user-select:none; 
+    user-select:none;
+    pointer-events:none;
+  }
+}
+
+/* 6 - Yumuşak kapsül paneller (softbar sistemi) -------------------------- */
+:root{
+  --rk-softbar-bg:rgba(0,0,0,.08);
+  --rk-softbar-mask:rgba(0,0,0,.08);
+}
+body.cm-theme-light{
+  --rk-softbar-bg:#F6F8FB;
+  --rk-softbar-mask:#F6F8FB;
+}
+body.cm-theme-dark{
+  --rk-softbar-bg:rgba(0,0,0,.16);
+  --rk-softbar-mask:#0F1216;
+}
+
+.rk-softbar{
+  width:var(--rk-board-w);
+  max-width:92vw;
+  box-sizing:border-box;
+  margin:4px auto;
+  padding:10px 14px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--rk-softbar-bg);
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.06);
+  color:var(--text);
+}
+
+body.cm-theme-light .rk-softbar{
+  border-color:#D6DEE8;
+  color:#0E1116;
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.9);
+}
+
+/* 7 - HUD (3 kutucuk) ----------------------------------------------------- */
+#rk-hud{
+  margin-top:4px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;
+  justify-items:center;
+  text-align:center;
+  gap:clamp(6px,1.2vw,12px);
+  font-weight:800;
+  font-size:clamp(14px,2.6vw,20px);
+  line-height:1.35;
+}
+
+#rk-hud .hud-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(6px,1vw,10px);
+  padding:.55em .8em;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--btn);
+  color:var(--text);
+  white-space:nowrap;
+  max-width:100%;
+}
+
+#rk-hud .hud-chip .lbl{
+  font:600 clamp(11px,1.4vw,12px)/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  letter-spacing:.01em;
+  opacity:.9;
+  margin-inline:.2em .35em;
+}
+
 #rk-hud .hud-chip .val{font-variant-numeric:tabular-nums}
 #rk-hud .hud-chip .ico{font-size:1em;line-height:1}
-body.cm-theme-light #rk-hud .hud-chip{background:#FFFFFF;color:#0E1116;border-color:#D6DEE8;box-shadow:0 1px 2px rgba(16,24,40,.04)}
-body.cm-theme-dark #rk-hud .hud-chip{background:var(--btn,#12151a);color:var(--txt,#e9edf1);border-color:var(--line,#232831)}
 
-/* 11 - Tema modları -------------------------------------------------------- */
-body.cm-theme-light .rk-wrap{background:#FFFFFF;color:#0E1116;border-color:#D6DEE8;box-shadow:0 8px 24px rgba(0,0,0,.12)}
-body.cm-theme-light .rk-btn,body.cm-theme-light .cm-btn{background:#FFFFFF;color:#0E1116;border-color:#D6DEE8;box-shadow:0 1px 2px rgba(16,24,40,.04)}
-body.cm-theme-light .rk-btn:hover,body.cm-theme-light .cm-btn:hover{background:#F5F7FA}
-body.cm-theme-dark .rk-wrap{background:#0F1216;color:#E9EDF1;border-color:#232831;box-shadow:0 8px 24px rgba(0,0,0,.36)}
-body.cm-theme-dark .rk-title{color:#E9EDF1}
-body.cm-theme-light .rk-title{color:#0E1116}
+/* 8 - Zaman barı (MASKE tekniği) ------------------------------------------ */
+.rk-softbar .rk-timebar{
+  position:relative;
+  width:100%;
+  max-width:none;
+  height:12px;
+  border-radius:999px;
+  background:var(--rk-softbar-bg);
+  border:1px solid rgba(0,0,0,.15);
+  overflow:hidden;
+  background-clip:padding-box;
+  isolation:isolate;
+  will-change:transform;
+}
 
-/* 12 - İpuçları (kare vurguları) ------------------------------------------ */
-#cm-board .square-highlight{box-shadow:inset 0 0 0 3px var(--gold,#ffd700)}
+body.cm-theme-dark .rk-softbar .rk-timebar{
+  background:var(--rk-softbar-bg);
+  border-color:rgba(255,255,255,.12);
+}
+
+.rk-timebar::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,#dc2626 0%,#f59e0b 50%,#16a34a 100%);
+  z-index:0;
+  pointer-events:none;
+}
+
+.rk-timefill{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  background:var(--rk-softbar-mask);
+  transform-origin:right center;
+  transform:scaleX(0);
+  transition:none;
+  will-change:transform;
+  z-index:1;
+}
+
+/* 9 - Seviyeler (inline) -------------------------------------------------- */
+#rk-levels-inline{
+  display:none;
+  gap:6px;
+  align-items:center;
+  justify-content:center;
+}
+
+#rk-levels-inline .lvl{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font:700 12px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  color:#E9EDF1;
+  background:rgba(255,255,255,.08);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 1px 2px rgba(0,0,0,.25);
+  opacity:.9;
+  transition:transform .12s ease,background var(--cm-dur) ease,color var(--cm-dur) ease,opacity var(--cm-dur) ease;
+}
+
+#rk-levels-inline .lvl.todo{opacity:.60}
+#rk-levels-inline .lvl.done{
+  background:linear-gradient(180deg,#34d399,#10b981);
+  color:#061510;
+  opacity:1;
+}
+#rk-levels-inline .lvl.active{
+  background:var(--gold);
+  color:#0E1116;
+  transform:translateY(-1px);
+}
+
+/* 10 - İpuçları (hints) --------------------------------------------------- */
+#cm-board .square-highlight{box-shadow:inset 0 0 0 3px var(--gold)}
 #cm-board .square-hint,#cm-board .square-hint-cap{position:relative}
-#cm-board .square-hint::after{content:"";position:absolute;inset:38% 38%;border-radius:50%;background:var(--hintA,rgba(58,169,255,.9));pointer-events:none;z-index:5}
-#cm-board .square-hint-cap::after{content:"";position:absolute;inset:12%;border:3px solid var(--hint,#3aa9ff);border-radius:50%;background:transparent;pointer-events:none;z-index:5}
+#cm-board .square-hint::after{
+  content:"";
+  position:absolute;
+  inset:38% 38%;
+  border-radius:50%;
+  background:var(--hintA);
+  pointer-events:none;
+  z-index:5;
+}
+#cm-board .square-hint-cap::after{
+  content:"";
+  position:absolute;
+  inset:12%;
+  border:3px solid var(--hint);
+  border-radius:50%;
+  background:transparent;
+  pointer-events:none;
+  z-index:5;
+}
 #cm-board.hints-active .square-highlight{box-shadow:inset 0 0 0 0 transparent}
 
-/* 13 - Sürükleme merkezleme + imleç --------------------------------------- */
-#cm-board .piece-417db.dragging-31d41[data-piece="wR"].rk-drag-center,#cm-board .piece-417db.dragging-31d41[data-piece="bR"].rk-drag-center{transform:translate(-50%,-50%)}
+/* Hints buton durumu */
+#cm-hints[aria-pressed="false"]{
+  opacity:.55;
+  filter:saturate(.2) contrast(.85) blur(.2px);
+}
+#cm-hints[aria-pressed="true"]{
+  opacity:1;
+  filter:none;
+}
+
+/* 11 - Sürükleme ve etkileşim --------------------------------------------- */
+#cm-board .piece-417db.dragging-31d41[data-piece="wR"].rk-drag-center,
+#cm-board .piece-417db.dragging-31d41[data-piece="bR"].rk-drag-center{
+  transform:translate(-50%,-50%);
+}
 #cm-board .piece-417db{cursor:default;transition:none}
 #cm-board .piece-417db:active{cursor:default}
-#cm-board .piece-417db[data-piece="bP"],#cm-board .piece-417db[data-piece="wP"]{pointer-events:none}
-#cm-board,#cm-board *{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+#cm-board .piece-417db[data-piece="bP"],
+#cm-board .piece-417db[data-piece="wP"]{pointer-events:none}
+#cm-board,#cm-board *{
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  user-select:none;
+}
 #cm-board img,#cm-board .piece-417db{-webkit-user-drag:none}
 
-/* 14 - İpuçları aç/kapa durumu -------------------------------------------- */
-#cm-hints[aria-pressed="false"]{opacity:.55;filter:saturate(.2) contrast(.85) blur(.2px)}
-#cm-hints[aria-pressed="true"]{opacity:1;filter:none}
+/* 12 - Geri sayım modalı -------------------------------------------------- */
+#rk-countdown-back{
+  display:none;
+  position:absolute;
+  inset:0;
+  z-index:9;
+  background:rgba(0,0,0,.35);
+  backdrop-filter:blur(.5px);
+  align-items:center;
+  justify-content:center;
+  will-change:opacity;
+}
 
-/* 15 - Seçim kutusu stilleri ---------------------------------------------- */
-.rk-sel,.cm-sel{-webkit-appearance:none;appearance:none;display:inline-flex;align-items:center;gap:6px;height:38px;padding:8px 12px;border-radius:12px;border:1px solid var(--line,#232831);background:var(--btn,#12151a);color:var(--txt,#e9edf1);font:700 14px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;transition:transform .06s ease,background var(--cm-dur,180ms) ease,box-shadow var(--cm-dur,180ms) ease,border-color var(--cm-dur,180ms) ease}
-.rk-sel:hover,.cm-sel:hover{background:var(--btn-hov,#171c23);transform:translateY(-1px)}
-.rk-sel:active,.cm-sel:active{transform:none}
-.rk-sel:focus,.cm-sel:focus{outline:none}
-.rk-sel:focus-visible,.cm-sel:focus-visible{outline:2px solid var(--focus,#3aa9ff);outline-offset:2px;box-shadow:0 0 0 3px rgba(58,169,255,.25)}
-.rk-sel option,.cm-sel option{color:inherit;background:var(--panel,#0f1216)}
-body.cm-theme-light .rk-sel,body.cm-theme-light .cm-sel{background:#FFFFFF;color:#0E1116;border-color:#D6DEE8;box-shadow:0 1px 2px rgba(16,24,40,.04)}
-body.cm-theme-light .rk-sel:hover,body.cm-theme-light .cm-sel:hover{background:#F5F7FA}
-body.cm-theme-light .rk-sel option,body.cm-theme-light .cm-sel option{color:#0E1116;background:#FFFFFF}
-body.cm-theme-dark .rk-sel option,body.cm-theme-dark .cm-sel option{color:#E9EDF1;background:#0F1216}
+#rk-countdown{
+  font-weight:900;
+  font-size:clamp(56px,12vw,120px);
+  color:var(--gold);
+  text-shadow:0 4px 30px rgba(0,0,0,.5);
+  line-height:1;
+}
 
-/* 16 - 3-2-1 geri sayım --------------------------------------------------- */
-#rk-countdown-back{display:none;position:absolute;inset:0;z-index:9;background:rgba(0,0,0,.35);backdrop-filter:blur(.5px);align-items:center;justify-content:center;will-change:opacity}
-#rk-countdown{font-weight:900;font-size:clamp(56px,12vw,120px);color:var(--gold,#ffd700);text-shadow:0 4px 30px rgba(0,0,0,.5);line-height:1}
+/* 13 - Sonuç modalı ------------------------------------------------------- */
+#rk-modal-back{
+  display:none;
+  position:absolute;
+  inset:0;
+  z-index:10000;
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(1px);
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  will-change:opacity;
+}
 
-/* 17 - Sonuç modalı ------------------------------------------------------- */
-#rk-modal-back{display:none;position:absolute;inset:0;z-index:10000;background:rgba(0,0,0,.45);backdrop-filter:blur(1px);align-items:center;justify-content:center;padding:16px;will-change:opacity}
-.rk-modal{position:relative;width:min(90vw,420px);border:1px solid var(--line,#232831);border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,.35);padding:22px 20px 18px 20px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.rk-modal-title{margin:0 0 8px 0;font:800 clamp(22px,3.2vw,28px)/1.25 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;text-align:center}
-.rk-modal-desc{margin:0 0 14px 0;font:700 clamp(16px,2.4vw,20px)/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;opacity:.98;text-align:center}
-.rk-modal-actions{display:flex;gap:10px;justify-content:center;width:100%}
-.rk-modal__close{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:8px;border:1px solid var(--line,#232831);background:var(--btn,#12151a);color:var(--txt,#e9edf1);font-size:16px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:transform .06s ease,background var(--cm-dur,180ms) ease,box-shadow var(--cm-dur,180ms) ease,border-color var(--cm-dur,180ms) ease}
-.rk-modal__close:hover{background:var(--btn-hov,#171c23);transform:translateY(-1px)}
-.rk-modal.is-locked .rk-modal__close{opacity:.55;cursor:not-allowed;pointer-events:none}
-body.cm-theme-light .rk-modal{background:#FFFFFF;color:#0E1116;border-color:#D6DEE8}
-body.cm-theme-dark .rk-modal{background:#0F1216;color:#E9EDF1;border-color:#232831}
-body.cm-theme-light .rk-modal-title,body.cm-theme-light .rk-modal-desc{color:#0E1116}
-body.cm-theme-dark .rk-modal-title,body.cm-theme-dark .rk-modal-desc{color:var(--gold,#ffd700)}
-.rk-modal .rk-btn:focus-visible{outline:2px solid var(--focus,#3aa9ff);outline-offset:2px}
+.rk-modal{
+  position:relative;
+  width:min(90vw,420px);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow:0 12px 36px rgba(0,0,0,.35);
+  padding:22px 20px 18px 20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  background:var(--panel);
+  color:var(--text);
+}
 
-/* 18 - Hareketi azalt ----------------------------------------------------- */
-@media (prefers-reduced-motion:reduce){#rk-countdown-back,#rk-modal-back{backdrop-filter:none}.rk-btn,.rk-sel,#rk-board,#rk-levels-inline .lvl,#rk-hud,.rk-timefill{transition:none;animation:none;scroll-behavior:auto}}
+.rk-modal-title{
+  margin:0 0 8px 0;
+  font:800 clamp(22px,3.2vw,28px)/1.25 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  text-align:center;
+}
 
-/* 19 - Global kilitler ---------------------------------------------------- */
-body.rk-modal-open,body.rk-count-open{overflow:hidden}
-@supports (overscroll-behavior:contain){body.rk-modal-open,body.rk-count-open{overscroll-behavior:contain}}
-body.rk-drag-lock{-ms-touch-action:none;touch-action:none;overscroll-behavior:contain}
+.rk-modal-desc{
+  margin:0 0 14px 0;
+  font:700 clamp(16px,2.4vw,20px)/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  opacity:.98;
+  text-align:center;
+}
 
-/* 20 - Sağ tık / uzun bas engelleme --------------------------------------- */
-html,body,.rk-wrap{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
-img{-webkit-user-drag:none}
-input,textarea,[contenteditable="true"]{-webkit-touch-callout:default;-webkit-user-select:text;user-select:text}
+.rk-modal-actions{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  width:100%;
+}
 
-/* 21 - Koç baloncuğu (avatar + balon) ------------------------------------ */
-.rk-coach{width:var(--rk-board-w);max-width:92vw;margin:4px auto 3px;display:flex;align-items:center;gap:10px;will-change:transform}
-.rk-coach__avatar{position:relative;overflow:hidden;width:clamp(44px,calc(var(--rk-board-w) * 0.11),84px);height:clamp(44px,calc(var(--rk-board-w) * 0.11),84px);flex:0 0 auto;border-radius:50%;background:center/cover no-repeat url('/wp-content/uploads/2025/08/avatar.png');box-shadow:0 2px 6px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.35);-webkit-backface-visibility:hidden;backface-visibility:hidden;transform:translateZ(0)}
-.rk-coach__img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%;image-rendering:auto;-webkit-backface-visibility:hidden;backface-visibility:hidden;transform:translateZ(0)}
-.rk-coach__bubble{flex:1 1 0;min-width:0;padding:10px 12px;border:1px solid var(--line,#232831);border-radius:12px;background:var(--rk-softbar-bg,rgba(0,0,0,.08));color:var(--txt,#e9edf1);box-shadow:0 2px 10px rgba(0,0,0,.08),inset 0 -1px 0 rgba(255,255,255,.06)}
-.rk-coach__title{margin:0 0 4px 0;font:800 clamp(10px,3.5vw,14px)/1.2 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--gold,#ffd700);text-align:center;white-space:nowrap}
-.rk-coach__desc{margin:0;font:600 clamp(8px,2.8vw,13px)/1.3 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;opacity:.96;text-align:center;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;max-height:calc(1.3em * 4)}
-.rk-coach .hl{color:var(--gold,#ffd700);font-weight:800}
-.rk-coach__hint{display:block;font-weight:600;font-size:inherit;line-height:inherit;opacity:.92;margin:4px 0 0 0}
-body.cm-theme-light .rk-coach__bubble{border-color:#D6DEE8;color:#0E1116;box-shadow:0 2px 10px rgba(16,24,40,.06),inset 0 -1px 0 rgba(255,255,255,.9)}
-body.cm-theme-dark .rk-coach__bubble{border-color:#232831;color:#E9EDF1}
+.rk-modal__close{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:32px;
+  height:32px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:var(--btn);
+  color:var(--text);
+  font-size:16px;
+  line-height:1;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform .06s ease,background var(--cm-dur) ease;
+}
+
+.rk-modal__close:hover{
+  background:var(--btn-border);
+  transform:translateY(-1px);
+}
+
+/* 14 - Koç baloncuğu ------------------------------------------------------- */
+.rk-coach{
+  width:var(--rk-board-w);
+  max-width:92vw;
+  margin:4px auto 3px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  will-change:transform;
+}
+
+.rk-coach__avatar{
+  position:relative;
+  overflow:hidden;
+  width:clamp(44px,calc(var(--rk-board-w) * 0.11),84px);
+  height:clamp(44px,calc(var(--rk-board-w) * 0.11),84px);
+  flex:0 0 auto;
+  border-radius:50%;
+  background:center/cover no-repeat url('/wp-content/uploads/2025/08/avatar.png');
+  box-shadow:0 2px 6px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.35);
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  transform:translateZ(0);
+}
+
+.rk-coach__bubble{
+  flex:1 1 0;
+  min-width:0;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--rk-softbar-bg);
+  color:var(--text);
+  box-shadow:0 2px 10px rgba(0,0,0,.08),inset 0 -1px 0 rgba(255,255,255,.06);
+}
+
+.rk-coach__title{
+  margin:0 0 4px 0;
+  font:800 clamp(10px,3.5vw,14px)/1.2 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--gold);
+  text-align:center;
+  white-space:nowrap;
+}
+
+.rk-coach__desc{
+  margin:0;
+  font:600 clamp(8px,2.8vw,13px)/1.3 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  opacity:.96;
+  text-align:center;
+  display:-webkit-box;
+  -webkit-line-clamp:4;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  max-height:calc(1.3em * 4);
+}
+
+.rk-coach .hl{color:var(--gold);font-weight:800}
 .rk-wrap.rk-has-coach .rk-title{display:none}
-@media (max-width:560px){.rk-coach{width:100%;margin:3px auto 2px}.rk-coach__title{font-size:13px}.rk-coach__desc{font-size:12px}.rk-coach__hint{font-size:11px}}
 
-/* 22 - Arka plan deseni ---------------------------------------------------- */
-:root{--bg-grad-top-dark:#0b0e12;--bg-grad-bot-dark:#0D0F12;--bg-grad-top-light:#F7F9FC;--bg-grad-bot-light:#FFFFFF;--bg-grad-top:var(--bg-grad-top-dark);--bg-grad-bot:var(--bg-grad-bot-dark);--pattern-size:40px;--pattern-dark:rgba(255,255,255,.02);--pattern-light:rgba(0,0,0,.025);--pattern-color:var(--pattern-dark);--bg-spot:rgba(0,0,0,0)}
-html.cm-theme-light,html:has(body.cm-theme-light){--bg-grad-top:var(--bg-grad-top-light);--bg-grad-bot:var(--bg-grad-bot-light);--pattern-color:var(--pattern-light);--pattern-size:40px;--bg-spot:rgba(255,255,255,.60)}
-html,body{background:transparent}
-html{position:relative;isolation:isolate}
-html::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(120% 70% at 50% 0%,var(--bg-spot) 0%,transparent 60%),linear-gradient(45deg,var(--pattern-color) 25%,transparent 25%),linear-gradient(-45deg,var(--pattern-color) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--pattern-color) 75%),linear-gradient(-45deg,transparent 75%,var(--pattern-color) 75%),linear-gradient(180deg,var(--bg-grad-top),var(--bg-grad-bot));background-size:100% 100%,var(--pattern-size) var(--pattern-size),var(--pattern-size) var(--pattern-size),var(--pattern-size) var(--pattern-size),var(--pattern-size) var(--pattern-size),auto;background-position:0 0,0 0,0 calc(var(--pattern-size)/2),calc(var(--pattern-size)/2) calc(-1 * var(--pattern-size)/2),calc(-1 * var(--pattern-size)/2) 0,0 0}
-@media (max-width:560px){html::before{background-image:linear-gradient(180deg,var(--bg-grad-top),var(--bg-grad-bot))}}
+/* 15 - Header/Footer (Koç Eğitimi uyumlu) -------------------------------- */
+.cm-container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 5%;
+}
 
-/* 23 - Header ve Footer - Koç Eğitimi Uyumlu ----------------------------- */
-.cm-container{max-width:1200px;margin:0 auto;padding:0 5%}
 .cm-nav{
-  background:color-mix(in oklab,var(--bg) 92%,transparent);
-  border:none !important;
-  box-shadow:none !important;
+  position: static; 
+  z-index:auto;
+  background: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  height: var(--hdr);
 }
+
+/* Grid ile ortalama: [boş] [brand] [menu] */
 .cm-nav-inner{
-  display:flex;justify-content:center;align-items:center;height:68px;
+  display:grid; 
+  align-items:center; 
+  height:68px;
+  grid-template-columns: 1fr auto 1fr;
 }
+
 .cm-brand{
-  display:flex;gap:12px;align-items:center;font-weight:800;color:var(--text);text-decoration:none;
+  display:flex; 
+  gap:12px; 
+  align-items:center; 
+  font-weight:800; 
+  color:var(--text); 
+  text-decoration:none;
+  grid-column:2; 
+  justify-self:center;
 }
+
 .cm-brand:hover{opacity:.95}
-.cm-logo-img{width:28px;height:28px;border-radius:6px;object-fit:cover;box-shadow:0 0 14px rgba(255,215,0,.25)}
-.cm-brand-text{letter-spacing:.2px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-.cm-footer{border-top:1px solid var(--line);background:var(--panel);margin-top:40px}
-.cm-footer .cm-container{padding:12px 5%}
-.cm-social{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:8px 0 12px}
-.cm-ico{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:60px;height:60px;border-radius:999px;background:var(--btn);
-  border:1px solid var(--btn-border);color:var(--text);text-decoration:none;
-  transition:transform .15s,box-shadow .2s,background .2s,border-color .2s
+
+.cm-logo-img{
+  width:32px;
+  height:32px;
+  border-radius:6px;
+  object-fit:cover;
+  box-shadow:0 0 14px rgba(255,215,0,.25);
 }
-.cm-ico svg{width:30px;height:30px;display:block}
-.cm-ico:hover{background:var(--gold);color:#000;border-color:transparent;transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.35)}
-.cm-copy{color:var(--muted);font-size:13px;margin:0;text-align:center}
-@media (max-width:560px){.cm-nav-inner{height:56px}.cm-brand{font-size:16px}.cm-logo-img{width:24px;height:24px}.cm-social{gap:8px}.cm-ico{width:48px;height:48px}.cm-ico svg{width:24px;height:24px}.cm-footer{margin-top:24px}}
+
+.cm-brand-text{
+  font-size: clamp(20px, 1.2rem + .4vw, 26px);
+  font-weight: 900;
+  letter-spacing: .2px;
+}
+
+.cm-menu{
+  display:flex; 
+  gap:12px; 
+  align-items:center; 
+  justify-self:end;
+}
+
+/* Footer */
+.cm-footer{
+  background: transparent !important;
+  border-top: 0 !important;
+  margin-top:0;
+  height: var(--ftr);
+  display: flex;
+  align-items: center;
+}
+
+.cm-footer .cm-container{
+  padding:12px 5%;
+}
+
+.cm-social{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin:8px 0 12px;
+}
+
+.cm-ico{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:48px;
+  height:48px;
+  border-radius:999px;
+  background:var(--btn);
+  border:1px solid var(--btn-border);
+  color:var(--text);
+  text-decoration:none;
+  transition:transform .15s, box-shadow .2s, background .2s, border-color .2s;
+}
+
+.cm-ico svg{
+  width:24px;
+  height:24px;
+  display:block;
+}
+
+.cm-ico:hover{
+  background:var(--gold);
+  color:#000;
+  border-color:transparent;
+  transform:translateY(-2px);
+  box-shadow:0 6px 16px rgba(0,0,0,.35);
+}
+
+.cm-copy{
+  color:var(--muted);
+  font-size:13px;
+  margin:0;
+  text-align:center;
+}
+
+/* 16 - Arka plan deseni (Koç Eğitimi uyumlu) ----------------------------- */
+:root{
+  --bg-grad-top-dark:#0b0e12;
+  --bg-grad-bot-dark:#0D0F12;
+  --bg-grad-top-light:#f7f9fc;
+  --bg-grad-bot-light:#ffffff;
+  --bg-grad-top: var(--bg-grad-top-dark);
+  --bg-grad-bot: var(--bg-grad-bot-dark);
+  --pattern-size: 40px;
+  --pattern-dark: rgba(255,255,255,.02);
+  --pattern-light: rgba(0,0,0,.025);
+  --pattern-color: var(--pattern-dark);
+}
+
+body.cm-theme-light,
+body.light, body.light-mode, .theme-light, [data-theme="light"], .cm-light, [data-theme="day"], .day, .day-mode{
+  --bg-grad-top: var(--bg-grad-top-light);
+  --bg-grad-bot: var(--bg-grad-bot-light);
+  --pattern-color: var(--pattern-light);
+}
+
+html, body{ background: transparent !important; }
+html{ position:relative; isolation:isolate; }
+
+html::before{
+  content:"";
+  position:fixed; 
+  inset:0;
+  z-index:-1; 
+  pointer-events:none;
+  background-image:
+    linear-gradient(45deg, var(--pattern-color) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--pattern-color) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--pattern-color) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--pattern-color) 75%),
+    linear-gradient(180deg, var(--bg-grad-top), var(--bg-grad-bot));
+  background-size:
+    var(--pattern-size) var(--pattern-size),
+    var(--pattern-size) var(--pattern-size),
+    var(--pattern-size) var(--pattern-size),
+    var(--pattern-size) var(--pattern-size),
+    auto;
+  background-position:
+    0 0,
+    0 calc(var(--pattern-size)/2),
+    calc(var(--pattern-size)/2) calc(-1 * var(--pattern-size)/2),
+    calc(-1 * var(--pattern-size)/2) 0,
+    0 0;
+}
+
+/* 17 - Tema uyumluluk ----------------------------------------------------- */
+body.cm-theme-light .rk-wrap{
+  background:var(--panel);
+  color:var(--text);
+  border-color:var(--line);
+}
+
+body.cm-theme-light .rk-btn,
+body.cm-theme-light .cm-btn{
+  background:var(--btn);
+  color:var(--text);
+  border-color:var(--btn-border);
+}
+
+body.cm-theme-light .rk-btn:hover,
+body.cm-theme-light .cm-btn:hover{
+  background:var(--btn-border);
+}
+
+body.cm-theme-light #rk-hud .hud-chip{
+  background:var(--btn);
+  color:var(--text);
+  border-color:var(--btn-border);
+}
+
+body.cm-theme-light #rk-levels-inline .lvl{
+  color:var(--text);
+  background:rgba(0,0,0,.06);
+}
+
+body.cm-theme-light #rk-levels-inline .lvl.done{
+  background:linear-gradient(180deg,#86efac,#34d399);
+  color:#053018;
+}
+
+body.cm-theme-light .rk-coach__bubble{
+  border-color:var(--line);
+  color:var(--text);
+}
+
+/* 18 - Responsive ve erişilebilirlik -------------------------------------- */
+@media (max-width:560px){
+  button.cm-btn, button.rk-btn, select.cm-sel{ height:44px; }
+  .rk-ctl-label{ font-size:12px; }
+  .rk-group--mode .rk-ctl-label{ font-size:11px; line-height:1.05; }
+  .cm-sel{ max-width:110px; font-size:12px; padding:0 8px; }
+  .rk-softbar{ width:100%; }
+  .rk-coach{ width:100%; margin:3px auto 2px; }
+  .cm-ico{ width:44px; height:44px; }
+  .cm-ico svg{ width:22px; height:22px; }
+}
+
+@media (min-width:1100px){ 
+  #cm-board{ width: clamp(520px, 68vmin, 720px); } 
+}
+
+/* Viewport support */
+@supports (height: 100svh){ :root{ --vh:100svh; } }
+@supports (height: 100dvh){ :root{ --vh:100dvh; } }
+
+/* Safe area */
+.rk-wrap{
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
+
+/* Contrast ve motion preference */
+@media (prefers-contrast: more){
+  :root{ --line:#AEB6C3; }
+  .rk-softbar, #rk-hud .hud-chip{ border-width:2px; }
+  .cm-btn, .rk-btn, .cm-ico, .cm-sel{ border-color:#AEB6C3; box-shadow:none; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .cm-btn, .rk-btn, .cm-ico, #cm-board, #rk-levels-inline .lvl, #rk-hud, .rk-timefill{ 
+    transition:none !important; 
+    animation:none;
+    scroll-behavior:auto;
+  }
+  #rk-countdown-back, #rk-modal-back{ backdrop-filter:none; }
+}
+
+/* Focus visible */
+.cm-btn:focus{ outline:none; }
+.cm-btn:focus-visible,
+.rk-btn:focus-visible,
+.cm-sel:focus-visible,
+.cm-ico:focus-visible{
+  outline:2px solid var(--focus);
+  outline-offset:2px;
+}
+
+/* Global kilitler */
+body.rk-modal-open, body.rk-count-open{ overflow:hidden; }
+@supports (overscroll-behavior:contain){
+  body.rk-modal-open, body.rk-count-open{ overscroll-behavior:contain; }
+}
+body.rk-drag-lock{
+  -ms-touch-action:none;
+  touch-action:none;
+  overscroll-behavior:contain;
+}
+
+/* Touch callout */
+html, body, .rk-wrap{
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  user-select:none;
+}
+img{ -webkit-user-drag:none; }
+input, textarea, [contenteditable="true"]{
+  -webkit-touch-callout:default;
+  -webkit-user-select:text;
+  user-select:text;
+}
+
+/* Touch action */
+@media (hover:none) and (pointer:coarse){
+  .rk-wrap, .cm-btn, .rk-btn, .cm-sel{ touch-action: manipulation; }
+  a, button, .cm-sel{ -webkit-tap-highlight-color: rgba(0,0,0,0); }
+}
 
 /* Bölüm sonu --------------------------------------------------------------- */
