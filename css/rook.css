@@ -1,4 +1,4 @@
-/* rook.css — v44 (Header/Footer uyumlu) */
+/* rook.css — v45 (Header/Footer uyumlu) */
 
 /* 1 - CSS Variables (Koç Eğitimi uyumlu sistem) -------------------------- */
 :root{
@@ -823,14 +823,81 @@ body.cm-theme-light .rk-coach__bubble{
 
 /* 18 - Responsive ve erişilebilirlik -------------------------------------- */
 @media (max-width:560px){
-  button.cm-btn, button.rk-btn, select.cm-sel{ height:44px; }
-  .rk-ctl-label{ font-size:12px; }
-  .rk-group--mode .rk-ctl-label{ font-size:11px; line-height:1.05; }
-  .cm-sel{ max-width:110px; font-size:12px; padding:0 8px; }
-  .rk-softbar{ width:100%; }
-  .rk-coach{ width:100%; margin:3px auto 2px; }
-  .cm-ico{ width:44px; height:44px; }
-  .cm-ico svg{ width:22px; height:22px; }
+  /* Buton boyutları artırıldı */
+  button.cm-btn, button.rk-btn, select.cm-sel{ 
+    height:44px; 
+    min-height:44px;
+  }
+  
+  /* Label boyutları küçültüldü */
+  .rk-ctl-label, .cm-toolbar label{ 
+    font-size:12px; 
+  }
+  
+  /* Grup düzeni mobilde */
+  .rk-group--mode .rk-ctl-label{ 
+    font-size:11px; 
+    line-height:1.05; 
+  }
+  
+  /* Select kutuları mobilde */
+  .cm-sel{ 
+    max-width:110px; 
+    font-size:12px; 
+    padding:0 8px; 
+  }
+  
+  /* Toolbar mobil düzeni - DÜZELTME */
+  .rk-toolbar--top{
+    flex-wrap:wrap; /* Mobilde sarmalama aktif */
+    justify-content:center;
+    gap:8px;
+  }
+  
+  .rk-toolbar--bottom{
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+  }
+  
+  /* Grup margin'leri mobilde sıfırla */
+  .rk-group--mode{
+    margin-left:0;
+  }
+  
+  .rk-group--start{
+    margin-left:0;
+  }
+  
+  /* Softbar genişliği */
+  .rk-softbar{ 
+    width:100%; 
+  }
+  
+  /* Coach baloncuğu */
+  .rk-coach{ 
+    width:100%; 
+    margin:3px auto 2px; 
+  }
+  
+  /* Footer ikonları */
+  .cm-ico{ 
+    width:44px; 
+    height:44px; 
+  }
+  
+  .cm-ico svg{ 
+    width:22px; 
+    height:22px; 
+  }
+}
+
+/* Orta ekran düzeni */
+@media (max-width:768px) and (min-width:561px){
+  .rk-toolbar--top{
+    flex-wrap:wrap;
+    justify-content:center;
+  }
 }
 
 @media (min-width:1100px){ 
