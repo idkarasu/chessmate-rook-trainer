@@ -1,4 +1,4 @@
-/* rook.core.js – v52 */
+/* rook.core.js – v53 */
 
 (function(window,document){'use strict';
 
@@ -253,8 +253,6 @@ initBoard(){
       return true
     },
     onDrop(source,target){
-      console.log('🔍 DROP DEBUG:', {source, target, rookSq: self.st.rookSq});
-      
       self._clearDragCenter();
       self.clearHints();
       if(source===target){return 'snapback'}
