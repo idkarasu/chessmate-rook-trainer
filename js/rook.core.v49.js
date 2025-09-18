@@ -1,4 +1,4 @@
-/* rook.core.js – v48 */
+/* rook.core.js – v49 */
 
 (function(window,document){'use strict';
 
@@ -254,10 +254,11 @@ initBoard(){
       return true
     },
     onDrop(source,target){
+      console.log('🔍 DROP DEBUG:', {source, target, rookSq: self.st.rookSq});
+      
       self._clearDragCenter();
       self.clearHints();
       if(source===target){return 'snapback'}
-      if(target===self.st.rookSq){return 'snapback'}
       if(!self.pathClear(source,target)){return 'snapback'}
       
       // SES HEMEN ÇALSIN (mobil gecikme önleme)
