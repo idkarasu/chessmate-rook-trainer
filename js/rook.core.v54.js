@@ -1,4 +1,4 @@
-/* rook.core.js – v53 */
+/* rook.core.js – v54 */
 
 (function(window,document){'use strict';
 
@@ -279,8 +279,8 @@ initBoard(){
       self._disableTouchLock();
       self._clearDragCenter();
       
-      // ✅ FİX: Board pozisyonunu animasyon sonrası güncelle
-      self.st.board.position(self.makePosition());
+      // ✅ FİX: Ghost piece önlemek için animasyonsuz güncelle
+      self.st.board.position(self.makePosition(), false);
     }
   });
 
