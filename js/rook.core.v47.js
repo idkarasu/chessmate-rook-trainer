@@ -1,4 +1,4 @@
-/* rook.core.js – v46 */
+/* rook.core.js – v47 */
 
 (function(window,document){'use strict';
 
@@ -216,14 +216,14 @@ _disableTouchLock(){
 initBoard(){
   const self=this;
   this.st.board=Chessboard('cm-board',{
-    position:this.makePosition(),
-    pieceTheme:this.pieceTheme.bind(this),
-    draggable:true,
-    moveSpeed:0,
-    snapSpeed:0,
-    snapbackSpeed:0,
-    appearSpeed:0,
-    onDragStart(source,piece){
+     position:this.makePosition(),
+     pieceTheme:this.pieceTheme.bind(this),
+     draggable:true,
+     moveSpeed:200,      // ✅ 0 → 200
+     snapSpeed:50,       // ✅ 0 → 50
+     snapbackSpeed:500,  // ✅ 0 → 500
+     appearSpeed:200,    // ✅ 0 → 200
+     onDragStart(source,piece){
       if(piece!==self.st.rookPiece)return false;
       if(!self.st.playing)self.updateInfo("Önce Start'a basın.");
       
