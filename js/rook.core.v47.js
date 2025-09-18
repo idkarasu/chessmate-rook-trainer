@@ -1,4 +1,4 @@
-/* rook.core.js – v47 */
+/* rook.core.js – v48 */
 
 (function(window,document){'use strict';
 
@@ -188,42 +188,19 @@ toggleSound(){
 },
 
 /* 14 - Tahta kurulumu ----------------------------------------------------- */
-_dragRookEl(){
-  const code=this.st.rookPiece;
-  return document.querySelector(`#cm-board .piece-417db.dragging-31d41[data-piece="${code}"]`)
-},
-_clearDragCenter(){
-  document.querySelectorAll('#cm-board .piece-417db.rk-drag-center').forEach(el=>el.classList.remove('rk-drag-center'))
-},
-_touchLockHandler:null,
-_touchLocked:false,
-_enableTouchLock(){
-  if(this._touchLocked)return;
-  this._touchLocked=true;
-  this._touchLockHandler=(e)=>{if(e?.cancelable)e.preventDefault()};
-  this._addTrackedListener(window,'touchmove',this._touchLockHandler,{passive:false});
-  document.body.classList.add('rk-drag-lock')
-},
-_disableTouchLock(){
-  if(!this._touchLocked)return;
-  this._touchLocked=false;
-  if(this._touchLockHandler){
-    window.removeEventListener('touchmove',this._touchLockHandler,{passive:false})
-  }
-  this._touchLockHandler=null;
-  document.body.classList.remove('rk-drag-lock')
-},
 initBoard(){
   const self=this;
+  let afterSnap=null, snapGuard=null;  // ✅ KOÇTAN: afterSnap pattern
+  
   this.st.board=Chessboard('cm-board',{
-     position:this.makePosition(),
-     pieceTheme:this.pieceTheme.bind(this),
-     draggable:true,
-     moveSpeed:200,      // ✅ 0 → 200
-     snapSpeed:50,       // ✅ 0 → 50
-     snapbackSpeed:500,  // ✅ 0 → 500
-     appearSpeed:200,    // ✅ 0 → 200
-     onDragStart(source,piece){
+    position:this.makePosition(),
+    pieceTheme:this.pieceTheme.bind(this),
+    draggable:true,
+    moveSpeed:200,      // ✅ KOÇTAN: 0→200 (taş hareketi animasyonu)
+    snapSpeed:50,       // ✅ KOÇTAN: 0→50 (bırakma animasyonu)
+    snapbackSpeed:500,  // ✅ KOÇTAN: 0→500 (geri dönüş animasyonu)
+    appearSpeed:200,    // ✅ KOÇTAN: 0→200 (ortaya çıkma animasyonu)
+    onDragStart(source,piece){
       if(piece!==self.st.rookPiece)return false;
       if(!self.st.playing)self.updateInfo("Önce Start'a basın.");
       
@@ -266,23 +243,43 @@ initBoard(){
         self.playMove(); // SES ÖNCELİKLE
       }
       
-      // Sonra oyun mantığı
+      // ✅ KOÇTAN: Oyun mantığını afterSnap'e taşı - ÇİFTE ANİMASYONU ÖNLE
       self.st.rookSq=target;
       if(captured){
         self.st.score++;
         emit('rk:score',{score:self.st.score});
         if(self.modes?.onCapture){self.modes.onCapture(self,target)}
-        self.draw();
-        self.updateInfo('Harika! Skor +1')
-      }else{
-        self.draw();
       }
+      
+      // ✅ KOÇTAN: afterSnap pattern ile tek animasyon
+      afterSnap=()=>{
+        if(captured){
+          self.updateInfo('Harika! Skor +1')
+        }
+        // Pozisyon güncelleme onSnapEnd'de olacak
+      };
+      
+      // ✅ KOÇTAN: Guard timer
+      clearTimeout(snapGuard);
+      snapGuard=setTimeout(()=>{
+        if(afterSnap){
+          self.st.board.position(self.makePosition());
+          const fn=afterSnap;
+          afterSnap=null;
+          try{ fn(); }catch(_){}
+        }
+      },180);
     },
     onSnapEnd(){
       self._disableTouchLock();
       self._clearDragCenter();
-      self.st.board.position(self.makePosition())
-      // Ses burada TEKRAR çalmasın (zaten onDrop'ta çaldı)
+      
+      // ✅ KOÇTAN: afterSnap pattern ile tek sefer animasyon
+      clearTimeout(snapGuard);
+      self.st.board.position(self.makePosition());
+      if(afterSnap){
+        try{ afterSnap(); }finally{ afterSnap=null; }
+      }
     }
   });
 
