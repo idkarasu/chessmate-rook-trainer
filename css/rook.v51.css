@@ -1,4 +1,4 @@
-/* rook.css — v50 (Header/Footer uyumlu) */
+/* rook.css — v51 (Header/Footer uyumlu) */
 
 /* 1 - CSS Variables (Koç Eğitimi uyumlu sistem) -------------------------- */
 :root{
@@ -81,7 +81,7 @@ body{
 .rk-title{font-weight:800;font-size:18px;margin:0}
 .rk-grid{display:grid;grid-template-columns:1fr;justify-items:center}
 
-/* 3 - Araç çubuğu (Koç Eğitimi tarzı 2-satır) ---------------------------- */
+/* 3 - Araç çubuğu (Tek satır düzeni) ---------------------------------------- */
 .cm-toolbar{
   display:block;
   -webkit-user-select:none; 
@@ -106,6 +106,7 @@ body{
   padding:3px 4px;
 }
 
+/* ESKİ: İki satır düzeni (eski sürümlerle uyumluluk için korundu) */
 .rk-toolbar--top{ 
   margin-bottom:6px; 
   flex-wrap:nowrap;
@@ -117,6 +118,18 @@ body{
   flex-wrap:wrap;
 }
 
+/* YENİ: Tek satır düzeni */
+.rk-toolbar--single{
+  display:flex; 
+  flex-wrap:wrap; 
+  align-items:center; 
+  justify-content:center;
+  gap:clamp(8px, 1.5vw, 12px);
+  padding:6px 8px;
+  margin:0;
+  min-width:0;
+}
+
 /* Grup düzeni */
 .rk-group{
   display:inline-flex;
@@ -126,6 +139,7 @@ body{
   min-width:0;
 }
 
+/* ESKİ: İki satır düzenindeki margin'ler */
 .rk-group--mode{
   margin-left:6px;
 }
@@ -134,9 +148,20 @@ body{
   margin-left:8px;
 }
 
+/* YENİ: Tek satır düzeninde margin'leri kaldır */
+.rk-toolbar--single .rk-group--mode,
+.rk-toolbar--single .rk-group--start{
+  margin-left:0;
+}
+
 .rk-group--icons{
   display:inline-flex;
   gap:8px;
+}
+
+/* Tek satır düzeninde icon gap'i azalt */
+.rk-toolbar--single .rk-group--icons{
+  gap:6px;
 }
 
 /* Label ve kontrol stilleri */
