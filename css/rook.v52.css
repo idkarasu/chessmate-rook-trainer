@@ -1,4 +1,4 @@
-/* rook.css — v51 (Header/Footer uyumlu) */
+/* rook.css — v52 (Header/Footer uyumlu) */
 
 /* 1 - CSS Variables (Koç Eğitimi uyumlu sistem) -------------------------- */
 :root{
@@ -120,13 +120,14 @@ body{
 
 /* YENİ: Tek satır düzeni */
 .rk-toolbar--single{
-  display:flex; 
-  flex-wrap:wrap; 
-  align-items:center; 
-  justify-content:center;
-  gap:clamp(8px, 1.5vw, 12px);
-  padding:6px 8px;
-  margin:0;
+  display:flex !important; 
+  flex-direction:row !important;
+  flex-wrap:wrap !important; 
+  align-items:center !important; 
+  justify-content:center !important;
+  gap:clamp(8px, 1.5vw, 12px) !important;
+  padding:6px 8px !important;
+  margin:0 !important;
   min-width:0;
 }
 
@@ -151,7 +152,10 @@ body{
 /* YENİ: Tek satır düzeninde margin'leri kaldır */
 .rk-toolbar--single .rk-group--mode,
 .rk-toolbar--single .rk-group--start{
-  margin-left:0;
+  margin-left:0 !important;
+  margin-right:0 !important;
+  margin-top:0 !important;
+  margin-bottom:0 !important;
 }
 
 .rk-group--icons{
@@ -161,7 +165,7 @@ body{
 
 /* Tek satır düzeninde icon gap'i azalt */
 .rk-toolbar--single .rk-group--icons{
-  gap:6px;
+  gap:6px !important;
 }
 
 /* Label ve kontrol stilleri */
@@ -172,6 +176,46 @@ body{
   text-transform:uppercase; 
   letter-spacing:.2px;
   align-self:center;
+}
+
+/* Responsive düzenlemeler */
+@media (max-width:768px){
+  .rk-toolbar--single{
+    flex-wrap:wrap !important;
+    gap:8px !important;
+    justify-content:center !important;
+  }
+  
+  .rk-toolbar--single .rk-group{
+    margin:0 !important;
+  }
+  
+  .rk-toolbar--single .rk-ctl-label{
+    font-size:11px;
+  }
+  
+  .rk-toolbar--single .cm-sel{
+    max-width:100px;
+    font-size:11px;
+  }
+}
+
+@media (max-width:560px){
+  .rk-toolbar--single{
+    gap:6px !important;
+    padding:4px 6px !important;
+  }
+  
+  .rk-toolbar--single .rk-btn--icon{
+    width:36px;
+    height:36px;
+    font-size:16px;
+  }
+  
+  .rk-toolbar--single #rk-start{
+    padding:0 10px;
+    font-size:11px;
+  }
 }
 
 /* 4 - Butonlar ve seçim kutuları ------------------------------------------ */
