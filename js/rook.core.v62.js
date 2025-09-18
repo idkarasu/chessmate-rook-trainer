@@ -1,4 +1,4 @@
-/* rook.core.js – v61 */
+/* rook.core.js – v62 */
 
 (function(window,document){'use strict';
 
@@ -300,30 +300,91 @@ initBoard(){
     }
   });
 
-  // ✅ YENİ: Hibrit Click-to-Move sistemi (drag ile uyumlu)
+  // ✅ YENİ: İyileştirilmiş Click-to-Move sistemi
   const host=this.boardEl();
   if(host){
-    this._addTrackedListener(host,'mouseup',(e)=>{
-      // ✅ ÖNEMLİ: Drag sırasında click-to-move çalışmasın
-      if(_isDragging) return;
-      
-      // ✅ ÖNEMLİ: Hızlı tıklamalar için zaman kontrolü  
-      const now = performance.now();
-      if(now - _dragStartTime < 150) return; // 150ms içinde drag başlamışsa skip
+    // Click detection için değişkenler
+    let _mouseDownSquare = null;
+    let _mouseDownTime = 0;
+    let _hasMouseMoved = false;
+    
+    // Mouse down - click başlangıcını kaydet
+    this._addTrackedListener(host,'mousedown',(e)=>{
+      _hasMouseMoved = false;
+      _mouseDownTime = performance.now();
       
       const target=e.target;
-      if(!target)return;
+      if(!target) {
+        _mouseDownSquare = null;
+        return;
+      }
       
       // Kare elementini bul
       let squareEl=target.closest('[class*="square-"]');
-      if(!squareEl)return;
+      if(!squareEl) {
+        _mouseDownSquare = null;
+        return;
+      }
       
       // Kare adını çıkar
       const match=squareEl.className.match(/square-([a-h][1-8])/);
-      if(!match)return;
+      if(!match) {
+        _mouseDownSquare = null;
+        return;
+      }
       
-      const square=match[1];
-      self.onSquareClick(square);
+      _mouseDownSquare = match[1];
+    },{passive:true});
+    
+    // Mouse move - hareket algılama
+    this._addTrackedListener(host,'mousemove',(e)=>{
+      if(_mouseDownSquare) {
+        _hasMouseMoved = true;
+      }
+    },{passive:true});
+    
+    // Mouse up - click tamamlama
+    this._addTrackedListener(host,'mouseup',(e)=>{
+      // Drag sırasında click çalışmasın
+      if(_isDragging) {
+        _mouseDownSquare = null;
+        return;
+      }
+      
+      // Mouse hareket ettiyse click değil
+      if(_hasMouseMoved) {
+        _mouseDownSquare = null;
+        return;
+      }
+      
+      // Çok hızlı tıklamalar için zaman kontrolü
+      const now = performance.now();
+      if(now - _dragStartTime < 100) {
+        _mouseDownSquare = null;
+        return;
+      }
+      
+      // Çok yavaş tıklamalar (300ms+) için kontrol
+      if(now - _mouseDownTime > 300) {
+        _mouseDownSquare = null;
+        return;
+      }
+      
+      // Geçerli click - square kontrolü
+      if(_mouseDownSquare) {
+        const target=e.target;
+        if(target) {
+          let squareEl=target.closest('[class*="square-"]');
+          if(squareEl) {
+            const match=squareEl.className.match(/square-([a-h][1-8])/);
+            if(match && match[1] === _mouseDownSquare) {
+              // ✅ GEÇERLİ CLICK - click-to-move çalıştır
+              self.onSquareClick(_mouseDownSquare);
+            }
+          }
+        }
+        _mouseDownSquare = null;
+      }
     },{passive:true});
   }
 
