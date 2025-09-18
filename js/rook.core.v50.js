@@ -1,4 +1,4 @@
-/* rook.core.js – v49 */
+/* rook.core.js – v50 */
 
 (function(window,document){'use strict';
 
@@ -215,7 +215,6 @@ _disableTouchLock(){
 },
 initBoard(){
   const self=this;
-  let afterSnap=null, snapGuard=null;  // ✅ KOÇTAN: afterSnap pattern
   
   this.st.board=Chessboard('cm-board',{
     position:this.makePosition(),
@@ -269,43 +268,23 @@ initBoard(){
         self.playMove(); // SES ÖNCELİKLE
       }
       
-      // ✅ KOÇTAN: Oyun mantığını afterSnap'e taşı - ÇİFTE ANİMASYONU ÖNLE
+      // ✅ FİX: Pozisyon güncelleme HEMEN YAP
       self.st.rookSq=target;
       if(captured){
         self.st.score++;
         emit('rk:score',{score:self.st.score});
         if(self.modes?.onCapture){self.modes.onCapture(self,target)}
+        self.updateInfo('Harika! Skor +1')
       }
       
-      // ✅ KOÇTAN: afterSnap pattern ile tek animasyon
-      afterSnap=()=>{
-        if(captured){
-          self.updateInfo('Harika! Skor +1')
-        }
-        // Pozisyon güncelleme onSnapEnd'de olacak
-      };
+      // ✅ FİX: Board pozisyonunu HEMEN güncelle
+      self.st.board.position(self.makePosition());
       
-      // ✅ KOÇTAN: Guard timer
-      clearTimeout(snapGuard);
-      snapGuard=setTimeout(()=>{
-        if(afterSnap){
-          self.st.board.position(self.makePosition());
-          const fn=afterSnap;
-          afterSnap=null;
-          try{ fn(); }catch(_){}
-        }
-      },180);
+      return 'snapback'; // ✅ FİX: ChessBoard animasyonunu engelle
     },
     onSnapEnd(){
       self._disableTouchLock();
       self._clearDragCenter();
-      
-      // ✅ KOÇTAN: afterSnap pattern ile tek sefer animasyon
-      clearTimeout(snapGuard);
-      self.st.board.position(self.makePosition());
-      if(afterSnap){
-        try{ afterSnap(); }finally{ afterSnap=null; }
-      }
     }
   });
 
