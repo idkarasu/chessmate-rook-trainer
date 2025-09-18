@@ -1,4 +1,4 @@
-/* rook.core.js – v58 */
+/* rook.core.js – v59 */
 
 (function(window,document){'use strict';
 
@@ -290,7 +290,8 @@ initBoard(){
   // ✅ CLICK-TO-MOVE: Kare tıklama event listener'ı ekle
   const host=this.boardEl();
   if(host){
-    this._addTrackedListener(host,'click',(e)=>{
+    this._addTrackedListener(host,'mousedown',(e)=>{
+      // Click-to-move için mousedown kullan (drag'dan önce çalışır)
       const target=e.target;
       if(!target)return;
       
@@ -303,8 +304,14 @@ initBoard(){
       if(!match)return;
       
       const square=match[1];
-      self.onSquareClick(square);
-    },{passive:true});
+      
+      // Click-to-move seçim varsa, drag'ı engelle
+      if(self._selectedSquare || square === self.st.rookSq){
+        e.preventDefault(); // Drag'ı engelle
+        e.stopPropagation(); // Event bubbling'i durdur
+        self.onSquareClick(square);
+      }
+    },{passive:false}); // passive: false çünkü preventDefault kullanıyoruz
   }
 
   const doResize=()=>{if(self.st.board)self.st.board.resize()};
