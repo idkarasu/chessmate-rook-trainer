@@ -1,4 +1,4 @@
-/* rook.core.js – v59 */
+/* rook.core.js – v60 */
 
 (function(window,document){'use strict';
 
@@ -188,110 +188,26 @@ toggleSound(){
 },
 
 /* 14 - Tahta kurulumu ----------------------------------------------------- */
-_dragRookEl(){
-  const code=this.st.rookPiece;
-  return document.querySelector(`#cm-board .piece-417db.dragging-31d41[data-piece="${code}"]`)
-},
-_clearDragCenter(){
-  document.querySelectorAll('#cm-board .piece-417db.rk-drag-center').forEach(el=>el.classList.remove('rk-drag-center'))
-},
-_touchLockHandler:null,
-_touchLocked:false,
-_enableTouchLock(){
-  if(this._touchLocked)return;
-  this._touchLocked=true;
-  this._touchLockHandler=(e)=>{if(e?.cancelable)e.preventDefault()};
-  this._addTrackedListener(window,'touchmove',this._touchLockHandler,{passive:false});
-  document.body.classList.add('rk-drag-lock')
-},
-_disableTouchLock(){
-  if(!this._touchLocked)return;
-  this._touchLocked=false;
-  if(this._touchLockHandler){
-    window.removeEventListener('touchmove',this._touchLockHandler,{passive:false})
-  }
-  this._touchLockHandler=null;
-  document.body.classList.remove('rk-drag-lock')
-},
 initBoard(){
   const self=this;
   
   this.st.board=Chessboard('cm-board',{
     position:this.makePosition(),
     pieceTheme:this.pieceTheme.bind(this),
-    draggable:true,
-    moveSpeed:200,      // ✅ KOÇTAN: 0→200 (taş hareketi animasyonu)
-    snapSpeed:50,       // ✅ KOÇTAN: 0→50 (bırakma animasyonu)
-    snapbackSpeed:500,  // ✅ KOÇTAN: 0→500 (geri dönüş animasyonu)
-    appearSpeed:200,    // ✅ KOÇTAN: 0→200 (ortaya çıkma animasyonu)
-    onDragStart(source,piece){
-      // ✅ CLICK-TO-MOVE: Drag başlarken seçimi temizle
-      self.clearSelection();
-      
-      if(piece!==self.st.rookPiece)return false;
-      if(!self.st.playing)self.updateInfo("Önce Start'a basın.");
-      
-      // Audio hazırlığı (gecikme önleme)
-      if(self.audio&&!self.audio.initialized){
-        try{
-          const AudioContext=window.AudioContext||window.webkitAudioContext;
-          if(AudioContext&&self.audio.audioCtx&&self.audio.audioCtx.state==='suspended'){
-            self.audio.audioCtx.resume();
-          }
-        }catch(_){}
-      }
-      
-      self.showHintsFor(source);
-      self._enableTouchLock();
-      let tries=0;
-      (function waitDrag(){
-        const el=self._dragRookEl();
-        if(el){
-          self._clearDragCenter();
-          el.classList.add('rk-drag-center')
-        }else if(++tries<6){
-          requestAnimationFrame(waitDrag)
-        }
-      })();
-      return true
-    },
-    onDrop(source,target){
-      self._clearDragCenter();
-      self.clearHints();
-      if(source===target){return 'snapback'}
-      if(!self.pathClear(source,target)){return 'snapback'}
-      
-      // SES HEMEN ÇALSIN (mobil gecikme önleme)
-      const captured=self.st.pawns.includes(target);
-      if(captured){
-        self.playCapture(); // SES ÖNCELİKLE
-      }else{
-        self.playMove(); // SES ÖNCELİKLE
-      }
-      
-      // ✅ FİX: Pozisyon güncelleme HEMEN YAP
-      self.st.rookSq=target;
-      if(captured){
-        self.st.score++;
-        emit('rk:score',{score:self.st.score});
-        if(self.modes?.onCapture){self.modes.onCapture(self,target)}
-        self.updateInfo('Harika! Skor +1')
-      }
-    },
-    onSnapEnd(){
-      self._disableTouchLock();
-      self._clearDragCenter();
-      
-      // ✅ FİX: Ghost piece önlemek için animasyonsuz güncelle
-      self.st.board.position(self.makePosition(), false);
-    }
+    draggable:false,      // ✅ DEĞİŞİKLİK: true → false (drag devre dışı)
+    dropOffBoard:'ignore', // ✅ EKLENDİ: Drop handling'i devre dışı
+    moveSpeed:200,        // ✅ KORUNDU: Animasyonlar aktif
+    snapSpeed:50,       
+    snapbackSpeed:500,  
+    appearSpeed:200    
+    // ✅ ÇIKARILDI: onDragStart, onDrop, onSnapEnd fonksiyonları tamamen kaldırıldı
   });
 
-  // ✅ CLICK-TO-MOVE: Kare tıklama event listener'ı ekle
+  // ✅ DEĞİŞİKLİK: Click-to-move event handling'i iyileştir
   const host=this.boardEl();
   if(host){
-    this._addTrackedListener(host,'mousedown',(e)=>{
-      // Click-to-move için mousedown kullan (drag'dan önce çalışır)
+    // ✅ YENİ: Sadece click event'i kullan (drag sistemi yok artık)
+    this._addTrackedListener(host,'click',(e)=>{
       const target=e.target;
       if(!target)return;
       
@@ -304,16 +220,11 @@ initBoard(){
       if(!match)return;
       
       const square=match[1];
-      
-      // Click-to-move seçim varsa, drag'ı engelle
-      if(self._selectedSquare || square === self.st.rookSq){
-        e.preventDefault(); // Drag'ı engelle
-        e.stopPropagation(); // Event bubbling'i durdur
-        self.onSquareClick(square);
-      }
-    },{passive:false}); // passive: false çünkü preventDefault kullanıyoruz
+      self.onSquareClick(square);
+    },{passive:true}); // ✅ DEĞİŞİKLİK: passive: true (preventDefault gereksiz artık)
   }
 
+  // ✅ KORUNDU: Resize handling sistemi
   const doResize=()=>{if(self.st.board)self.st.board.resize()};
   if(host){
     if('ResizeObserver'in window){
