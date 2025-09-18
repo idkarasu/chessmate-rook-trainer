@@ -21,37 +21,35 @@
 
 <!-- 1 - Stil dosyaları -->
 <link rel="stylesheet" href="/wp-content/uploads/chess/libs/chessboard-1.0.0.min.css">
-<link rel="stylesheet" href="/wp-content/uploads/rook/rook.css?v=rook.css-50">
+<link rel="stylesheet" href="/wp-content/uploads/rook/rook.css?v=rook.css-51">
 <link rel="stylesheet" href="/wp-content/uploads/rook/rook.theme.css?v=rook.theme.css-40">
 
 <!-- 2 - Uygulama kapsayıcısı -->
 <main class="rk-wrap cm-wrap" id="cm-app" role="main" aria-label="Rook Trainer" data-avatar="/wp-content/uploads/2025/08/avatar.png">
 <div class="rk-head">
 <div class="cm-toolbar rk-toolbar-wrap" role="toolbar" aria-label="Oyun Kontrolleri">
-<div class="rk-toolbar rk-toolbar--top" role="toolbar" aria-label="Üst toolbar">
+<div class="rk-toolbar rk-toolbar--single" role="toolbar" aria-label="Oyun toolbar">
 <div class="rk-group rk-group--side" aria-label="Taraf">
-<label for="rk-side-select" class="rk-ctl-label" style="margin-right:8px;font-weight:700;">Taraf:</label>
+<label for="rk-side-select" class="rk-ctl-label">Taraf:</label>
 <select id="rk-side-select" class="cm-sel" aria-label="Taraf">
 <option value="white">Beyaz</option>
 <option value="black">Siyah</option>
 </select>
 </div>
-<div class="rk-group rk-group--mode" aria-label="Oyun Modu" style="margin-left:6px;">
-<label for="rk-mode-select" class="rk-ctl-label" style="margin-right:8px;font-weight:700;">Oyun Modu:</label>
+<div class="rk-group rk-group--mode" aria-label="Oyun Modu">
+<label for="rk-mode-select" class="rk-ctl-label">Oyun Modu:</label>
 <select id="rk-mode-select" class="cm-sel" aria-label="Oyun Modu">
 <option value="timed">⏱️ Zamana Karşı</option>
 <option value="levels">🌊 Sekiz Dalga</option>
 </select>
 </div>
-<div class="rk-group rk-group--start" style="margin-left:8px;">
+<div class="rk-group rk-group--start">
 <button id="rk-start" class="cm-btn rk-btn rk-btn--primary" type="button">▶ Start</button>
 </div>
-</div>
-<div class="rk-toolbar rk-toolbar--bottom" role="toolbar" aria-label="Alt toolbar">
-<div class="rk-group rk-group--icons" style="display:inline-flex;gap:8px;">
+<div class="rk-group rk-group--icons">
 <button id="cm-hints" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="true" title="Hamle ipuçları">🎯</button>
-<button id="cm-sound-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="true" title="Sesi aç/kapat">🔊</button>
 <button id="cm-board-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-label="Tahtayı değiştir">♟️</button>
+<button id="cm-sound-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="true" title="Sesi aç/kapat">🔊</button>
 <button id="cm-theme-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="false" title="Tema değiştir">🌙</button>
 </div>
 </div>
@@ -72,10 +70,10 @@
 <!-- Chrome enjeksiyonu kapat (header/footer HTML'de) -->
 <script>window.CM_NO_CHROME = true;</script>
 
-<script src="/wp-content/uploads/rook/rook.core.js?v=57"></script>
+<script src="/wp-content/uploads/rook/rook.core.js?v=63"></script>
 <script src="/wp-content/uploads/rook/rook.modes.js?v=40"></script>
 <script src="/wp-content/uploads/rook/rook.theme.js?v=41"></script>
-<script src="/wp-content/uploads/rook/rook.ui.js?v=40"></script>
+<script src="/wp-content/uploads/rook/rook.ui.js?v=41"></script>
 
 <!-- 5 - Noscript -->
 <noscript>
