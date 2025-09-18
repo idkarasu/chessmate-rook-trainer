@@ -188,6 +188,31 @@ toggleSound(){
 },
 
 /* 14 - Tahta kurulumu ----------------------------------------------------- */
+_dragRookEl(){
+  const code=this.st.rookPiece;
+  return document.querySelector(`#cm-board .piece-417db.dragging-31d41[data-piece="${code}"]`)
+},
+_clearDragCenter(){
+  document.querySelectorAll('#cm-board .piece-417db.rk-drag-center').forEach(el=>el.classList.remove('rk-drag-center'))
+},
+_touchLockHandler:null,
+_touchLocked:false,
+_enableTouchLock(){
+  if(this._touchLocked)return;
+  this._touchLocked=true;
+  this._touchLockHandler=(e)=>{if(e?.cancelable)e.preventDefault()};
+  this._addTrackedListener(window,'touchmove',this._touchLockHandler,{passive:false});
+  document.body.classList.add('rk-drag-lock')
+},
+_disableTouchLock(){
+  if(!this._touchLocked)return;
+  this._touchLocked=false;
+  if(this._touchLockHandler){
+    window.removeEventListener('touchmove',this._touchLockHandler,{passive:false})
+  }
+  this._touchLockHandler=null;
+  document.body.classList.remove('rk-drag-lock')
+},
 initBoard(){
   const self=this;
   let afterSnap=null, snapGuard=null;  // ✅ KOÇTAN: afterSnap pattern
