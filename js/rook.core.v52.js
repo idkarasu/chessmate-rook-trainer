@@ -1,4 +1,4 @@
-/* rook.core.js – v51 */
+/* rook.core.js – v52 */
 
 (function(window,document){'use strict';
 
@@ -276,13 +276,13 @@ initBoard(){
         if(self.modes?.onCapture){self.modes.onCapture(self,target)}
         self.updateInfo('Harika! Skor +1')
       }
-      
-      // ✅ FİX: Board pozisyonunu HEMEN güncelle
-      self.st.board.position(self.makePosition());
     },
     onSnapEnd(){
       self._disableTouchLock();
       self._clearDragCenter();
+      
+      // ✅ FİX: Board pozisyonunu animasyon sonrası güncelle
+      self.st.board.position(self.makePosition());
     }
   });
 
