@@ -1,4 +1,4 @@
-/* rook.core.js – v50 */
+/* rook.core.js – v51 */
 
 (function(window,document){'use strict';
 
@@ -279,8 +279,6 @@ initBoard(){
       
       // ✅ FİX: Board pozisyonunu HEMEN güncelle
       self.st.board.position(self.makePosition());
-      
-      return 'snapback'; // ✅ FİX: ChessBoard animasyonunu engelle
     },
     onSnapEnd(){
       self._disableTouchLock();
