@@ -1,4 +1,4 @@
-/* rook.core.js – v60 */
+/* rook.core.js – v61 */
 
 (function(window,document){'use strict';
 
@@ -188,26 +188,129 @@ toggleSound(){
 },
 
 /* 14 - Tahta kurulumu ----------------------------------------------------- */
+_dragRookEl(){
+  const code=this.st.rookPiece;
+  return document.querySelector(`#cm-board .piece-417db.dragging-31d41[data-piece="${code}"]`)
+},
+_clearDragCenter(){
+  document.querySelectorAll('#cm-board .piece-417db.rk-drag-center').forEach(el=>el.classList.remove('rk-drag-center'))
+},
+_touchLockHandler:null,
+_touchLocked:false,
+_enableTouchLock(){
+  if(this._touchLocked)return;
+  this._touchLocked=true;
+  this._touchLockHandler=(e)=>{if(e?.cancelable)e.preventDefault()};
+  this._addTrackedListener(window,'touchmove',this._touchLockHandler,{passive:false});
+  document.body.classList.add('rk-drag-lock')
+},
+_disableTouchLock(){
+  if(!this._touchLocked)return;
+  this._touchLocked=false;
+  if(this._touchLockHandler){
+    window.removeEventListener('touchmove',this._touchLockHandler,{passive:false})
+  }
+  this._touchLockHandler=null;
+  document.body.classList.remove('rk-drag-lock')
+},
 initBoard(){
   const self=this;
+  
+  // ✅ YENİ: Drag tracking değişkenleri
+  let _isDragging = false;
+  let _dragStartTime = 0;
   
   this.st.board=Chessboard('cm-board',{
     position:this.makePosition(),
     pieceTheme:this.pieceTheme.bind(this),
-    draggable:false,      // ✅ DEĞİŞİKLİK: true → false (drag devre dışı)
-    dropOffBoard:'ignore', // ✅ EKLENDİ: Drop handling'i devre dışı
-    moveSpeed:200,        // ✅ KORUNDU: Animasyonlar aktif
+    draggable:true,       // ✅ GERİ GETİRİLDİ: Drag sistemi aktif
+    moveSpeed:200,        
     snapSpeed:50,       
     snapbackSpeed:500,  
-    appearSpeed:200    
-    // ✅ ÇIKARILDI: onDragStart, onDrop, onSnapEnd fonksiyonları tamamen kaldırıldı
+    appearSpeed:200,
+    onDragStart(source,piece){
+      // ✅ YENİ: Drag tracking başlat
+      _isDragging = true;
+      _dragStartTime = performance.now();
+      
+      // ✅ CLICK-TO-MOVE: Drag başlarken seçimi temizle
+      self.clearSelection();
+      
+      if(piece!==self.st.rookPiece)return false;
+      if(!self.st.playing)self.updateInfo("Önce Start'a basın.");
+      
+      // Audio hazırlığı
+      if(self.audio&&!self.audio.initialized){
+        try{
+          const AudioContext=window.AudioContext||window.webkitAudioContext;
+          if(AudioContext&&self.audio.audioCtx&&self.audio.audioCtx.state==='suspended'){
+            self.audio.audioCtx.resume();
+          }
+        }catch(_){}
+      }
+      
+      self.showHintsFor(source);
+      self._enableTouchLock();
+      let tries=0;
+      (function waitDrag(){
+        const el=self._dragRookEl();
+        if(el){
+          self._clearDragCenter();
+          el.classList.add('rk-drag-center')
+        }else if(++tries<6){
+          requestAnimationFrame(waitDrag)
+        }
+      })();
+      return true
+    },
+    onDrop(source,target){
+      self._clearDragCenter();
+      self.clearHints();
+      if(source===target){return 'snapback'}
+      if(!self.pathClear(source,target)){return 'snapback'}
+      
+      // SES HEMEN ÇALSIN
+      const captured=self.st.pawns.includes(target);
+      if(captured){
+        self.playCapture();
+      }else{
+        self.playMove();
+      }
+      
+      // Pozisyon güncelleme
+      self.st.rookSq=target;
+      if(captured){
+        self.st.score++;
+        emit('rk:score',{score:self.st.score});
+        if(self.modes?.onCapture){self.modes.onCapture(self,target)}
+        self.updateInfo('Harika! Skor +1')
+      }
+    },
+    onSnapEnd(){
+      self._disableTouchLock();
+      self._clearDragCenter();
+      
+      // Ghost piece önleme
+      self.st.board.position(self.makePosition(), false);
+      
+      // ✅ YENİ: Drag tracking bitir
+      setTimeout(() => {
+        _isDragging = false;
+      }, 100); // Kısa gecikme - click event'ten önce
+    }
   });
 
-  // ✅ DEĞİŞİKLİK: Click-to-move event handling'i iyileştir
+  // ✅ YENİ: Hibrit Click-to-Move sistemi (drag ile uyumlu)
   const host=this.boardEl();
   if(host){
-    // ✅ YENİ: Sadece click event'i kullan (drag sistemi yok artık)
-    this._addTrackedListener(host,'click',(e)=>{
+    this._addTrackedListener(host,'mouseup',(e)=>{
+      // ✅ ÖNEMLİ: Drag sırasında click-to-move çalışmasın
+      if(_isDragging) return;
+      
+      // ✅ ÖNEMLİ: Hızlı tıklamalar için zaman kontrolü  
+      const now = performance.now();
+      if(now - _dragStartTime < 150) return; // 150ms içinde drag başlamışsa skip
+      
       const target=e.target;
       if(!target)return;
       
@@ -215,16 +318,16 @@ initBoard(){
       let squareEl=target.closest('[class*="square-"]');
       if(!squareEl)return;
       
-      // Kare adını çıkar (square-e4 -> e4)
+      // Kare adını çıkar
       const match=squareEl.className.match(/square-([a-h][1-8])/);
       if(!match)return;
       
       const square=match[1];
       self.onSquareClick(square);
-    },{passive:true}); // ✅ DEĞİŞİKLİK: passive: true (preventDefault gereksiz artık)
+    },{passive:true});
   }
 
-  // ✅ KORUNDU: Resize handling sistemi
+  // ✅ KORUNDU: Resize handling
   const doResize=()=>{if(self.st.board)self.st.board.resize()};
   if(host){
     if('ResizeObserver'in window){
