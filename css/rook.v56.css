@@ -122,10 +122,10 @@ body{
 .cm-toolbar .rk-toolbar.rk-toolbar--single{
   display:flex !important; 
   flex-direction:row !important;
-  flex-wrap:wrap !important; 
-  align-items:center !important; 
+  flex-wrap:nowrap !important; 
+  align-items:flex-end !important; 
   justify-content:center !important;
-  gap:clamp(8px, 1.5vw, 12px) !important;
+  gap:clamp(12px, 2vw, 16px) !important;
   padding:8px 12px !important;
   margin:0 !important;
   min-width:0;
@@ -140,12 +140,22 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
   border-color:var(--line);
 }
 
-/* Grup düzeni */
+/* Grup düzeni - YENİ: Dikey stack layout */
 .rk-group{
   display:inline-flex;
   align-items:center;
   gap:4px;
   flex:0 1 auto;
+  min-width:0;
+}
+
+/* YENİ: Label'lı gruplar için dikey düzen */
+.cm-toolbar .rk-toolbar--single .rk-group--side,
+.cm-toolbar .rk-toolbar--single .rk-group--mode{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  gap:4px !important;
   min-width:0;
 }
 
@@ -187,18 +197,31 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
   align-self:center;
 }
 
-/* Tek satır düzeninde label boyutu - DOĞRU SELECTOR */
+/* YENİ: Tek satır düzeninde label boyutu - üstte ortalı */
 .cm-toolbar .rk-toolbar--single .rk-ctl-label{
-  font-size:11px;
+  font-size:9px;
   font-weight:700;
   white-space:nowrap;
+  text-align:center;
+  line-height:1;
+  margin-bottom:2px;
+  order:-1; /* Label'ı en üste taşı */
+}
+
+/* YENİ: Select kutuları için özel boyutlandırma */
+.cm-toolbar .rk-toolbar--single .cm-sel{
+  min-width:80px;
+  max-width:100px;
+  font-size:11px;
+  text-align:center;
+  padding:0 8px;
 }
 
 /* Responsive düzenlemeler - DOĞRU SELECTOR'LAR */
 @media (max-width:768px){
   .cm-toolbar .rk-toolbar--single{
     flex-wrap:wrap !important;
-    gap:8px !important;
+    gap:10px !important;
     justify-content:center !important;
     padding:6px 8px !important;
   }
@@ -208,13 +231,13 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
   }
   
   .cm-toolbar .rk-toolbar--single .rk-ctl-label{
-    font-size:10px;
+    font-size:8px;
   }
   
   .cm-toolbar .rk-toolbar--single .cm-sel{
-    max-width:90px;
-    font-size:11px;
-    padding:0 8px;
+    max-width:85px;
+    font-size:10px;
+    padding:0 6px;
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group--icons{
@@ -224,7 +247,7 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
 
 @media (max-width:560px){
   .cm-toolbar .rk-toolbar--single{
-    gap:6px !important;
+    gap:8px !important;
     padding:4px 6px !important;
     flex-wrap:wrap !important;
   }
@@ -243,37 +266,94 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
   
   .cm-toolbar .rk-toolbar--single .cm-sel{
     height:36px;
-    max-width:80px;
+    max-width:75px;
     font-size:10px;
   }
   
   .cm-toolbar .rk-toolbar--single .rk-ctl-label{
-    font-size:9px;
+    font-size:7px;
   }
 }
 
 @media (max-width:480px){
   .cm-toolbar .rk-toolbar--single{
-    gap:4px !important;
+    gap:6px !important;
     padding:4px !important;
+    flex-wrap:wrap !important;
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group{
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
     justify-content:center;
     min-width:0;
   }
   
+  /* Çok küçük ekranlarda yine alt alta */
   .cm-toolbar .rk-toolbar--single .rk-group--side,
   .cm-toolbar .rk-toolbar--single .rk-group--mode{
-    flex-basis:100%;
-    justify-content:center;
-    margin-bottom:4px;
+    flex-basis:auto;
+    margin-bottom:2px;
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group--start,
   .cm-toolbar .rk-toolbar--single .rk-group--icons{
     flex-basis:auto;
+  }
+}
+
+/* Responsive düzenlemeler - ESKİ KURALLAR (uyumluluk için) */
+@media (max-width:768px){
+  .rk-toolbar--top{
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+  }
+  
+  .rk-toolbar--bottom{
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+  }
+  
+  /* Grup margin'leri mobilde sıfırla */
+  .rk-group--mode{
+    margin-left:0;
+  }
+  
+  .rk-group--start{
+    margin-left:0;
+  }
+}
+
+@media (max-width:560px){
+  /* Toolbar mobil düzeni - DÜZELTME */
+  .rk-toolbar--top{
+    flex-wrap:wrap; /* Mobilde sarmalama aktif */
+    justify-content:center;
+    gap:8px;
+  }
+  
+  .rk-toolbar--bottom{
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+  }
+  
+  /* Grup margin'leri mobilde sıfırla */
+  .rk-group--mode{
+    margin-left:0;
+  }
+  
+  .rk-group--start{
+    margin-left:0;
+  }
+}
+
+/* Orta ekran düzeni */
+@media (max-width:768px) and (min-width:561px){
+  .rk-toolbar--top{
+    flex-wrap:wrap;
+    justify-content:center;
   }
 }
 
