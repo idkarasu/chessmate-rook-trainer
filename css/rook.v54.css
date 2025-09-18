@@ -1,4 +1,4 @@
-/* rook.css — v53 (Header/Footer uyumlu) */
+/* rook.css — v54 (Header/Footer uyumlu) */
 
 /* 1 - CSS Variables (Koç Eğitimi uyumlu sistem) -------------------------- */
 :root{
@@ -118,17 +118,26 @@ body{
   flex-wrap:wrap;
 }
 
-/* YENİ: Tek satır düzeni - Daha spesifik kurallar */
-.rk-toolbar-wrap .rk-toolbar.rk-toolbar--single{
+/* YENİ: Tek satır düzeni - HTML yapısına uygun selector */
+.rk-toolbar.rk-toolbar--single{
   display:flex !important; 
   flex-direction:row !important;
   flex-wrap:wrap !important; 
   align-items:center !important; 
   justify-content:center !important;
   gap:clamp(8px, 1.5vw, 12px) !important;
-  padding:6px 8px !important;
+  padding:8px 12px !important;
   margin:0 !important;
   min-width:0;
+  border-radius:12px;
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--line);
+}
+
+/* Light tema için tek satır toolbar arka planı */
+body.cm-theme-light .rk-toolbar.rk-toolbar--single{
+  background:rgba(0,0,0,.03);
+  border-color:var(--line);
 }
 
 /* Grup düzeni */
@@ -149,9 +158,9 @@ body{
   margin-left:8px;
 }
 
-/* YENİ: Tek satır düzeninde margin'leri kaldır - Daha spesifik */
-.rk-toolbar-wrap .rk-toolbar.rk-toolbar--single .rk-group--mode,
-.rk-toolbar-wrap .rk-toolbar.rk-toolbar--single .rk-group--start{
+/* YENİ: Tek satır düzeninde margin'leri kaldır */
+.rk-toolbar--single .rk-group--mode,
+.rk-toolbar--single .rk-group--start{
   margin-left:0 !important;
   margin-right:0 !important;
   margin-top:0 !important;
@@ -163,8 +172,8 @@ body{
   gap:8px;
 }
 
-/* Tek satır düzeninde icon gap'i azalt - Daha spesifik */
-.rk-toolbar-wrap .rk-toolbar.rk-toolbar--single .rk-group--icons{
+/* Tek satır düzeninde icon gap'i optimize et */
+.rk-toolbar--single .rk-group--icons{
   gap:6px !important;
 }
 
@@ -178,43 +187,93 @@ body{
   align-self:center;
 }
 
+/* Tek satır düzeninde label boyutu */
+.rk-toolbar--single .rk-ctl-label{
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
 /* Responsive düzenlemeler */
 @media (max-width:768px){
-  .rk-toolbar-wrap .rk-toolbar.rk-toolbar--single{
+  .rk-toolbar--single{
     flex-wrap:wrap !important;
     gap:8px !important;
     justify-content:center !important;
+    padding:6px 8px !important;
   }
   
-  .rk-toolbar-wrap .rk-toolbar.rk-toolbar--single .rk-group{
+  .rk-toolbar--single .rk-group{
     margin:0 !important;
   }
   
-  .rk-toolbar-wrap .rk-toolbar.rk-toolbar--single .rk-ctl-label{
-    font-size:11px;
+  .rk-toolbar--single .rk-ctl-label{
+    font-size:10px;
   }
   
-  .rk-toolbar-wrap .rk-toolbar.rk-toolbar--single .cm-sel{
-    max-width:100px;
+  .rk-toolbar--single .cm-sel{
+    max-width:90px;
     font-size:11px;
+    padding:0 8px;
+  }
+  
+  .rk-toolbar--single .rk-group--icons{
+    gap:4px !important;
   }
 }
 
 @media (max-width:560px){
-  .rk-toolbar-wrap .rk-toolbar.rk-toolbar--single{
+  .rk-toolbar--single{
     gap:6px !important;
     padding:4px 6px !important;
+    flex-wrap:wrap !important;
   }
   
-  .rk-toolbar-wrap .rk-toolbar.rk-toolbar--single .rk-btn--icon{
+  .rk-toolbar--single .rk-btn--icon{
     width:36px;
     height:36px;
     font-size:16px;
   }
   
-  .rk-toolbar-wrap .rk-toolbar.rk-toolbar--single #rk-start{
-    padding:0 10px;
+  .rk-toolbar--single #rk-start{
+    padding:0 8px;
     font-size:11px;
+    height:36px;
+  }
+  
+  .rk-toolbar--single .cm-sel{
+    height:36px;
+    max-width:80px;
+    font-size:10px;
+  }
+  
+  .rk-toolbar--single .rk-ctl-label{
+    font-size:9px;
+  }
+}
+
+@media (max-width:480px){
+  .rk-toolbar--single{
+    gap:4px !important;
+    padding:4px !important;
+  }
+  
+  .rk-toolbar--single .rk-group{
+    flex-wrap:wrap;
+    justify-content:center;
+    min-width:0;
+  }
+  
+  .rk-toolbar--single .rk-group--side,
+  .rk-toolbar--single .rk-group--mode{
+    flex-basis:100%;
+    justify-content:center;
+    margin-bottom:4px;
+  }
+  
+  .rk-toolbar--single .rk-group--start,
+  .rk-toolbar--single .rk-group--icons{
+    flex-basis:auto;
   }
 }
 
