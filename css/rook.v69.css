@@ -1,4 +1,4 @@
-/* rook.css — v68 */
+/* rook.css — v69 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -514,6 +514,7 @@ body.cm-theme-light .rk-softbar{
   /* HUD sabit boyut değişkenleri - pano genişliğiyle akıcı ölçek */
   --hud-title-h: clamp(18px, 2.6vw, 24px);
   --hud-gap: clamp(8px, 1.6vw, 16px);
+  --hud-timebar-h: clamp(8px, 1.6vw, 12px);
 }
 
 .rk-underbar{
@@ -534,6 +535,7 @@ body.cm-theme-light .rk-softbar{
   flex-direction:column;
   gap:6px;
   position:relative;
+  box-sizing:border-box;
 }
 
 .rk-underbar::-webkit-scrollbar{display:none}
@@ -576,7 +578,6 @@ body.cm-theme-light .rk-underbar.is-overflowing::after{
   flex:0 0 auto;
   min-width:0;
   position:relative;
-  padding-inline:var(--hud-gap);
 }
 
 /* İnce ayırıcı çizgi */
@@ -700,7 +701,7 @@ body.cm-theme-light .rk-underbar .hud-chip{
   position:relative;
   width:100%;
   max-width:none;
-  height:var(--hud-title-h);
+  height:var(--hud-timebar-h);
   border-radius:999px;
   background:var(--rk-softbar-bg);
   border:1px solid rgba(0,0,0,.15);
@@ -719,7 +720,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
   position:relative;
   width:100%;
   max-width:none;
-  height:var(--hud-title-h);
+  height:var(--hud-timebar-h);
   border-radius:999px;
   background:var(--rk-softbar-bg);
   border:1px solid rgba(0,0,0,.15);
