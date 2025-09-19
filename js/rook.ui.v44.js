@@ -112,7 +112,47 @@ const throttledUpdateHud=throttle(updateHud,100);on(document,'rk:timeup',({detai
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 11 - UI bağlama --------------------------------------------------------- */
-on(document,'rk:ready',()=>{const RK=window.Rook;const modeSel=$('rk-mode-select');if(modeSel){const t=modeSel.querySelector('option[value="timed"]');const l=modeSel.querySelector('option[value="levels"]');if(t)t.textContent='⏱️ Zamana Karşı';if(l)l.textContent='🌊 Sekiz Dalga'}ensureResultModal();ensureLevelsBar();const overlay=$('rk-levels');if(overlay)overlay.style.display='none';ensureLevelsInline();ensureHud();if(RK.st.mode==='levels')showLevelsBar();else{showTimedBar();resetTimebarFull()}updateLevelsBars(RK.st.wave||1);updateHud();const sideSel=$('rk-side-select');if(sideSel){sideSel.value=RK.st.side;on(sideSel,'change',e=>{RK.setSide(e.target.value);RK.hardReset()})}if(modeSel){modeSel.value=RK.st.mode;on(modeSel,'change',e=>RK.setMode(e.target.value))}const btnTheme=$('cm-theme-toggle');const btnBoard=$('cm-board-toggle');const btnSound=$('cm-sound-toggle');const btnHints=$('cm-hints');const btnStart=$('rk-start');if(btnTheme){btnTheme.title='Tema Değiştir';btnTheme.textContent=(RK.st.theme==='light'?'☀️':'🌙')}if(btnBoard){btnBoard.title=`Tahta Temasını Değiştir (${RK.st.boardSkin||'classic'})`}if(btnStart)btnStart.title='Başlat';if(btnSound){const onNow=!!RK.st.soundOn;setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})}if(btnHints){const onNow=!!RK.st.hintsOn;setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})}if(hasCMUI()){document.dispatchEvent(new CustomEvent('cm-theme',{detail:{theme:RK.st.theme}}));document.dispatchEvent(new CustomEvent('cm-board',{detail:{skin:RK.st.boardSkin}}))}on(btnTheme,'click',()=>RK.toggleTheme?.());on(btnBoard,'click',()=>RK.cycleBoard?.());on(btnSound,'click',()=>{const onNow=!RK.st.soundOn;RK.setSound(onNow);setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})});on(btnHints,'click',()=>{RK.toggleHints();const onNow=RK.st.hintsOn;setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})});on(btnStart,'click',async()=>{if(RK.st.mode==='timed')resetTimebarFull();updateHud();await rkCountdown(3);RK.start()});if(btnSound)btnSound.setAttribute('aria-pressed',RK.st.soundOn?'true':'false');if(btnHints)btnHints.setAttribute('aria-pressed',RK.st.hintsOn?'true':'false')},{once:true});
+function initToolbarScroll(){
+  const toolbar=document.querySelector('.cm-toolbar .rk-toolbar--single');
+  if(!toolbar)return;
+  
+  function checkOverflow(){
+    const isOverflowing=toolbar.scrollWidth>toolbar.clientWidth;
+    toolbar.classList.toggle('is-overflowing',isOverflowing);
+    if(isOverflowing){
+      toolbar.scrollLeft=0
+    }
+  }
+  
+  function addScrollHelpers(){
+    on(toolbar,'wheel',(e)=>{
+      if(e.shiftKey||Math.abs(e.deltaX)>Math.abs(e.deltaY)){
+        e.preventDefault();
+        const delta=e.deltaY||e.deltaX;
+        toolbar.scrollLeft+=delta*0.5
+      }
+    },{passive:false});
+    
+    on(toolbar,'keydown',(e)=>{
+      if(e.key==='ArrowLeft'){
+        e.preventDefault();
+        toolbar.scrollLeft-=50
+      }else if(e.key==='ArrowRight'){
+        e.preventDefault();
+        toolbar.scrollLeft+=50
+      }
+    })
+  }
+  
+  checkOverflow();
+  addScrollHelpers();
+  
+  const resizeObserver=new ResizeObserver(throttle(checkOverflow,100));
+  resizeObserver.observe(toolbar);
+  RookUI._observers.push(resizeObserver)
+}
+
+on(document,'rk:ready',()=>{const RK=window.Rook;const modeSel=$('rk-mode-select');if(modeSel){const t=modeSel.querySelector('option[value="timed"]');const l=modeSel.querySelector('option[value="levels"]');if(t)t.textContent='⏱️ Zamana Karşı';if(l)l.textContent='🌊 Sekiz Dalga'}ensureResultModal();ensureLevelsBar();const overlay=$('rk-levels');if(overlay)overlay.style.display='none';ensureLevelsInline();ensureHud();if(RK.st.mode==='levels')showLevelsBar();else{showTimedBar();resetTimebarFull()}updateLevelsBars(RK.st.wave||1);updateHud();initToolbarScroll();const sideSel=$('rk-side-select');if(sideSel){sideSel.value=RK.st.side;on(sideSel,'change',e=>{RK.setSide(e.target.value);RK.hardReset()})}if(modeSel){modeSel.value=RK.st.mode;on(modeSel,'change',e=>RK.setMode(e.target.value))}const btnTheme=$('cm-theme-toggle');const btnBoard=$('cm-board-toggle');const btnSound=$('cm-sound-toggle');const btnHints=$('cm-hints');const btnStart=$('rk-start');if(btnTheme){btnTheme.title='Tema Değiştir';btnTheme.textContent=(RK.st.theme==='light'?'☀️':'🌙')}if(btnBoard){btnBoard.title=`Tahta Temasını Değiştir (${RK.st.boardSkin||'classic'})`}if(btnStart)btnStart.title='Başlat';if(btnSound){const onNow=!!RK.st.soundOn;setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})}if(btnHints){const onNow=!!RK.st.hintsOn;setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})}if(hasCMUI()){document.dispatchEvent(new CustomEvent('cm-theme',{detail:{theme:RK.st.theme}}));document.dispatchEvent(new CustomEvent('cm-board',{detail:{skin:RK.st.boardSkin}}))}on(btnTheme,'click',()=>RK.toggleTheme?.());on(btnBoard,'click',()=>RK.cycleBoard?.());on(btnSound,'click',()=>{const onNow=!RK.st.soundOn;RK.setSound(onNow);setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})});on(btnHints,'click',()=>{RK.toggleHints();const onNow=RK.st.hintsOn;setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})});on(btnStart,'click',async()=>{if(RK.st.mode==='timed')resetTimebarFull();updateHud();await rkCountdown(3);RK.start()});if(btnSound)btnSound.setAttribute('aria-pressed',RK.st.soundOn?'true':'false');if(btnHints)btnHints.setAttribute('aria-pressed',RK.st.hintsOn?'true':'false')},{once:true});
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 12 - Cleanup ve lifecycle management ----------------------------------- */
