@@ -1,4 +1,4 @@
-/* rook.css — v63 */
+/* rook.css — v64 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -150,6 +150,7 @@ body{
   scroll-behavior:smooth;
   scrollbar-width:none;
   -ms-overflow-style:none;
+  position:relative;
 }
 
 .cm-toolbar .rk-toolbar.rk-toolbar--single::-webkit-scrollbar{
@@ -163,7 +164,7 @@ body{
   right:0;
   bottom:0;
   width:20px;
-  background:linear-gradient(to right, transparent, var(--panel));
+  background:linear-gradient(to right, transparent, rgba(17,21,27,0.9));
   pointer-events:none;
   z-index:1;
 }
@@ -171,6 +172,10 @@ body{
 body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
   background:rgba(0,0,0,.03);
   border-color:var(--line);
+}
+
+body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::after{
+  background:linear-gradient(to right, transparent, rgba(255,255,255,0.9));
 }
 
 .rk-group{
