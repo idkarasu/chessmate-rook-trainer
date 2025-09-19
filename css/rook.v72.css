@@ -1,4 +1,4 @@
-/* rook.css — v71 */
+/* rook.css — v72 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -61,7 +61,7 @@ body.dark, body.dark-mode, .theme-dark, [data-theme="dark"], .cm-dark{
   --modal-backdrop: rgba(0,0,0,.55);
   --vh: 100dvh;
   --hdr: 68px;
-  --ftr: 84px;
+  --ftr: 72px;
   --ab: 0px;
   --fit-epsilon: 2px;
   --radius-lg:16px;
@@ -72,8 +72,9 @@ body.dark, body.dark-mode, .theme-dark, [data-theme="dark"], .cm-dark{
   --cm-dur:180ms;
   --rk-board-w-base:600px;
   --rk-board-w:var(--rk-board-w-base);
-  --page-bottom-space: clamp(24px, 6svh, 80px);
-  --footer-top-space: clamp(16px, 4svh, 48px);
+  --page-bottom-space: clamp(8px, 2svh, 32px);
+  --footer-top-space: clamp(4px, 1.5svh, 24px);
+  --page-stretch: clamp(0px, 4svh, 40px);
 }
 
 html { -webkit-text-size-adjust: 100%; }
@@ -1141,6 +1142,13 @@ body.cm-theme-dark .rk-timebar{
   height: var(--ftr);
   display: flex;
   align-items: center;
+  position: relative;
+}
+
+.cm-footer::after{
+  content:"";
+  display:block;
+  block-size: var(--page-stretch);
 }
 
 .cm-footer .cm-container{
