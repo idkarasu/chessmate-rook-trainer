@@ -1,4 +1,4 @@
-/* rook.css — v58 */
+/* rook.css — v59 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -740,7 +740,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
 .rk-coach{
   width:var(--rk-board-w);
   max-width:92vw;
-  margin:4px auto 3px;
+  margin:0 auto 2px;
   display:flex;
   align-items:center;
   gap:10px;
