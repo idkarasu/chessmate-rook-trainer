@@ -1,4 +1,4 @@
-/* rook.ui.js — v42 */
+/* rook.ui.js — v43 */
 
 (function(window,document){'use strict';
 
@@ -22,9 +22,25 @@ function ensureLevelsBar(){const host=$('cm-board');if(!host)return;if(!$('rk-le
 
 /* 7 - Paneller ----------------------------------------------------------- */
 function ensureModeBar(){
-  // ❌ DEVRE DIŞI: Bu fonksiyon ek toolbar oluşturuyordu
-  // Tek toolbar düzeni için artık gerekli değil
-  return;
+  // Zaman barı ve seviye göstergesi paneli oluştur
+  if($('rk-modebar'))return;
+  const board=$('cm-board');
+  if(!board?.parentNode)return;
+  
+  const modebar=document.createElement('div');
+  modebar.id='rk-modebar';
+  modebar.className='rk-softbar';
+  modebar.style.display='block';
+  
+  // Zaman barı
+  const timebar=document.createElement('div');
+  timebar.id='rk-timebar';
+  timebar.className='rk-timebar';
+  timebar.style.display='block';
+  timebar.innerHTML='<div id="rk-timefill" class="rk-timefill"></div>';
+  
+  modebar.appendChild(timebar);
+  insertAfter(board,modebar);
 }
 
 function ensureHud(){
@@ -41,6 +57,32 @@ function ensureHud(){
   else insertAfter(board,hud)
 }
 
+function ensureLevelsInline(){
+  if($('rk-levels-inline'))return;
+  let wrap=$('rk-modebar');
+  
+  // Eğer modebar yoksa oluştur
+  if(!wrap){
+    ensureModeBar();
+    wrap=$('rk-modebar');
+  }
+  
+  if(!wrap)return; // Hala yoksa çık
+  
+  const box=document.createElement('div');
+  box.id='rk-levels-inline';
+  box.className='rk-levels-inline';
+  for(let i=1;i<=8;i++){
+    const sp=document.createElement('span');
+    sp.className='lvl';
+    sp.dataset.k=String(i);
+    sp.textContent=String(i);
+    box.appendChild(sp)
+  }
+  box.style.display='none';
+  wrap.appendChild(box)
+}
+
 function showTimedBar(){
   const tb=$('rk-timebar'),lv=$('rk-levels-inline');
   if(tb)tb.style.display='block';
@@ -52,6 +94,12 @@ function showLevelsBar(){
   if(tb)tb.style.display='none';
   if(lv)lv.style.display='flex'
 }
+
+/* 8 - Zaman barı maske yardımcıları -------------------------------------- */
+function setTimebarCoverage(cov){const fill=$('rk-timefill');if(!fill)return;const clamped=Math.max(0,Math.min(1,cov));fill.style.transform=`scaleX(${clamped})`}function resetTimebarFull(){setTimebarCoverage(0)}function updateTimebar(){const RK=window.Rook;if(!RK)return;if(RK.st.mode!=='timed')return;const total=60;const left=Math.max(0,RK.st.timeLeft|0);const frac=Math.max(0,Math.min(1,left/total));const coverage=1-frac;setTimebarCoverage(coverage)}
+
+/* 9 - HUD (updateHud) ve formatlar --------------------------------------- */
+function updateHud(){const RK=window.Rook;const hud=document.getElementById('rk-hud');if(!RK||!hud)return;const $time=document.querySelector('#hud-time .val');const $score=document.querySelector('#hud-score .val');const $best=document.querySelector('#hud-best .val');const $bestIco=document.querySelector('#hud-best .ico');const $bestLbl=document.getElementById('hud-best-label');const bestWrap=document.getElementById('hud-best');if($score)$score.textContent=pad2(RK.st.score|0);if(RK.st.mode==='timed'){if($time)$time.textContent=fmtMMSSDown60(Math.max(0,RK.st.timeLeft|0));if(bestWrap)bestWrap.setAttribute('aria-label','En İyi');if($bestLbl)$bestLbl.textContent='En İyi';if($best)$best.textContent=pad2(RK.st.bestTimed|0);if($bestIco)$bestIco.textContent='♟️'}else{if($time)$time.textContent=fmtMMSS(Math.max(0,RK.st.timeLeft|0));if(bestWrap)bestWrap.setAttribute('aria-label','En Hızlı');if($bestLbl)$bestLbl.textContent='En Hızlı';if($best)$best.textContent=fmtOrDashMMSS(RK.st.bestLevelsTime|0);if($bestIco)$bestIco.textContent='⏱️'}}
 
 /* 8 - Zaman barı maske yardımcıları -------------------------------------- */
 function setTimebarCoverage(cov){const fill=$('rk-timefill');if(!fill)return;const clamped=Math.max(0,Math.min(1,cov));fill.style.transform=`scaleX(${clamped})`}function resetTimebarFull(){setTimebarCoverage(0)}function updateTimebar(){const RK=window.Rook;if(!RK)return;if(RK.st.mode!=='timed')return;const total=60;const left=Math.max(0,RK.st.timeLeft|0);const frac=Math.max(0,Math.min(1,left/total));const coverage=1-frac;setTimebarCoverage(coverage)}
