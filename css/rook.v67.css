@@ -1,4 +1,4 @@
-/* rook.css — v66 */
+/* rook.css — v67 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -525,9 +525,8 @@ body.cm-theme-light .rk-softbar{
   scrollbar-width:none;
   -ms-overflow-style:none;
   display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:clamp(8px,2vw,16px);
+  flex-direction:column;
+  gap:6px;
   position:relative;
 }
 
@@ -552,20 +551,42 @@ body.cm-theme-light .rk-underbar.is-overflowing::after{
   background:linear-gradient(to right, transparent, rgba(255,255,255,0.9));
 }
 
+/* Üst satır - Zaman barı/Seviyeler */
+.rk-underbar-center{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  min-width:0;
+}
+
+/* Alt satır - HUD elemanları */
+.rk-underbar-bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex:0 0 auto;
+  min-width:0;
+  position:relative;
+}
+
+/* İnce ayırıcı çizgi */
+.rk-underbar-bottom::before{
+  content:"";
+  position:absolute;
+  top:-3px;
+  left:-4px;
+  right:-4px;
+  height:1px;
+  background:var(--line);
+  opacity:0.4;
+}
+
 .rk-underbar-left{
   display:flex;
   align-items:center;
   gap:6px;
   flex:0 0 auto;
-}
-
-.rk-underbar-center{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  flex:1 1 0;
-  min-width:0;
 }
 
 .rk-underbar-right{
@@ -575,7 +596,16 @@ body.cm-theme-light .rk-underbar.is-overflowing::after{
   flex:0 0 auto;
 }
 
-/* HUD chip'leri için yeni stiller */
+/* Orta eleman - skor */
+.rk-underbar-middle{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:1 1 0;
+  min-width:0;
+}
+
+/* HUD chip'leri için stiller */
 .rk-underbar .hud-chip{
   display:inline-flex;
   align-items:center;
@@ -611,7 +641,7 @@ body.cm-theme-light .rk-underbar.is-overflowing::after{
 
 @media (max-width:768px){
   .rk-underbar{
-    gap:10px;
+    gap:5px;
     padding:6px 8px;
   }
   
@@ -628,7 +658,7 @@ body.cm-theme-light .rk-underbar.is-overflowing::after{
 
 @media (max-width:480px){
   .rk-underbar{
-    gap:8px;
+    gap:4px;
     padding:4px 6px;
   }
   
