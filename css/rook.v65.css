@@ -1,4 +1,4 @@
-/* rook.css — v64 */
+/* rook.css — v65 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -509,7 +509,88 @@ body.cm-theme-light .rk-softbar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 7 - HUD ------------------------------------------------------------------ */
+/* 7 - Tahta altı birleşik panel -------------------------------------------- */
+.rk-underbar{
+  width:var(--rk-board-w);
+  max-width:92vw;
+  margin:4px auto 6px;
+  padding:8px 12px;
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--line);
+  border-radius:12px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:clamp(8px,2vw,16px);
+  position:relative;
+}
+
+.rk-underbar::-webkit-scrollbar{display:none}
+
+.rk-underbar.is-overflowing::after{
+  content:"";
+  position:absolute;
+  top:0;right:0;bottom:0;
+  width:20px;
+  background:linear-gradient(to right, transparent, rgba(17,21,27,0.9));
+  pointer-events:none;
+  z-index:1;
+}
+
+body.cm-theme-light .rk-underbar{
+  background:rgba(0,0,0,.03);
+  border-color:var(--line);
+}
+
+body.cm-theme-light .rk-underbar.is-overflowing::after{
+  background:linear-gradient(to right, transparent, rgba(255,255,255,0.9));
+}
+
+.rk-underbar-left{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex:0 0 auto;
+}
+
+.rk-underbar-center{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  flex:1 1 0;
+  min-width:0;
+}
+
+.rk-underbar-right{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex:0 0 auto;
+}
+
+@media (max-width:768px){
+  .rk-underbar{
+    gap:10px;
+    padding:6px 8px;
+  }
+}
+
+@media (max-width:480px){
+  .rk-underbar{
+    gap:8px;
+    padding:4px 6px;
+  }
+}
+/* Bölüm sonu --------------------------------------------------------------- */
+
+/* 8 - HUD ------------------------------------------------------------------ */
 #rk-hud{
   margin-top:0;
   display:grid;
@@ -548,7 +629,7 @@ body.cm-theme-light .rk-softbar{
 #rk-hud .hud-chip .ico{font-size:1em;line-height:1}
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 8 - Zaman barı ----------------------------------------------------------- */
+/* 9 - Zaman barı ----------------------------------------------------------- */
 .rk-softbar .rk-timebar{
   position:relative;
   width:100%;
@@ -564,6 +645,25 @@ body.cm-theme-light .rk-softbar{
 }
 
 body.cm-theme-dark .rk-softbar .rk-timebar{
+  background:var(--rk-softbar-bg);
+  border-color:rgba(255,255,255,.12);
+}
+
+.rk-timebar{
+  position:relative;
+  width:100%;
+  max-width:none;
+  height:12px;
+  border-radius:999px;
+  background:var(--rk-softbar-bg);
+  border:1px solid rgba(0,0,0,.15);
+  overflow:hidden;
+  background-clip:padding-box;
+  isolation:isolate;
+  will-change:transform;
+}
+
+body.cm-theme-dark .rk-timebar{
   background:var(--rk-softbar-bg);
   border-color:rgba(255,255,255,.12);
 }
@@ -591,7 +691,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 9 - Seviyeler ------------------------------------------------------------ */
+/* 10 - Seviyeler ------------------------------------------------------------ */
 #rk-levels-inline{
   display:none;
   gap:6px;
@@ -627,7 +727,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 10 - İpuçları ------------------------------------------------------------ */
+/* 11 - İpuçları ------------------------------------------------------------ */
 #cm-board .square-highlight{box-shadow:inset 0 0 0 3px var(--gold)}
 #cm-board .square-hint,#cm-board .square-hint-cap{position:relative}
 #cm-board .square-hint::after{
@@ -661,7 +761,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 11 - Sürükleme ve etkileşim ---------------------------------------------- */
+/* 12 - Sürükleme ve etkileşim ---------------------------------------------- */
 #cm-board .piece-417db.dragging-31d41[data-piece="wR"].rk-drag-center,
 #cm-board .piece-417db.dragging-31d41[data-piece="bR"].rk-drag-center{
   transform:translate(-50%,-50%);
@@ -678,7 +778,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
 #cm-board img,#cm-board .piece-417db{-webkit-user-drag:none}
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 12 - Geri sayım modalı --------------------------------------------------- */
+/* 13 - Geri sayım modalı --------------------------------------------------- */
 #rk-countdown-back{
   display:none;
   position:absolute;
@@ -700,7 +800,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 13 - Sonuç modalı -------------------------------------------------------- */
+/* 14 - Sonuç modalı -------------------------------------------------------- */
 #rk-modal-back{
   display:none;
   position:absolute;
@@ -776,7 +876,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 14 - Koç baloncuğu ------------------------------------------------------- */
+/* 15 - Koç baloncuğu ------------------------------------------------------- */
 .rk-coach{
   width:var(--rk-board-w);
   max-width:92vw;
@@ -859,7 +959,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
 .rk-wrap.rk-has-coach .rk-title{display:none}
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 15 - Header/Footer ------------------------------------------------------- */
+/* 16 - Header/Footer ------------------------------------------------------- */
 .cm-container{
   max-width:1200px;
   margin:0 auto;
@@ -975,7 +1075,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 16 - Arka plan deseni ---------------------------------------------------- */
+/* 17 - Arka plan deseni ---------------------------------------------------- */
 :root{
   --bg-grad-top-dark:#0b0e12;
   --bg-grad-bot-dark:#0D0F12;
@@ -1037,7 +1137,7 @@ html::before{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 17 - Tema uyumluluk ------------------------------------------------------ */
+/* 18 - Tema uyumluluk ------------------------------------------------------ */
 body.cm-theme-light .rk-wrap{
   background:var(--panel);
   color:var(--text);
@@ -1078,7 +1178,7 @@ body.cm-theme-light .rk-coach__bubble{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 18 - Responsive ve erişilebilirlik --------------------------------------- */
+/* 19 - Responsive ve erişilebilirlik --------------------------------------- */
 @media (max-width:560px){
   button.cm-btn, button.rk-btn, select.cm-sel{ 
     height:44px; 
@@ -1202,7 +1302,7 @@ img{ -webkit-user-drag:none; }
 input, textarea, [contenteditable="true"]{
   -webkit-touch-callout:default;
   -webkit-user-select:text;
-  user-select:text;
+  user-text;
 }
 
 @media (hover:none) and (pointer:coarse){
@@ -1211,7 +1311,7 @@ input, textarea, [contenteditable="true"]{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 19 - Mobil performans optimizasyonları ----------------------------------- */
+/* 20 - Mobil performans optimizasyonları ----------------------------------- */
 
 #cm-board,
 .rk-wrap,
