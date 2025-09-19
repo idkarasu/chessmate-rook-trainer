@@ -1,4 +1,4 @@
-/* rook.ui.js — v46 */
+/* rook.ui.js — v47 */
 
 (function(window,document){'use strict';
 
@@ -28,84 +28,89 @@ function ensureLevelsBar(){const host=$('cm-board');if(!host)return;if(!$('rk-le
 
 /* 7 - Birleşik alt panel ------------------------------------------------- */
 function ensureUnderbar(){
-  if($('rk-underbar'))return;
-  const board=$('cm-board');
-  if(!board?.parentNode)return;
+  let underbar = $('rk-underbar');
+  const board = $('cm-board');
+  if(!board?.parentNode) return;
   
-  const underbar=document.createElement('div');
-  underbar.id='rk-underbar';
-  underbar.className='rk-underbar';
-  underbar.setAttribute('role','region');
-  underbar.setAttribute('aria-label','Oyun bilgileri');
-  
-  const leftSection=document.createElement('div');
-  leftSection.className='rk-underbar-left';
-  
-  const centerSection=document.createElement('div'); 
-  centerSection.className='rk-underbar-center';
-  
-  const rightSection=document.createElement('div');
-  rightSection.className='rk-underbar-right';
-  
-  // HUD elemanları - sol
-  const hudTime=document.createElement('div');
-  hudTime.id='hud-time';
-  hudTime.className='hud-chip';
-  hudTime.setAttribute('aria-label','Süre');
-  hudTime.innerHTML='<span class="ico">⏱️</span><span class="lbl">Süre</span><span class="val">00:00</span>';
-  
-  const hudScore=document.createElement('div');
-  hudScore.id='hud-score'; 
-  hudScore.className='hud-chip';
-  hudScore.setAttribute('aria-label','Skor');
-  hudScore.innerHTML='<span class="lbl">Skor</span><span class="val">00</span><span class="ico">♟️</span>';
-  
-  const hudBest=document.createElement('div');
-  hudBest.id='hud-best';
-  hudBest.className='hud-chip';
-  hudBest.setAttribute('aria-label','En İyi');  
-  hudBest.innerHTML='<span class="lbl" id="hud-best-label">En İyi</span><span class="val">—</span><span class="ico">⏱️</span>';
-  
-  leftSection.appendChild(hudTime);
-  leftSection.appendChild(hudScore);
-  rightSection.appendChild(hudBest);
-  
-  // Zaman barı - orta
-  const timebar=document.createElement('div');
-  timebar.id='rk-timebar';
-  timebar.className='rk-timebar';
-  timebar.innerHTML='<div id="rk-timefill" class="rk-timefill"></div>';
-  
-  // Seviye göstergeleri - orta
-  const levelsInline=document.createElement('div');
-  levelsInline.id='rk-levels-inline';
-  levelsInline.className='rk-levels-inline';
-  for(let i=1;i<=8;i++){
-    const sp=document.createElement('span');
-    sp.className='lvl';
-    sp.dataset.k=String(i);
-    sp.textContent=String(i);
-    levelsInline.appendChild(sp);
+  // Eğer underbar yoksa oluştur
+  if(!underbar) {
+    underbar = document.createElement('div');
+    underbar.id = 'rk-underbar';
+    underbar.className = 'rk-underbar';
+    underbar.setAttribute('role', 'region');
+    underbar.setAttribute('aria-label', 'Oyun bilgileri');
+    insertAfter(board, underbar);
   }
-  levelsInline.style.display='none';
   
-  centerSection.appendChild(timebar);
-  centerSection.appendChild(levelsInline);
-  
-  underbar.appendChild(leftSection);
-  underbar.appendChild(centerSection);
-  underbar.appendChild(rightSection);
-  
-  insertAfter(board,underbar);
+  // Eğer underbar boşsa içeriği oluştur
+  if(underbar.children.length === 0) {
+    const leftSection = document.createElement('div');
+    leftSection.className = 'rk-underbar-left';
+    
+    const centerSection = document.createElement('div'); 
+    centerSection.className = 'rk-underbar-center';
+    
+    const rightSection = document.createElement('div');
+    rightSection.className = 'rk-underbar-right';
+    
+    // HUD elemanları - sol
+    const hudTime = document.createElement('div');
+    hudTime.id = 'hud-time';
+    hudTime.className = 'hud-chip';
+    hudTime.setAttribute('aria-label', 'Süre');
+    hudTime.innerHTML = '<span class="ico">⏱️</span><span class="lbl">Süre</span><span class="val">00:00</span>';
+    
+    const hudScore = document.createElement('div');
+    hudScore.id = 'hud-score'; 
+    hudScore.className = 'hud-chip';
+    hudScore.setAttribute('aria-label', 'Skor');
+    hudScore.innerHTML = '<span class="lbl">Skor</span><span class="val">00</span><span class="ico">♟️</span>';
+    
+    const hudBest = document.createElement('div');
+    hudBest.id = 'hud-best';
+    hudBest.className = 'hud-chip';
+    hudBest.setAttribute('aria-label', 'En İyi');  
+    hudBest.innerHTML = '<span class="lbl" id="hud-best-label">En İyi</span><span class="val">—</span><span class="ico">⏱️</span>';
+    
+    leftSection.appendChild(hudTime);
+    leftSection.appendChild(hudScore);
+    rightSection.appendChild(hudBest);
+    
+    // Zaman barı - orta
+    const timebar = document.createElement('div');
+    timebar.id = 'rk-timebar';
+    timebar.className = 'rk-timebar';
+    timebar.innerHTML = '<div id="rk-timefill" class="rk-timefill"></div>';
+    
+    // Seviye göstergeleri - orta
+    const levelsInline = document.createElement('div');
+    levelsInline.id = 'rk-levels-inline';
+    levelsInline.className = 'rk-levels-inline';
+    for(let i = 1; i <= 8; i++) {
+      const sp = document.createElement('span');
+      sp.className = 'lvl';
+      sp.dataset.k = String(i);
+      sp.textContent = String(i);
+      levelsInline.appendChild(sp);
+    }
+    levelsInline.style.display = 'none';
+    
+    centerSection.appendChild(timebar);
+    centerSection.appendChild(levelsInline);
+    
+    underbar.appendChild(leftSection);
+    underbar.appendChild(centerSection);
+    underbar.appendChild(rightSection);
+  }
   
   // Overflow kontrolü
   function checkOverflow(){
-    const isOverflowing=underbar.scrollWidth>underbar.clientWidth;
-    underbar.classList.toggle('is-overflowing',isOverflowing);
+    const isOverflowing = underbar.scrollWidth > underbar.clientWidth;
+    underbar.classList.toggle('is-overflowing', isOverflowing);
   }
   
   checkOverflow();
-  const resizeObserver=new ResizeObserver(throttle(checkOverflow,100));
+  const resizeObserver = new ResizeObserver(throttle(checkOverflow, 100));
   resizeObserver.observe(underbar);
   RookUI._observers.push(resizeObserver);
 }
