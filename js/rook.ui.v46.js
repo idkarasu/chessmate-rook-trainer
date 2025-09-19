@@ -1,4 +1,4 @@
-/* rook.ui.js — v45 */
+/* rook.ui.js — v46 */
 
 (function(window,document){'use strict';
 
@@ -23,67 +23,91 @@ function ensureResultModal(){const host=getCardHost();let back=$('rk-modal-back'
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 6 - Seviye şeritleri --------------------------------------------------- */
-function ensureLevelsBar(){const host=$('cm-board');if(!host)return;if(!$('rk-levels')){const bar=document.createElement('div');bar.id='rk-levels';bar.className='rk-levels';for(let i=1;i<=8;i++){const sp=document.createElement('span');sp.className='lvl';sp.dataset.k=String(i);sp.textContent=String(i);bar.appendChild(sp)}host.appendChild(bar)}}function ensureLevelsInline(){if($('rk-levels-inline'))return;const wrap=$('rk-modebar');if(!wrap)return;const box=document.createElement('div');box.id='rk-levels-inline';box.className='rk-levels-inline';for(let i=1;i<=8;i++){const sp=document.createElement('span');sp.className='lvl';sp.dataset.k=String(i);sp.textContent=String(i);box.appendChild(sp)}box.style.display='none';wrap.appendChild(box)}function updateLevelsBars(activeWave){const update=(rootId)=>{const root=$(rootId);if(!root)return;root.querySelectorAll('.lvl').forEach(el=>{const k=parseInt(el.dataset.k,10);el.classList.toggle('active',k===activeWave);el.classList.toggle('done',k<activeWave);el.classList.toggle('todo',k>activeWave)})};update('rk-levels');update('rk-levels-inline')}
+function ensureLevelsBar(){const host=$('cm-board');if(!host)return;if(!$('rk-levels')){const bar=document.createElement('div');bar.id='rk-levels';bar.className='rk-levels';for(let i=1;i<=8;i++){const sp=document.createElement('span');sp.className='lvl';sp.dataset.k=String(i);sp.textContent=String(i);bar.appendChild(sp)}host.appendChild(bar)}}function updateLevelsBars(activeWave){const update=(rootId)=>{const root=$(rootId);if(!root)return;root.querySelectorAll('.lvl').forEach(el=>{const k=parseInt(el.dataset.k,10);el.classList.toggle('active',k===activeWave);el.classList.toggle('done',k<activeWave);el.classList.toggle('todo',k>activeWave)})};update('rk-levels');update('rk-levels-inline')}
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 7 - Paneller ----------------------------------------------------------- */
-function ensureModeBar(){
-  if($('rk-modebar'))return;
+/* 7 - Birleşik alt panel ------------------------------------------------- */
+function ensureUnderbar(){
+  if($('rk-underbar'))return;
   const board=$('cm-board');
   if(!board?.parentNode)return;
   
-  const modebar=document.createElement('div');
-  modebar.id='rk-modebar';
-  modebar.className='rk-softbar';
-  modebar.style.display='block';
+  const underbar=document.createElement('div');
+  underbar.id='rk-underbar';
+  underbar.className='rk-underbar';
+  underbar.setAttribute('role','region');
+  underbar.setAttribute('aria-label','Oyun bilgileri');
   
+  const leftSection=document.createElement('div');
+  leftSection.className='rk-underbar-left';
+  
+  const centerSection=document.createElement('div'); 
+  centerSection.className='rk-underbar-center';
+  
+  const rightSection=document.createElement('div');
+  rightSection.className='rk-underbar-right';
+  
+  // HUD elemanları - sol
+  const hudTime=document.createElement('div');
+  hudTime.id='hud-time';
+  hudTime.className='hud-chip';
+  hudTime.setAttribute('aria-label','Süre');
+  hudTime.innerHTML='<span class="ico">⏱️</span><span class="lbl">Süre</span><span class="val">00:00</span>';
+  
+  const hudScore=document.createElement('div');
+  hudScore.id='hud-score'; 
+  hudScore.className='hud-chip';
+  hudScore.setAttribute('aria-label','Skor');
+  hudScore.innerHTML='<span class="lbl">Skor</span><span class="val">00</span><span class="ico">♟️</span>';
+  
+  const hudBest=document.createElement('div');
+  hudBest.id='hud-best';
+  hudBest.className='hud-chip';
+  hudBest.setAttribute('aria-label','En İyi');  
+  hudBest.innerHTML='<span class="lbl" id="hud-best-label">En İyi</span><span class="val">—</span><span class="ico">⏱️</span>';
+  
+  leftSection.appendChild(hudTime);
+  leftSection.appendChild(hudScore);
+  rightSection.appendChild(hudBest);
+  
+  // Zaman barı - orta
   const timebar=document.createElement('div');
   timebar.id='rk-timebar';
   timebar.className='rk-timebar';
-  timebar.style.display='block';
   timebar.innerHTML='<div id="rk-timefill" class="rk-timefill"></div>';
   
-  modebar.appendChild(timebar);
-  insertAfter(board,modebar);
-}
-
-function ensureHud(){
-  if($('rk-hud'))return;
-  const board=$('cm-board');
-  if(!board?.parentNode)return;
-  const hud=document.createElement('div');
-  hud.id='rk-hud';
-  hud.className='rk-softbar';
-  hud.setAttribute('aria-live','polite');
-  hud.innerHTML='<div id="hud-time" class="hud-chip hud-left" aria-label="Süre"><span class="ico">⏱️</span><span class="lbl">Süre</span><span class="val">00:00</span></div><div id="hud-score" class="hud-chip hud-center" aria-label="Skor"><span class="lbl">Skor</span><span class="val">00</span><span class="ico">♟️</span></div><div id="hud-best" class="hud-chip hud-right" aria-label="En Hızlı"><span class="lbl" id="hud-best-label">En Hızlı</span><span class="val">—</span><span class="ico">⏱️</span></div>';
-  const modebar=$('rk-modebar');
-  if(modebar)insertAfter(modebar,hud);
-  else insertAfter(board,hud)
-}
-
-function ensureLevelsInline(){
-  if($('rk-levels-inline'))return;
-  let wrap=$('rk-modebar');
-  
-  if(!wrap){
-    ensureModeBar();
-    wrap=$('rk-modebar');
-  }
-  
-  if(!wrap)return;
-  
-  const box=document.createElement('div');
-  box.id='rk-levels-inline';
-  box.className='rk-levels-inline';
+  // Seviye göstergeleri - orta
+  const levelsInline=document.createElement('div');
+  levelsInline.id='rk-levels-inline';
+  levelsInline.className='rk-levels-inline';
   for(let i=1;i<=8;i++){
     const sp=document.createElement('span');
     sp.className='lvl';
     sp.dataset.k=String(i);
     sp.textContent=String(i);
-    box.appendChild(sp)
+    levelsInline.appendChild(sp);
   }
-  box.style.display='none';
-  wrap.appendChild(box)
+  levelsInline.style.display='none';
+  
+  centerSection.appendChild(timebar);
+  centerSection.appendChild(levelsInline);
+  
+  underbar.appendChild(leftSection);
+  underbar.appendChild(centerSection);
+  underbar.appendChild(rightSection);
+  
+  insertAfter(board,underbar);
+  
+  // Overflow kontrolü
+  function checkOverflow(){
+    const isOverflowing=underbar.scrollWidth>underbar.clientWidth;
+    underbar.classList.toggle('is-overflowing',isOverflowing);
+  }
+  
+  checkOverflow();
+  const resizeObserver=new ResizeObserver(throttle(checkOverflow,100));
+  resizeObserver.observe(underbar);
+  RookUI._observers.push(resizeObserver);
 }
 
 function showTimedBar(){
@@ -104,7 +128,7 @@ function setTimebarCoverage(cov){const fill=$('rk-timefill');if(!fill)return;con
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 9 - HUD ----------------------------------------------------------------- */
-function updateHud(){const RK=window.Rook;const hud=document.getElementById('rk-hud');if(!RK||!hud)return;const $time=document.querySelector('#hud-time .val');const $score=document.querySelector('#hud-score .val');const $best=document.querySelector('#hud-best .val');const $bestIco=document.querySelector('#hud-best .ico');const $bestLbl=document.getElementById('hud-best-label');const bestWrap=document.getElementById('hud-best');if($score)$score.textContent=pad2(RK.st.score|0);if(RK.st.mode==='timed'){if($time)$time.textContent=fmtMMSSDown60(Math.max(0,RK.st.timeLeft|0));if(bestWrap)bestWrap.setAttribute('aria-label','En İyi');if($bestLbl)$bestLbl.textContent='En İyi';if($best)$best.textContent=pad2(RK.st.bestTimed|0);if($bestIco)$bestIco.textContent='♟️'}else{if($time)$time.textContent=fmtMMSS(Math.max(0,RK.st.timeLeft|0));if(bestWrap)bestWrap.setAttribute('aria-label','En Hızlı');if($bestLbl)$bestLbl.textContent='En Hızlı';if($best)$best.textContent=fmtOrDashMMSS(RK.st.bestLevelsTime|0);if($bestIco)$bestIco.textContent='⏱️'}}
+function updateHud(){const RK=window.Rook;const hud=document.getElementById('rk-hud');if(!RK)return;const $time=document.querySelector('#hud-time .val');const $score=document.querySelector('#hud-score .val');const $best=document.querySelector('#hud-best .val');const $bestIco=document.querySelector('#hud-best .ico');const $bestLbl=document.getElementById('hud-best-label');const bestWrap=document.getElementById('hud-best');if($score)$score.textContent=pad2(RK.st.score|0);if(RK.st.mode==='timed'){if($time)$time.textContent=fmtMMSSDown60(Math.max(0,RK.st.timeLeft|0));if(bestWrap)bestWrap.setAttribute('aria-label','En İyi');if($bestLbl)$bestLbl.textContent='En İyi';if($best)$best.textContent=pad2(RK.st.bestTimed|0);if($bestIco)$bestIco.textContent='♟️'}else{if($time)$time.textContent=fmtMMSS(Math.max(0,RK.st.timeLeft|0));if(bestWrap)bestWrap.setAttribute('aria-label','En Hızlı');if($bestLbl)$bestLbl.textContent='En Hızlı';if($best)$best.textContent=fmtOrDashMMSS(RK.st.bestLevelsTime|0);if($bestIco)$bestIco.textContent='⏱️'}}
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 10 - Olay köprüleri ---------------------------------------------------- */
@@ -152,7 +176,7 @@ function initToolbarScroll(){
   RookUI._observers.push(resizeObserver)
 }
 
-on(document,'rk:ready',()=>{const RK=window.Rook;const modeSel=$('rk-mode-select');if(modeSel){const t=modeSel.querySelector('option[value="timed"]');const l=modeSel.querySelector('option[value="levels"]');if(t)t.textContent='⏱️ Zamana Karşı';if(l)l.textContent='🌊 Sekiz Dalga'}ensureResultModal();ensureLevelsBar();const overlay=$('rk-levels');if(overlay)overlay.style.display='none';ensureLevelsInline();ensureHud();if(RK.st.mode==='levels')showLevelsBar();else{showTimedBar();resetTimebarFull()}updateLevelsBars(RK.st.wave||1);updateHud();initToolbarScroll();const sideSel=$('rk-side-select');if(sideSel){sideSel.value=RK.st.side;on(sideSel,'change',e=>{RK.setSide(e.target.value);RK.hardReset()})}if(modeSel){modeSel.value=RK.st.mode;on(modeSel,'change',e=>RK.setMode(e.target.value))}const btnTheme=$('cm-theme-toggle');const btnBoard=$('cm-board-toggle');const btnSound=$('cm-sound-toggle');const btnHints=$('cm-hints');const btnStart=$('rk-start');if(btnTheme){btnTheme.title='Tema Değiştir';btnTheme.textContent=(RK.st.theme==='light'?'☀️':'🌙')}if(btnBoard){btnBoard.title=`Tahta Temasını Değiştir (${RK.st.boardSkin||'classic'})`}if(btnStart)btnStart.title='Başlat';if(btnSound){const onNow=!!RK.st.soundOn;setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})}if(btnHints){const onNow=!!RK.st.hintsOn;setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})}if(hasCMUI()){document.dispatchEvent(new CustomEvent('cm-theme',{detail:{theme:RK.st.theme}}));document.dispatchEvent(new CustomEvent('cm-board',{detail:{skin:RK.st.boardSkin}}))}on(btnTheme,'click',()=>RK.toggleTheme?.());on(btnBoard,'click',()=>RK.cycleBoard?.());on(btnSound,'click',()=>{const onNow=!RK.st.soundOn;RK.setSound(onNow);setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})});on(btnHints,'click',()=>{RK.toggleHints();const onNow=RK.st.hintsOn;setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})});on(btnStart,'click',async()=>{if(RK.st.mode==='timed')resetTimebarFull();updateHud();await rkCountdown(3);RK.start()});if(btnSound)btnSound.setAttribute('aria-pressed',RK.st.soundOn?'true':'false');if(btnHints)btnHints.setAttribute('aria-pressed',RK.st.hintsOn?'true':'false')},{once:true});
+on(document,'rk:ready',()=>{const RK=window.Rook;const modeSel=$('rk-mode-select');if(modeSel){const t=modeSel.querySelector('option[value="timed"]');const l=modeSel.querySelector('option[value="levels"]');if(t)t.textContent='⏱️ Zamana Karşı';if(l)l.textContent='🌊 Sekiz Dalga'}ensureResultModal();ensureLevelsBar();const overlay=$('rk-levels');if(overlay)overlay.style.display='none';ensureUnderbar();if(RK.st.mode==='levels')showLevelsBar();else{showTimedBar();resetTimebarFull()}updateLevelsBars(RK.st.wave||1);updateHud();initToolbarScroll();const sideSel=$('rk-side-select');if(sideSel){sideSel.value=RK.st.side;on(sideSel,'change',e=>{RK.setSide(e.target.value);RK.hardReset()})}if(modeSel){modeSel.value=RK.st.mode;on(modeSel,'change',e=>RK.setMode(e.target.value))}const btnTheme=$('cm-theme-toggle');const btnBoard=$('cm-board-toggle');const btnSound=$('cm-sound-toggle');const btnHints=$('cm-hints');const btnStart=$('rk-start');if(btnTheme){btnTheme.title='Tema Değiştir';btnTheme.textContent=(RK.st.theme==='light'?'☀️':'🌙')}if(btnBoard){btnBoard.title=`Tahta Temasını Değiştir (${RK.st.boardSkin||'classic'})`}if(btnStart)btnStart.title='Başlat';if(btnSound){const onNow=!!RK.st.soundOn;setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})}if(btnHints){const onNow=!!RK.st.hintsOn;setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})}if(hasCMUI()){document.dispatchEvent(new CustomEvent('cm-theme',{detail:{theme:RK.st.theme}}));document.dispatchEvent(new CustomEvent('cm-board',{detail:{skin:RK.st.boardSkin}}))}on(btnTheme,'click',()=>RK.toggleTheme?.());on(btnBoard,'click',()=>RK.cycleBoard?.());on(btnSound,'click',()=>{const onNow=!RK.st.soundOn;RK.setSound(onNow);setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})});on(btnHints,'click',()=>{RK.toggleHints();const onNow=RK.st.hintsOn;setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})});on(btnStart,'click',async()=>{if(RK.st.mode==='timed')resetTimebarFull();updateHud();await rkCountdown(3);RK.start()});if(btnSound)btnSound.setAttribute('aria-pressed',RK.st.soundOn?'true':'false');if(btnHints)btnHints.setAttribute('aria-pressed',RK.st.hintsOn?'true':'false')},{once:true});
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 12 - Cleanup ve lifecycle management ----------------------------------- */
