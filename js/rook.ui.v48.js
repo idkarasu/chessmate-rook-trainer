@@ -1,4 +1,4 @@
-/* rook.ui.js — v47 */
+/* rook.ui.js — v48 */
 
 (function(window,document){'use strict';
 
@@ -44,45 +44,17 @@ function ensureUnderbar(){
   
   // Eğer underbar boşsa içeriği oluştur
   if(underbar.children.length === 0) {
-    const leftSection = document.createElement('div');
-    leftSection.className = 'rk-underbar-left';
-    
+    // ÜST SATIR - Zaman barı/Seviyeler (ortalı)
     const centerSection = document.createElement('div'); 
     centerSection.className = 'rk-underbar-center';
     
-    const rightSection = document.createElement('div');
-    rightSection.className = 'rk-underbar-right';
-    
-    // HUD elemanları - sol
-    const hudTime = document.createElement('div');
-    hudTime.id = 'hud-time';
-    hudTime.className = 'hud-chip';
-    hudTime.setAttribute('aria-label', 'Süre');
-    hudTime.innerHTML = '<span class="ico">⏱️</span><span class="lbl">Süre</span><span class="val">00:00</span>';
-    
-    const hudScore = document.createElement('div');
-    hudScore.id = 'hud-score'; 
-    hudScore.className = 'hud-chip';
-    hudScore.setAttribute('aria-label', 'Skor');
-    hudScore.innerHTML = '<span class="lbl">Skor</span><span class="val">00</span><span class="ico">♟️</span>';
-    
-    const hudBest = document.createElement('div');
-    hudBest.id = 'hud-best';
-    hudBest.className = 'hud-chip';
-    hudBest.setAttribute('aria-label', 'En İyi');  
-    hudBest.innerHTML = '<span class="lbl" id="hud-best-label">En İyi</span><span class="val">—</span><span class="ico">⏱️</span>';
-    
-    leftSection.appendChild(hudTime);
-    leftSection.appendChild(hudScore);
-    rightSection.appendChild(hudBest);
-    
-    // Zaman barı - orta
+    // Zaman barı - üstte ortalı
     const timebar = document.createElement('div');
     timebar.id = 'rk-timebar';
     timebar.className = 'rk-timebar';
     timebar.innerHTML = '<div id="rk-timefill" class="rk-timefill"></div>';
     
-    // Seviye göstergeleri - orta
+    // Seviye göstergeleri - üstte ortalı
     const levelsInline = document.createElement('div');
     levelsInline.id = 'rk-levels-inline';
     levelsInline.className = 'rk-levels-inline';
@@ -98,9 +70,54 @@ function ensureUnderbar(){
     centerSection.appendChild(timebar);
     centerSection.appendChild(levelsInline);
     
-    underbar.appendChild(leftSection);
-    underbar.appendChild(centerSection);
-    underbar.appendChild(rightSection);
+    // ALT SATIR - HUD elemanları (justify-content: space-between)
+    const bottomSection = document.createElement('div');
+    bottomSection.className = 'rk-underbar-bottom';
+    
+    // Sol grup
+    const leftSection = document.createElement('div');
+    leftSection.className = 'rk-underbar-left';
+    
+    // Süre - sol tarafta
+    const hudTime = document.createElement('div');
+    hudTime.id = 'hud-time';
+    hudTime.className = 'hud-chip';
+    hudTime.setAttribute('aria-label', 'Süre');
+    hudTime.innerHTML = '<span class="ico">⏱️</span><span class="lbl">Süre</span><span class="val">00:00</span>';
+    leftSection.appendChild(hudTime);
+    
+    // Orta grup
+    const middleSection = document.createElement('div');
+    middleSection.className = 'rk-underbar-middle';
+    
+    // Skor - tam ortada
+    const hudScore = document.createElement('div');
+    hudScore.id = 'hud-score'; 
+    hudScore.className = 'hud-chip';
+    hudScore.setAttribute('aria-label', 'Skor');
+    hudScore.innerHTML = '<span class="lbl">Skor</span><span class="val">00</span><span class="ico">♟️</span>';
+    middleSection.appendChild(hudScore);
+    
+    // Sağ grup
+    const rightSection = document.createElement('div');
+    rightSection.className = 'rk-underbar-right';
+    
+    // En İyi - sağ tarafta
+    const hudBest = document.createElement('div');
+    hudBest.id = 'hud-best';
+    hudBest.className = 'hud-chip';
+    hudBest.setAttribute('aria-label', 'En İyi');  
+    hudBest.innerHTML = '<span class="lbl" id="hud-best-label">En İyi</span><span class="val">—</span><span class="ico">⏱️</span>';
+    rightSection.appendChild(hudBest);
+    
+    // Alt satırı oluştur
+    bottomSection.appendChild(leftSection);
+    bottomSection.appendChild(middleSection); 
+    bottomSection.appendChild(rightSection);
+    
+    // Ana konteynere ekle
+    underbar.appendChild(centerSection);  // Üst satır
+    underbar.appendChild(bottomSection);  // Alt satır
   }
   
   // Overflow kontrolü
