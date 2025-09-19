@@ -1,4 +1,4 @@
-/* rook.css — v70 */
+/* rook.css — v71 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -47,6 +47,52 @@ body.dark, body.dark-mode, .theme-dark, [data-theme="dark"], .cm-dark{
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 2 - Sayfa düzeni ve temel stiller ---------------------------------------- */
+:root{
+  --bg:#0D0F12; 
+  --text:#E9EDF1; 
+  --muted:#A7B0BA; 
+  --line:#232831; 
+  --panel:#11151b; 
+  --gold:#FFD700;
+  --btn:#12151a; 
+  --btn-border:#232831;
+  --hint:#3aa9ff;
+  --hintA:rgba(58,169,255,.9);
+  --modal-backdrop: rgba(0,0,0,.55);
+  --vh: 100dvh;
+  --hdr: 68px;
+  --ftr: 84px;
+  --ab: 0px;
+  --fit-epsilon: 2px;
+  --radius-lg:16px;
+  --radius-md:12px;
+  --shadow-sm:0 1px 2px rgba(16,24,40,.05);
+  --shadow-md:0 8px 24px rgba(16,24,40,.18);
+  --focus:#3AA9FF;
+  --cm-dur:180ms;
+  --rk-board-w-base:600px;
+  --rk-board-w:var(--rk-board-w-base);
+  --page-bottom-space: clamp(24px, 6svh, 80px);
+  --footer-top-space: clamp(16px, 4svh, 48px);
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body.cm-theme-light,
+body.light, body.light-mode, .theme-light, [data-theme="light"], .cm-light, [data-theme="day"], .day, .day-mode{
+  --bg:#F5F7FA;
+  --text:#0D0F12;
+  --muted:#556072;
+  --line:#DCE2EA;
+  --panel:#FFFFFF;
+  --btn:#F3F6FB;
+  --btn-border:#D8E0EA;
+  --modal-backdrop: rgba(255,255,255,.60);
+}
+body.cm-theme-dark,
+body.dark, body.dark-mode, .theme-dark, [data-theme="dark"], .cm-dark{
+  --modal-backdrop: rgba(0,0,0,.55);
+}
+
 html, body { height:100%; }
 body{
   margin:0; 
@@ -64,7 +110,8 @@ body{
   background:var(--panel);
   border:1px solid var(--line);
   border-radius:var(--radius-lg);
-  padding:6px 20px 20px;
+  padding:6px 20px;
+  padding-bottom: max(var(--page-bottom-space), env(safe-area-inset-bottom));
   box-shadow:var(--shadow-md);
   min-height: calc(var(--vh) - var(--ab) - var(--hdr) - var(--ftr) - var(--fit-epsilon));
   border-top:1px solid transparent;
@@ -520,7 +567,8 @@ body.cm-theme-light .rk-softbar{
 .rk-underbar{
   width:var(--rk-board-w);
   max-width:92vw;
-  margin:0 auto 6px;
+  margin:0 auto;
+  margin-bottom: 0;
   padding:8px 12px;
   background:rgba(255,255,255,.02);
   border:1px solid var(--line);
@@ -1089,7 +1137,7 @@ body.cm-theme-dark .rk-timebar{
 .cm-footer{
   background: transparent !important;
   border-top: 0 !important;
-  margin-top:0;
+  margin-top: var(--footer-top-space);
   height: var(--ftr);
   display: flex;
   align-items: center;
