@@ -1,4 +1,4 @@
-/* rook.ui.js — v44 */
+/* rook.ui.js — v45 */
 
 (function(window,document){'use strict';
 
