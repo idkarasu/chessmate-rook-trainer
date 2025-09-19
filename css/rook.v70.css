@@ -1,4 +1,4 @@
-/* rook.css — v69 */
+/* rook.css — v70 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -461,7 +461,7 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
   -webkit-backface-visibility:hidden;
   backface-visibility:hidden;
   transform:translateZ(0);
-  margin:6px auto 10px;
+  margin:6px auto 8px;
 }
 
 @media (hover: none) and (pointer: coarse){
@@ -520,7 +520,7 @@ body.cm-theme-light .rk-softbar{
 .rk-underbar{
   width:var(--rk-board-w);
   max-width:92vw;
-  margin:4px auto 6px;
+  margin:0 auto 6px;
   padding:8px 12px;
   background:rgba(255,255,255,.02);
   border:1px solid var(--line);
