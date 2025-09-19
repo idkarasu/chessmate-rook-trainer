@@ -1,4 +1,4 @@
-/* rook.css — v65 */
+/* rook.css — v66 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -575,10 +575,54 @@ body.cm-theme-light .rk-underbar.is-overflowing::after{
   flex:0 0 auto;
 }
 
+/* HUD chip'leri için yeni stiller */
+.rk-underbar .hud-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(4px,1vw,8px);
+  padding:.4em .6em;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--btn);
+  color:var(--text);
+  white-space:nowrap;
+  font-weight:700;
+  font-size:clamp(11px,2.2vw,14px);
+  line-height:1.2;
+}
+
+.rk-underbar .hud-chip .lbl{
+  font:600 clamp(9px,1.2vw,11px)/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  letter-spacing:.01em;
+  opacity:.85;
+  margin-inline:.1em .25em;
+}
+
+.rk-underbar .hud-chip .val{
+  font-variant-numeric:tabular-nums;
+  font-weight:800;
+}
+
+.rk-underbar .hud-chip .ico{
+  font-size:.9em;
+  line-height:1;
+}
+
 @media (max-width:768px){
   .rk-underbar{
     gap:10px;
     padding:6px 8px;
+  }
+  
+  .rk-underbar .hud-chip{
+    padding:.35em .5em;
+    gap:clamp(3px,0.8vw,6px);
+    font-size:clamp(10px,2vw,13px);
+  }
+  
+  .rk-underbar .hud-chip .lbl{
+    font-size:clamp(8px,1.1vw,10px);
   }
 }
 
@@ -587,49 +631,27 @@ body.cm-theme-light .rk-underbar.is-overflowing::after{
     gap:8px;
     padding:4px 6px;
   }
-}
-/* Bölüm sonu --------------------------------------------------------------- */
-
-/* 8 - HUD ------------------------------------------------------------------ */
-#rk-hud{
-  margin-top:0;
-  display:grid;
-  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
-  align-items:center;
-  justify-items:center;
-  text-align:center;
-  gap:clamp(6px,1.2vw,12px);
-  font-weight:800;
-  font-size:clamp(14px,2.6vw,20px);
-  line-height:1.35;
+  
+  .rk-underbar .hud-chip{
+    padding:.3em .4em;
+    gap:clamp(2px,0.6vw,4px);
+    font-size:clamp(9px,1.8vw,12px);
+  }
+  
+  .rk-underbar .hud-chip .lbl{
+    font-size:clamp(7px,1vw,9px);
+  }
 }
 
-#rk-hud .hud-chip{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:clamp(6px,1vw,10px);
-  padding:.55em .8em;
-  border:1px solid var(--line);
-  border-radius:12px;
+/* Tema uyumluluğu */
+body.cm-theme-light .rk-underbar .hud-chip{
   background:var(--btn);
   color:var(--text);
-  white-space:nowrap;
-  max-width:100%;
+  border-color:var(--btn-border);
 }
-
-#rk-hud .hud-chip .lbl{
-  font:600 clamp(11px,1.4vw,12px)/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  letter-spacing:.01em;
-  opacity:.9;
-  margin-inline:.2em .35em;
-}
-
-#rk-hud .hud-chip .val{font-variant-numeric:tabular-nums}
-#rk-hud .hud-chip .ico{font-size:1em;line-height:1}
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 9 - Zaman barı ----------------------------------------------------------- */
+/* 8 - Zaman barı ----------------------------------------------------------- */
 .rk-softbar .rk-timebar{
   position:relative;
   width:100%;
@@ -691,7 +713,7 @@ body.cm-theme-dark .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 10 - Seviyeler ------------------------------------------------------------ */
+/* 9 - Seviyeler ------------------------------------------------------------ */
 #rk-levels-inline{
   display:none;
   gap:6px;
@@ -727,7 +749,7 @@ body.cm-theme-dark .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 11 - İpuçları ------------------------------------------------------------ */
+/* 10 - İpuçları ------------------------------------------------------------ */
 #cm-board .square-highlight{box-shadow:inset 0 0 0 3px var(--gold)}
 #cm-board .square-hint,#cm-board .square-hint-cap{position:relative}
 #cm-board .square-hint::after{
@@ -761,7 +783,7 @@ body.cm-theme-dark .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 12 - Sürükleme ve etkileşim ---------------------------------------------- */
+/* 11 - Sürükleme ve etkileşim ---------------------------------------------- */
 #cm-board .piece-417db.dragging-31d41[data-piece="wR"].rk-drag-center,
 #cm-board .piece-417db.dragging-31d41[data-piece="bR"].rk-drag-center{
   transform:translate(-50%,-50%);
@@ -778,7 +800,7 @@ body.cm-theme-dark .rk-timebar{
 #cm-board img,#cm-board .piece-417db{-webkit-user-drag:none}
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 13 - Geri sayım modalı --------------------------------------------------- */
+/* 12 - Geri sayım modalı --------------------------------------------------- */
 #rk-countdown-back{
   display:none;
   position:absolute;
@@ -800,7 +822,7 @@ body.cm-theme-dark .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 14 - Sonuç modalı -------------------------------------------------------- */
+/* 13 - Sonuç modalı -------------------------------------------------------- */
 #rk-modal-back{
   display:none;
   position:absolute;
@@ -876,7 +898,7 @@ body.cm-theme-dark .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 15 - Koç baloncuğu ------------------------------------------------------- */
+/* 14 - Koç baloncuğu ------------------------------------------------------- */
 .rk-coach{
   width:var(--rk-board-w);
   max-width:92vw;
@@ -959,7 +981,7 @@ body.cm-theme-dark .rk-timebar{
 .rk-wrap.rk-has-coach .rk-title{display:none}
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 16 - Header/Footer ------------------------------------------------------- */
+/* 15 - Header/Footer ------------------------------------------------------- */
 .cm-container{
   max-width:1200px;
   margin:0 auto;
@@ -1075,7 +1097,7 @@ body.cm-theme-dark .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 17 - Arka plan deseni ---------------------------------------------------- */
+/* 16 - Arka plan deseni ---------------------------------------------------- */
 :root{
   --bg-grad-top-dark:#0b0e12;
   --bg-grad-bot-dark:#0D0F12;
@@ -1137,7 +1159,7 @@ html::before{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 18 - Tema uyumluluk ------------------------------------------------------ */
+/* 17 - Tema uyumluluk ------------------------------------------------------ */
 body.cm-theme-light .rk-wrap{
   background:var(--panel);
   color:var(--text);
@@ -1156,12 +1178,6 @@ body.cm-theme-light .cm-btn:hover{
   background:var(--btn-border);
 }
 
-body.cm-theme-light #rk-hud .hud-chip{
-  background:var(--btn);
-  color:var(--text);
-  border-color:var(--btn-border);
-}
-
 body.cm-theme-light #rk-levels-inline .lvl{
   color:var(--text);
   background:rgba(0,0,0,.06);
@@ -1178,7 +1194,7 @@ body.cm-theme-light .rk-coach__bubble{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 19 - Responsive ve erişilebilirlik --------------------------------------- */
+/* 18 - Responsive ve erişilebilirlik --------------------------------------- */
 @media (max-width:560px){
   button.cm-btn, button.rk-btn, select.cm-sel{ 
     height:44px; 
@@ -1261,12 +1277,12 @@ body.cm-theme-light .rk-coach__bubble{
 
 @media (prefers-contrast: more){
   :root{ --line:#AEB6C3; }
-  .rk-softbar, #rk-hud .hud-chip{ border-width:2px; }
+  .rk-softbar, .rk-underbar .hud-chip{ border-width:2px; }
   .cm-btn, .rk-btn, .cm-ico, .cm-sel{ border-color:#AEB6C3; box-shadow:none; }
 }
 
 @media (prefers-reduced-motion: reduce){
-  .cm-btn, .rk-btn, .cm-ico, #cm-board, #rk-levels-inline .lvl, #rk-hud, .rk-timefill{ 
+  .cm-btn, .rk-btn, .cm-ico, #cm-board, #rk-levels-inline .lvl, .rk-timefill{ 
     transition:none !important; 
     animation:none;
     scroll-behavior:auto;
@@ -1302,7 +1318,7 @@ img{ -webkit-user-drag:none; }
 input, textarea, [contenteditable="true"]{
   -webkit-touch-callout:default;
   -webkit-user-select:text;
-  user-text;
+  user-select:text;
 }
 
 @media (hover:none) and (pointer:coarse){
@@ -1311,7 +1327,7 @@ input, textarea, [contenteditable="true"]{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 20 - Mobil performans optimizasyonları ----------------------------------- */
+/* 19 - Mobil performans optimizasyonları ----------------------------------- */
 
 #cm-board,
 .rk-wrap,
