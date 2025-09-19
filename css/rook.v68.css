@@ -1,4 +1,4 @@
-/* rook.css — v67 */
+/* rook.css — v68 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -510,6 +510,12 @@ body.cm-theme-light .rk-softbar{
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 7 - Tahta altı birleşik panel -------------------------------------------- */
+:root {
+  /* HUD sabit boyut değişkenleri - pano genişliğiyle akıcı ölçek */
+  --hud-title-h: clamp(18px, 2.6vw, 24px);
+  --hud-gap: clamp(8px, 1.6vw, 16px);
+}
+
 .rk-underbar{
   width:var(--rk-board-w);
   max-width:92vw;
@@ -551,23 +557,26 @@ body.cm-theme-light .rk-underbar.is-overflowing::after{
   background:linear-gradient(to right, transparent, rgba(255,255,255,0.9));
 }
 
-/* Üst satır - Zaman barı/Seviyeler */
+/* Üst satır - Zaman barı/Seviyeler - SABİT YÜKSEKLİK */
 .rk-underbar-center{
   display:flex;
   align-items:center;
   justify-content:center;
   flex:0 0 auto;
   min-width:0;
+  min-height:var(--hud-title-h);
 }
 
-/* Alt satır - HUD elemanları */
+/* Alt satır - HUD elemanları - EŞİT BOŞLUKLAR (x/x/x) */
 .rk-underbar-bottom{
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  justify-content:center;
+  gap:var(--hud-gap);
   flex:0 0 auto;
   min-width:0;
   position:relative;
+  padding-inline:var(--hud-gap);
 }
 
 /* İnce ayırıcı çizgi */
@@ -601,29 +610,34 @@ body.cm-theme-light .rk-underbar.is-overflowing::after{
   display:flex;
   align-items:center;
   justify-content:center;
-  flex:1 1 0;
+  flex:0 0 auto;
   min-width:0;
 }
 
-/* HUD chip'leri için stiller */
+/* HUD elemanları flex davranışı */
+#hud-time, #hud-score, #hud-best {
+  flex:0 0 auto;
+}
+
+/* HUD chip'leri için stiller - 1.5× BÜYÜKLÜK */
 .rk-underbar .hud-chip{
   display:inline-flex;
   align-items:center;
   justify-content:center;
   gap:clamp(4px,1vw,8px);
-  padding:.4em .6em;
+  padding:calc(.4em * 1.5) calc(.6em * 1.5);
   border:1px solid var(--line);
-  border-radius:12px;
+  border-radius:calc(12px * 1.5);
   background:var(--btn);
   color:var(--text);
   white-space:nowrap;
   font-weight:700;
-  font-size:clamp(11px,2.2vw,14px);
-  line-height:1.2;
+  font-size:calc(clamp(11px,2.2vw,14px) * 1.5);
+  line-height:1.25;
 }
 
 .rk-underbar .hud-chip .lbl{
-  font:600 clamp(9px,1.2vw,11px)/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  font:600 calc(clamp(9px,1.2vw,11px) * 1.5)/1.25 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   letter-spacing:.01em;
   opacity:.85;
   margin-inline:.1em .25em;
@@ -646,13 +660,13 @@ body.cm-theme-light .rk-underbar.is-overflowing::after{
   }
   
   .rk-underbar .hud-chip{
-    padding:.35em .5em;
+    padding:calc(.35em * 1.5) calc(.5em * 1.5);
     gap:clamp(3px,0.8vw,6px);
-    font-size:clamp(10px,2vw,13px);
+    font-size:calc(clamp(10px,2vw,13px) * 1.5);
   }
   
   .rk-underbar .hud-chip .lbl{
-    font-size:clamp(8px,1.1vw,10px);
+    font-size:calc(clamp(8px,1.1vw,10px) * 1.5);
   }
 }
 
@@ -663,13 +677,13 @@ body.cm-theme-light .rk-underbar.is-overflowing::after{
   }
   
   .rk-underbar .hud-chip{
-    padding:.3em .4em;
+    padding:calc(.3em * 1.5) calc(.4em * 1.5);
     gap:clamp(2px,0.6vw,4px);
-    font-size:clamp(9px,1.8vw,12px);
+    font-size:calc(clamp(9px,1.8vw,12px) * 1.5);
   }
   
   .rk-underbar .hud-chip .lbl{
-    font-size:clamp(7px,1vw,9px);
+    font-size:calc(clamp(7px,1vw,9px) * 1.5);
   }
 }
 
@@ -681,12 +695,12 @@ body.cm-theme-light .rk-underbar .hud-chip{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 8 - Zaman barı ----------------------------------------------------------- */
+/* 8 - Zaman barı maske yardımcıları -------------------------------------- */
 .rk-softbar .rk-timebar{
   position:relative;
   width:100%;
   max-width:none;
-  height:12px;
+  height:var(--hud-title-h);
   border-radius:999px;
   background:var(--rk-softbar-bg);
   border:1px solid rgba(0,0,0,.15);
@@ -705,7 +719,7 @@ body.cm-theme-dark .rk-softbar .rk-timebar{
   position:relative;
   width:100%;
   max-width:none;
-  height:12px;
+  height:var(--hud-title-h);
   border-radius:999px;
   background:var(--rk-softbar-bg);
   border:1px solid rgba(0,0,0,.15);
@@ -752,18 +766,19 @@ body.cm-theme-dark .rk-timebar{
 }
 
 #rk-levels-inline .lvl{
-  width:22px;
-  height:22px;
+  width:var(--hud-title-h);
+  height:var(--hud-title-h);
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
-  font:700 12px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  font:700 clamp(10px,1.8vw,14px)/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   color:#E9EDF1;
   background:rgba(255,255,255,.08);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 1px 2px rgba(0,0,0,.25);
   opacity:.9;
   transition:transform .12s ease,background var(--cm-dur) ease,color var(--cm-dur) ease,opacity var(--cm-dur) ease;
+  flex:0 0 auto;
 }
 
 #rk-levels-inline .lvl.todo{opacity:.60}
