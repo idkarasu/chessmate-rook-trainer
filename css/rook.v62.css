@@ -1,4 +1,4 @@
-/* rook.css — v62 */
+/* rook.css — v62a */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -108,6 +108,7 @@ body{
   max-width:92vw;
   margin:0 auto;
   overflow:hidden;
+  position:relative;
 }
 
 .rk-toolbar{
@@ -131,18 +132,40 @@ body{
 }
 
 .cm-toolbar .rk-toolbar.rk-toolbar--single{
-  display:flex !important; 
-  flex-direction:row !important;
-  flex-wrap:nowrap !important; 
-  align-items:flex-end !important; 
-  justify-content:center !important;
-  gap:clamp(12px, 2vw, 16px) !important;
-  padding:8px 12px !important;
-  margin:0 !important;
+  display:flex; 
+  flex-direction:row; 
+  flex-wrap:nowrap; 
+  align-items:flex-end; 
+  justify-content:flex-start;
+  gap:clamp(12px, 2vw, 16px);
+  padding:8px 12px;
+  margin:0;
   min-width:0;
   border-radius:12px;
   background:rgba(255,255,255,.02);
   border:1px solid var(--line);
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+
+.cm-toolbar .rk-toolbar.rk-toolbar--single::-webkit-scrollbar{
+  display:none;
+}
+
+.cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::after{
+  content:"";
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  width:20px;
+  background:linear-gradient(to right, transparent, var(--panel));
+  pointer-events:none;
+  z-index:1;
 }
 
 body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
@@ -154,17 +177,18 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
   display:inline-flex;
   align-items:center;
   gap:4px;
-  flex:0 1 auto;
+  flex:0 0 auto;
   min-width:0;
 }
 
 .cm-toolbar .rk-toolbar--single .rk-group--side,
 .cm-toolbar .rk-toolbar--single .rk-group--mode{
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center !important;
-  gap:4px !important;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
   min-width:0;
+  flex:0 0 auto;
 }
 
 .rk-group--mode{
@@ -177,19 +201,20 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
 
 .cm-toolbar .rk-toolbar--single .rk-group--mode,
 .cm-toolbar .rk-toolbar--single .rk-group--start{
-  margin-left:0 !important;
-  margin-right:0 !important;
-  margin-top:0 !important;
-  margin-bottom:0 !important;
+  margin-left:0;
+  margin-right:0;
+  margin-top:0;
+  margin-bottom:0;
 }
 
 .rk-group--icons{
   display:inline-flex;
   gap:8px;
+  flex:0 0 auto;
 }
 
 .cm-toolbar .rk-toolbar--single .rk-group--icons{
-  gap:6px !important;
+  gap:6px;
 }
 
 .cm-toolbar label, .rk-ctl-label{
@@ -221,18 +246,17 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
+  flex:0 0 auto;
 }
 
 @media (max-width:768px){
   .cm-toolbar .rk-toolbar--single{
-    flex-wrap:wrap !important;
-    gap:10px !important;
-    justify-content:center !important;
-    padding:6px 8px !important;
+    gap:10px;
+    padding:6px 8px;
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group{
-    margin:0 !important;
+    margin:0;
   }
   
   .cm-toolbar .rk-toolbar--single .rk-ctl-label{
@@ -246,7 +270,7 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group--icons{
-    gap:4px !important;
+    gap:4px;
   }
   
   .rk-toolbar--top{
@@ -272,9 +296,8 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
 
 @media (max-width:560px){
   .cm-toolbar .rk-toolbar--single{
-    gap:8px !important;
-    padding:4px 6px !important;
-    flex-wrap:wrap !important;
+    gap:8px;
+    padding:4px 6px;
   }
   
   .cm-toolbar .rk-toolbar--single .rk-btn--icon{
@@ -323,9 +346,8 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single{
 
 @media (max-width:480px){
   .cm-toolbar .rk-toolbar--single{
-    gap:6px !important;
-    padding:4px !important;
-    flex-wrap:wrap !important;
+    gap:6px;
+    padding:4px;
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group{
