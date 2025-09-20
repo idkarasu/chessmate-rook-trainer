@@ -1,7 +1,8 @@
-/* rook.css — v77c */
+/* rook.css — v77d */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
+  /* Temalar / renkler */
   --bg:#0D0F12; 
   --text:#E9EDF1; 
   --muted:#A7B0BA; 
@@ -13,6 +14,8 @@
   --hint:#3aa9ff;
   --hintA:rgba(58,169,255,.9);
   --modal-backdrop: rgba(0,0,0,.55);
+
+  /* Boyutlar / iskelet */
   --vh: 100dvh;
   --hdr: 68px;
   --ftr: 72px;
@@ -24,56 +27,94 @@
   --shadow-md:0 8px 24px rgba(16,24,40,.18);
   --focus:#3AA9FF;
   --cm-dur:180ms;
+
+  /* Tahta */
   --rk-board-w-base:600px;
   --rk-board-w:var(--rk-board-w-base);
+
+  /* Dikey boşluklar (normal mod) */
   --page-bottom-space: clamp(4px, 1svh, 16px);
   --footer-top-space: clamp(2px, 0.8svh, 12px);
   --page-stretch: clamp(0px, 2svh, 20px);
-  /* Board tabanlı ritim + App-Fixed'te svh kaynaklı boşlukları kapat */
-  --vr: clamp(4px, calc(var(--rk-board-w) * 0.01), 12px);
-  /* App-Fixed altında daha kısa footer yüksekliği */
-  --ftr-app: 56px;
-  
-  /* Master ölçek + yardımcı değişkenler */
-  /* Ekranın kısa kenarına ve board genişliğine göre birleşik ölçek:
-     min: küçük cihazlarda aşırı küçülmeyi engeller
-     preferred: kısa kenar / referans (375) ile,
-     board bağı da: var(--rk-board-w) / 600 (mevcut taban)
-  */
-  --ui-scale: clamp(.80,
-                    min( 100svh / 812 , 100svw / 375 , (var(--rk-board-w) / 600) ),
-                    1.15);
 
-  /* Ortak atomikler: ikon, boşluk, radius, font multipliers */
-  --ui-font: calc(var(--ui-scale) * 1rem);
-  --ui-icon: calc(var(--ui-scale) * 18px);
-  --ui-gap:  calc(var(--ui-scale) * 12px);
-  --ui-padY: calc(var(--ui-scale) * 8px);
-  --ui-padX: calc(var(--ui-scale) * 12px);
-  --ui-rad:  calc(var(--ui-scale) * 12px);
+  /* Tahta tabanlı ritim + App-Fixed’te svh boşluklarını kapat */
+  --vr: clamp(4px, calc(var(--rk-board-w) * 0.01), 12px);
+  --ftr-app: 56px;
+
+  /* ===== UI MASTER ÖLÇEK – GÜVENLİ FALLBACK =====
+     1) Önce güvenli (destek yoksa) -> 1
+     2) SV *varsa* -> svh/svw ile
+     3) Değilse DV *varsa* -> dvh + vw ile
+     4) Son çare -> vh + vw
+  ------------------------------------------------- */
+  --ui-scale: 1;                 /* BASE FALLBACK */
+  --ui-font: 1rem;               /* BASE FALLBACK */
+  --ui-icon: 18px;
+  --ui-gap:  12px;
+  --ui-padY: 8px;
+  --ui-padX: 12px;
+  --ui-rad:  12px;
 }
 
-/* App-Fixed aktifken svh/clamp tabanlı boşluklar devre dışı */
+/* SV destekliyse */
+@supports (height: 1svh) {
+  :root{
+    --ui-scale: clamp(.80,
+                      min( 100svh / 812 , 100svw / 375 , (var(--rk-board-w) / 600) ),
+                      1.15);
+    --ui-font: calc(var(--ui-scale) * 1rem);
+    --ui-icon: calc(var(--ui-scale) * 18px);
+    --ui-gap:  calc(var(--ui-scale) * 12px);
+    --ui-padY: calc(var(--ui-scale) * 8px);
+    --ui-padX: calc(var(--ui-scale) * 12px);
+    --ui-rad:  calc(var(--ui-scale) * 12px);
+  }
+}
+
+/* DV destekliyse (sv yoksa) */
+@supports (height: 1dvh) {
+  :root{
+    --ui-scale: clamp(.80,
+                      min( 100dvh / 812 , 100vw / 375 , (var(--rk-board-w) / 600) ),
+                      1.15);
+    --ui-font: calc(var(--ui-scale) * 1rem);
+    --ui-icon: calc(var(--ui-scale) * 18px);
+    --ui-gap:  calc(var(--ui-scale) * 12px);
+    --ui-padY: calc(var(--ui-scale) * 8px);
+    --ui-padX: calc(var(--ui-scale) * 12px);
+    --ui-rad:  calc(var(--ui-scale) * 12px);
+  }
+}
+
+/* Son çare: klasik vh/vw */
+@supports (height: 1vh) {
+  :root{
+    --ui-scale: clamp(.80,
+                      min( 100vh / 812 , 100vw / 375 , (var(--rk-board-w) / 600) ),
+                      1.15);
+    --ui-font: calc(var(--ui-scale) * 1rem);
+    --ui-icon: calc(var(--ui-scale) * 18px);
+    --ui-gap:  calc(var(--ui-scale) * 12px);
+    --ui-padY: calc(var(--ui-scale) * 8px);
+    --ui-padX: calc(var(--ui-scale) * 12px);
+    --ui-rad:  calc(var(--ui-scale) * 12px);
+  }
+}
+
+/* App-Fixed: svh/clamp boşluklar devre dışı kalsın, ölçek aktif olsun */
 body.app-fixed{
   --page-bottom-space: 0px;
   --footer-top-space: 0px;
   --page-stretch: 0px;
+  font-size: var(--ui-font);
 }
 
-/* App-Fixed altında ölçek aktif kalsın */
-body.app-fixed{ font-size: var(--ui-font); }
-
+/* Tema varyantları (değişmedi) */
 html { -webkit-text-size-adjust: 100%; }
 body.cm-theme-light,
 body.light, body.light-mode, .theme-light, [data-theme="light"], .cm-light, [data-theme="day"], .day, .day-mode{
-  --bg:#F5F7FA;
-  --text:#0D0F12;
-  --muted:#556072;
-  --line:#DCE2EA;
-  --panel:#FFFFFF;
-  --btn:#F3F6FB;
-  --btn-border:#D8E0EA;
-  --modal-backdrop: rgba(255,255,255,.60);
+  --bg:#F5F7FA; --text:#0D0F12; --muted:#556072; --line:#DCE2EA; --panel:#FFFFFF;
+  --btn:#F3F6FB; --btn-border:#D8E0EA; --modal-backdrop: rgba(255,255,255,.60);
 }
 body.cm-theme-dark,
 body.dark, body.dark-mode, .theme-dark, [data-theme="dark"], .cm-dark{
@@ -81,36 +122,16 @@ body.dark, body.dark-mode, .theme-dark, [data-theme="dark"], .cm-dark{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
+
 /* 2 - Sayfa düzeni ve temel stiller ---------------------------------------- */
-:root{
-  --bg:#0D0F12; 
-  --text:#E9EDF1; 
-  --muted:#A7B0BA; 
-  --line:#232831; 
-  --panel:#11151b; 
-  --gold:#FFD700;
-  --btn:#12151a; 
-  --btn-border:#232831;
-  --hint:#3aa9ff;
-  --hintA:rgba(58,169,255,.9);
-  --modal-backdrop: rgba(0,0,0,.55);
-  --vh: 100dvh;
-  --hdr: 68px;
-  --ftr: 72px;
-  --ab: 0px;
-  --fit-epsilon: 2px;
-  --radius-lg:16px;
-  --radius-md:12px;
-  --shadow-sm:0 1px 2px rgba(16,24,40,.05);
-  --shadow-md:0 8px 24px rgba(16,24,40,.18);
-  --focus:#3AA9FF;
-  --cm-dur:180ms;
-  --rk-board-w-base:600px;
-  --rk-board-w:var(--rk-board-w-base);
-  --page-bottom-space: clamp(4px, 1svh, 16px);
-  --footer-top-space: clamp(2px, 0.8svh, 12px);
-  --page-stretch: clamp(0px, 2svh, 20px);
-  --vr: clamp(4px, calc(var(--rk-board-w) * 0.01), 12px);
+html, body { height:100%; }
+body{
+  margin:0; 
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",Arial,sans-serif;
+  background:linear-gradient(180deg,#0b0e12 0%,var(--bg) 100%);
+  min-height: var(--vh);
+  padding-top: 0;
 }
 
 body.app-fixed{
