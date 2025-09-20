@@ -1,4 +1,4 @@
-/* rook.css — v79 */
+/* rook.css — v80 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -1135,21 +1135,26 @@ body.cm-theme-dark .rk-timebar{
   background: transparent !important;
   border-bottom: none !important;
   box-shadow: none !important;
-  height: var(--hdr);
-  margin-top: -20px;
+  /* RESPONSIVE: viewport tabanlı yükseklik + safe-area */
+  height: clamp(56px, 8vh, 80px);
+  padding-top: env(safe-area-inset-top, 0px);
+  margin-top: clamp(-24px, -3vh, -16px);
   margin-bottom: 0;
 }
 
 .cm-nav-inner{
   display:grid; 
   align-items:center; 
-  height:68px;
+  /* RESPONSIVE: dinamik yükseklik */
+  height: clamp(56px, 8vh, 80px);
   grid-template-columns: 1fr auto 1fr;
+  /* RESPONSIVE: padding orantılı */
+  padding: 0 clamp(8px, 2vw, 20px);
 }
 
 .cm-brand{
   display:flex; 
-  gap:12px; 
+  gap: clamp(8px, 1.5vw, 16px); 
   align-items:center; 
   font-weight:800; 
   color:var(--text); 
@@ -1161,22 +1166,25 @@ body.cm-theme-dark .rk-timebar{
 .cm-brand:hover{opacity:.95}
 
 .cm-logo-img{
-  width:32px;
-  height:32px;
-  border-radius:6px;
+  /* RESPONSIVE: logo boyutu orantılı */
+  width: clamp(24px, 4vw, 40px);
+  height: clamp(24px, 4vw, 40px);
+  border-radius: clamp(4px, 0.8vw, 8px);
   object-fit:cover;
   box-shadow:0 0 14px rgba(255,215,0,.25);
 }
 
 .cm-brand-text{
-  font-size: clamp(20px, 1.2rem + .4vw, 26px);
+  /* RESPONSIVE: brand text orantılı */
+  font-size: clamp(16px, 3.2vw, 28px);
   font-weight: 900;
   letter-spacing: .2px;
+  line-height: 1.1;
 }
 
 .cm-menu{
   display:flex; 
-  gap:12px; 
+  gap: clamp(8px, 1.5vw, 16px); 
   align-items:center; 
   justify-self:end;
 }
@@ -1223,8 +1231,9 @@ body.app-fixed .cm-footer::after{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  width:48px;
-  height:48px;
+  /* RESPONSIVE: sosyal ikon boyutu orantılı */
+  width: clamp(40px, 6vw, 56px);
+  height: clamp(40px, 6vw, 56px);
   border-radius:999px;
   background:var(--btn);
   border:1px solid var(--btn-border);
@@ -1234,8 +1243,9 @@ body.app-fixed .cm-footer::after{
 }
 
 .cm-ico svg{
-  width:24px;
-  height:24px;
+  /* RESPONSIVE: SVG boyutu orantılı */
+  width: clamp(20px, 3vw, 28px);
+  height: clamp(20px, 3vw, 28px);
   display:block;
 }
 
@@ -1249,9 +1259,69 @@ body.app-fixed .cm-footer::after{
 
 .cm-copy{
   color:var(--muted);
-  font-size:13px;
+  /* RESPONSIVE: footer text orantılı */
+  font-size: clamp(11px, 1.8vw, 14px);
   margin:0;
   text-align:center;
+  line-height: 1.4;
+}
+
+/* RESPONSIVE HEADER: mobil optimizasyonları */
+@media (max-width: 768px) {
+  .cm-nav {
+    height: clamp(48px, 7vh, 64px);
+    margin-top: clamp(-20px, -2.5vh, -12px);
+  }
+  
+  .cm-nav-inner {
+    height: clamp(48px, 7vh, 64px);
+    padding: 0 clamp(6px, 1.5vw, 12px);
+  }
+  
+  .cm-brand {
+    gap: clamp(6px, 1.2vw, 12px);
+  }
+  
+  .cm-logo-img {
+    width: clamp(20px, 3.5vw, 32px);
+    height: clamp(20px, 3.5vw, 32px);
+  }
+  
+  .cm-brand-text {
+    font-size: clamp(14px, 2.8vw, 22px);
+  }
+}
+
+/* ULTRA MOBILE: 480px altı */
+@media (max-width: 480px) {
+  .cm-nav {
+    height: clamp(44px, 6vh, 56px);
+    margin-top: clamp(-16px, -2vh, -8px);
+  }
+  
+  .cm-nav-inner {
+    height: clamp(44px, 6vh, 56px);
+    padding: 0 clamp(4px, 1vw, 8px);
+  }
+  
+  .cm-logo-img {
+    width: clamp(18px, 3vw, 28px);
+    height: clamp(18px, 3vw, 28px);
+  }
+  
+  .cm-brand-text {
+    font-size: clamp(12px, 2.5vw, 18px);
+  }
+  
+  .cm-ico {
+    width: clamp(36px, 5vw, 48px);
+    height: clamp(36px, 5vw, 48px);
+  }
+  
+  .cm-ico svg {
+    width: clamp(18px, 2.5vw, 24px);
+    height: clamp(18px, 2.5vw, 24px);
+  }
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
