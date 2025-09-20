@@ -1,4 +1,4 @@
-/* rook.css — v85 */
+/* rook.css — v86 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -184,7 +184,8 @@ body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar 
   display:block;
   -webkit-user-select:none; 
   user-select:none;
-  margin-bottom:12px;
+  /* RESPONSIVE: toolbar alt boşluk orantılı */
+  margin-bottom: clamp(8px, 1.5vw, 16px);
 }
 
 .rk-toolbar-wrap{
@@ -200,18 +201,22 @@ body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar 
   flex-wrap:wrap; 
   align-items:center; 
   justify-content:center;
-  gap:10px;
-  padding:3px 4px;
+  /* RESPONSIVE: gap orantılı ölçekleme */
+  gap: clamp(8px, 1.6vw, 14px);
+  /* RESPONSIVE: padding orantılı */
+  padding: clamp(2px, 0.6vw, 5px) clamp(3px, 0.8vw, 6px);
 }
 
 .rk-toolbar--top{ 
-  margin-bottom:6px; 
+  /* RESPONSIVE: alt boşluk orantılı */
+  margin-bottom: clamp(4px, 0.8vw, 8px); 
   flex-wrap:nowrap;
   min-width:0;
 }
 
 .rk-toolbar--bottom{ 
-  margin-top:6px; 
+  /* RESPONSIVE: üst boşluk orantılı */
+  margin-top: clamp(4px, 0.8vw, 8px); 
   flex-wrap:wrap;
 }
 
@@ -221,8 +226,10 @@ body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar 
   flex-wrap:nowrap; 
   align-items:flex-end; 
   justify-content:flex-start;
-  gap:clamp(12px, 2vw, 16px);
-  padding:8px 12px;
+  /* RESPONSIVE: gap orantılı */
+  gap: clamp(10px, 2vw, 18px);
+  /* RESPONSIVE: padding orantılı */
+  padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.6vw, 14px);
   margin:0;
   min-width:0;
   border-radius:12px;
@@ -265,7 +272,8 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 .rk-group{
   display:inline-flex;
   align-items:center;
-  gap:4px;
+  /* RESPONSIVE: grup içi gap orantılı */
+  gap: clamp(3px, 0.6vw, 6px);
   flex:0 0 auto;
   min-width:0;
 }
@@ -275,17 +283,18 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:4px;
+  /* RESPONSIVE: dikey gap orantılı */
+  gap: clamp(2px, 0.5vw, 5px);
   min-width:0;
   flex:0 0 auto;
 }
 
 .rk-group--mode{
-  margin-left:6px;
+  margin-left: clamp(4px, 0.8vw, 8px);
 }
 
 .rk-group--start{
-  margin-left:8px;
+  margin-left: clamp(6px, 1vw, 10px);
 }
 
 .cm-toolbar .rk-toolbar--single .rk-group--mode,
@@ -298,16 +307,19 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 .rk-group--icons{
   display:inline-flex;
-  gap:8px;
+  /* RESPONSIVE: ikon grubu gap orantılı */
+  gap: clamp(6px, 1.2vw, 12px);
   flex:0 0 auto;
 }
 
 .cm-toolbar .rk-toolbar--single .rk-group--icons{
-  gap:6px;
+  /* RESPONSIVE: single toolbar ikon gap */
+  gap: clamp(4px, 0.8vw, 8px);
 }
 
 .cm-toolbar label, .rk-ctl-label{
-  font-size:12px; 
+  /* RESPONSIVE: label font-size orantılı */
+  font-size: clamp(10px, 1.8vw, 14px); 
   font-weight:800; 
   color:var(--muted); 
   text-transform:uppercase; 
@@ -316,12 +328,13 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 }
 
 .cm-toolbar .rk-toolbar--single .rk-ctl-label{
-  font-size:9px;
+  /* RESPONSIVE: single toolbar label */
+  font-size: clamp(8px, 1.4vw, 11px);
   font-weight:700;
   white-space:nowrap;
   text-align:center;
   line-height:1;
-  margin-bottom:2px;
+  margin-bottom: clamp(1px, 0.3vw, 3px);
   order:-1;
 }
 
@@ -329,19 +342,22 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   min-width:auto;
   max-width:none;
   width:auto;
-  font-size:11px;
+  /* RESPONSIVE: select font-size orantılı */
+  font-size: clamp(9px, 1.6vw, 13px);
   text-align:center;
-  padding:0 12px;
+  /* RESPONSIVE: select padding orantılı */
+  padding: 0 clamp(8px, 1.6vw, 16px);
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
   flex:0 0 auto;
 }
 
+/* RESPONSIVE TOOLBAR: mobil optimizasyonları */
 @media (max-width:768px){
   .cm-toolbar .rk-toolbar--single{
-    gap:10px;
-    padding:6px 8px;
+    gap: clamp(8px, 1.4vw, 12px);
+    padding: clamp(4px, 0.8vw, 8px) clamp(6px, 1.2vw, 10px);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group{
@@ -349,29 +365,29 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   }
   
   .cm-toolbar .rk-toolbar--single .rk-ctl-label{
-    font-size:8px;
+    font-size: clamp(7px, 1.2vw, 10px);
   }
   
   .cm-toolbar .rk-toolbar--single .cm-sel{
     max-width:none;
-    font-size:10px;
-    padding:0 10px;
+    font-size: clamp(8px, 1.4vw, 12px);
+    padding: 0 clamp(6px, 1.2vw, 12px);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group--icons{
-    gap:4px;
+    gap: clamp(3px, 0.6vw, 6px);
   }
   
   .rk-toolbar--top{
     flex-wrap:wrap;
     justify-content:center;
-    gap:8px;
+    gap: clamp(6px, 1.2vw, 10px);
   }
   
   .rk-toolbar--bottom{
     flex-wrap:wrap;
     justify-content:center;
-    gap:8px;
+    gap: clamp(6px, 1.2vw, 10px);
   }
   
   .rk-group--mode{
@@ -385,43 +401,49 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 @media (max-width:560px){
   .cm-toolbar .rk-toolbar--single{
-    gap:8px;
-    padding:4px 6px;
+    gap: clamp(6px, 1vw, 10px);
+    padding: clamp(3px, 0.6vw, 6px) clamp(4px, 0.8vw, 8px);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-btn--icon{
-    width:36px;
-    height:36px;
-    font-size:16px;
+    /* RESPONSIVE: ikon buton boyutu */
+    width: clamp(32px, 6vw, 40px);
+    height: clamp(32px, 6vw, 40px);
+    /* RESPONSIVE: ikon font-size */
+    font-size: clamp(14px, 2.4vw, 18px);
   }
   
   .cm-toolbar .rk-toolbar--single #rk-start{
-    padding:0 8px;
-    font-size:11px;
-    height:36px;
+    /* RESPONSIVE: start buton padding */
+    padding: 0 clamp(6px, 1.2vw, 10px);
+    /* RESPONSIVE: start buton font-size */
+    font-size: clamp(9px, 1.6vw, 13px);
+    /* RESPONSIVE: start buton yükseklik */
+    height: clamp(32px, 6vw, 40px);
   }
   
   .cm-toolbar .rk-toolbar--single .cm-sel{
-    height:36px;
+    /* RESPONSIVE: select yükseklik */
+    height: clamp(32px, 6vw, 40px);
     max-width:none;
-    font-size:9px;
-    padding:0 8px;
+    font-size: clamp(7px, 1.2vw, 11px);
+    padding: 0 clamp(5px, 1vw, 9px);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-ctl-label{
-    font-size:7px;
+    font-size: clamp(6px, 1vw, 9px);
   }
   
   .rk-toolbar--top{
     flex-wrap:wrap;
     justify-content:center;
-    gap:8px;
+    gap: clamp(5px, 1vw, 9px);
   }
   
   .rk-toolbar--bottom{
     flex-wrap:wrap;
     justify-content:center;
-    gap:8px;
+    gap: clamp(5px, 1vw, 9px);
   }
   
   .rk-group--mode{
@@ -435,8 +457,8 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 @media (max-width:480px){
   .cm-toolbar .rk-toolbar--single{
-    gap:6px;
-    padding:4px;
+    gap: clamp(4px, 0.8vw, 8px);
+    padding: clamp(2px, 0.4vw, 4px) clamp(3px, 0.6vw, 6px);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group{
@@ -448,7 +470,7 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   .cm-toolbar .rk-toolbar--single .rk-group--side,
   .cm-toolbar .rk-toolbar--single .rk-group--mode{
     flex-basis:auto;
-    margin-bottom:2px;
+    margin-bottom: clamp(1px, 0.2vw, 2px);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group--start,
@@ -457,8 +479,8 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   }
   
   .cm-toolbar .rk-toolbar--single .cm-sel{
-    font-size:8px;
-    padding:0 6px;
+    font-size: clamp(6px, 1vw, 9px);
+    padding: 0 clamp(4px, 0.8vw, 7px);
   }
 }
 
@@ -472,9 +494,11 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 /* 4 - Butonlar ve seçim kutuları ------------------------------------------- */
 button.cm-btn, button.rk-btn, select.cm-sel{
-  height:38px; 
-  padding:0 12px; 
-  border-radius:12px; 
+  /* RESPONSIVE: buton yükseklik orantılı */
+  height: clamp(34px, 6vw, 44px); 
+  /* RESPONSIVE: buton padding orantılı */
+  padding: 0 clamp(8px, 1.6vw, 16px); 
+  border-radius: clamp(8px, 1.5vw, 14px); 
   border:1px solid var(--line);
   background:var(--btn); 
   color:var(--text); 
@@ -487,8 +511,10 @@ button.cm-btn, button.rk-btn, select.cm-sel{
   align-items:center;
   justify-content:center;
   gap:.5rem;
-  min-width:44px;
-  font:600 12px/1 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,Arial,sans-serif;
+  /* RESPONSIVE: minimum dokunma hedefi */
+  min-width: clamp(40px, 7vw, 48px);
+  /* RESPONSIVE: buton font-size orantılı */
+  font: 600 clamp(10px, 1.8vw, 14px)/1 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,Arial,sans-serif;
 }
 
 button.cm-btn:hover, button.rk-btn:hover, select.cm-sel:hover{ 
@@ -512,15 +538,38 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
 #cm-board-toggle,
 #cm-sound-toggle,
 #cm-hints{
-  width:38px; 
-  height:38px; 
+  /* RESPONSIVE: ikon buton boyutu orantılı */
+  width: clamp(34px, 6vw, 44px); 
+  height: clamp(34px, 6vw, 44px); 
   padding:0; 
   display:inline-grid; 
   place-items:center; 
-  font-size:18px; 
+  /* RESPONSIVE: ikon font-size orantılı */
+  font-size: clamp(14px, 2.4vw, 20px); 
   line-height:1;
-  border-radius:10px;
-  min-width:38px;
+  border-radius: clamp(6px, 1.2vw, 12px);
+  /* RESPONSIVE: minimum boyut */
+  min-width: clamp(34px, 6vw, 44px);
+}
+
+/* RESPONSIVE BUTTON: mobil optimizasyonları */
+@media (max-width:560px){
+  button.cm-btn, button.rk-btn, select.cm-sel{ 
+    /* RESPONSIVE: mobilde güvenli dokunma boyutu */
+    height: clamp(38px, 7vw, 48px); 
+    min-height: clamp(38px, 7vw, 48px);
+  }
+  
+  .rk-btn--icon, 
+  #cm-theme-toggle,
+  #cm-board-toggle,
+  #cm-sound-toggle,
+  #cm-hints{
+    /* RESPONSIVE: mobilde ikon buton güvenli boyut */
+    width: clamp(38px, 7vw, 48px);
+    height: clamp(38px, 7vw, 48px);
+    min-width: clamp(38px, 7vw, 48px);
+  }
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
