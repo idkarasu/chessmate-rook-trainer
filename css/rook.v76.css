@@ -1,4 +1,4 @@
-/* rook.css — v75 */
+/* rook.css — v76 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -31,6 +31,8 @@
   --page-stretch: clamp(0px, 2svh, 20px);
   /* Board tabanlı ritim + App-Fixed'te svh kaynaklı boşlukları kapat */
   --vr: clamp(4px, calc(var(--rk-board-w) * 0.01), 12px);
+  /* App-Fixed altında daha kısa footer yüksekliği */
+  --ftr-app: 56px;
 }
 
 /* App-Fixed aktifken svh/clamp tabanlı boşluklar devre dışı */
@@ -1191,9 +1193,10 @@ body.cm-theme-dark .rk-timebar{
   position: relative;
 }
 
-/* Footer üstü = --vr, alt stretch kapalı; safe-area korunur */
+/* 1) App-Fixed'te footer yükseklik azaltımı ve safe-area koruması */
 body.app-fixed .cm-footer{
-  margin-top: var(--vr);
+  height: var(--ftr-app);              /* 56px */
+  margin-top: var(--vr);               /* HUD↔footer aralığı aynı ritimle */
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -1203,12 +1206,18 @@ body.app-fixed .cm-footer{
   block-size: var(--page-stretch);
 }
 
+/* 4) Stretch zaten App-Fixed'te kapalı kalmalı — teyit */
 body.app-fixed .cm-footer::after{
   block-size: 0; /* stretch devre dışı */
 }
 
 .cm-footer .cm-container{
   padding:12px 5%;
+}
+
+/* 2) İç konteynerin dikey paddingini küçült (12→8) */
+body.app-fixed .cm-footer .cm-container{
+  padding-block: 8px;
 }
 
 .cm-social{
@@ -1252,6 +1261,12 @@ body.app-fixed .cm-footer::after{
   font-size:13px;
   margin:0;
   text-align:center;
+}
+
+/* 3) Telif satırı için garanti alt boşluk (safe-area ile birlikte) */
+body.app-fixed .cm-footer .cm-copy{
+  padding-bottom: max(6px, env(safe-area-inset-bottom));
+  line-height: 1.15;
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
