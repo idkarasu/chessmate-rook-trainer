@@ -1,4 +1,4 @@
-/* rook.css — v82 */
+/* rook.css — v83 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -1039,8 +1039,6 @@ body.cm-theme-dark .rk-timebar{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* rook.css — v81 */
-
 /* 14 - Koç baloncuğu ------------------------------------------------------- */
 .rk-coach{
   width:var(--rk-board-w);
@@ -1100,9 +1098,21 @@ body.cm-theme-dark .rk-timebar{
   background:var(--rk-softbar-bg);
   color:var(--text);
   box-shadow:0 2px 10px rgba(0,0,0,.08),inset 0 -1px 0 rgba(255,255,255,.06);
-  /* RESPONSIVE: bubble max height - taşmasın */
-  max-height: inherit;
-  overflow: hidden;
+  /* RESPONSIVE: bubble yüksekliği = avatar yüksekliği */
+  height: clamp(48px, 12vw, 96px);
+  max-height: min(96px, 12vh);
+  /* Bubble içeriği taşarsa scroll */
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* İçerik dikey ortalama */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.rk-coach__bubble::-webkit-scrollbar {
+  display: none;
 }
 
 .rk-coach__title{
@@ -1114,6 +1124,7 @@ body.cm-theme-dark .rk-timebar{
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
+  flex-shrink: 0;
 }
 
 .rk-coach__desc{
@@ -1130,6 +1141,7 @@ body.cm-theme-dark .rk-timebar{
   hyphens:auto;
   overflow-wrap:anywhere;
   word-break:break-word;
+  flex: 1 1 auto;
 }
 
 .rk-coach .hl{color:var(--gold);font-weight:800}
@@ -1152,6 +1164,9 @@ body.cm-theme-dark .rk-timebar{
   
   .rk-coach__bubble {
     padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.6vw, 12px);
+    /* Bubble yüksekliği = avatar yüksekliği (768px breakpoint) */
+    height: clamp(42px, 10vw, 80px);
+    max-height: min(80px, 11vh);
   }
   
   .rk-coach__title {
@@ -1180,6 +1195,9 @@ body.cm-theme-dark .rk-timebar{
   
   .rk-coach__bubble {
     padding: clamp(4px, 1vw, 8px) clamp(6px, 1.2vw, 10px);
+    /* Bubble yüksekliği = avatar yüksekliği (480px breakpoint) */
+    height: clamp(38px, 8vw, 68px);
+    max-height: min(68px, 10vh);
   }
   
   .rk-coach__title {
