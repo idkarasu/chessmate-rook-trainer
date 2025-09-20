@@ -1,4 +1,4 @@
-/* rook.css — v83 */
+/* rook.css — v84 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -1109,6 +1109,8 @@ body.cm-theme-dark .rk-timebar{
   display: flex;
   flex-direction: column;
   justify-content: center;
+  /* CSS Variable - bubble yüksekliğini text scaling için */
+  --bubble-height: clamp(48px, 12vw, 96px);
 }
 
 .rk-coach__bubble::-webkit-scrollbar {
@@ -1117,8 +1119,11 @@ body.cm-theme-dark .rk-timebar{
 
 .rk-coach__title{
   margin:0 0 4px 0;
-  /* RESPONSIVE: başlık font-size orantılı */
-  font:800 clamp(8px, 2.4vw, 14px)/1.2 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  /* RESPONSIVE: başlık font-size bubble yüksekliğine orantılı (20% bubble) */
+  font-size: max(8px, min(14px, calc(var(--bubble-height) * 0.20)));
+  font-weight: 800;
+  line-height: 1.2;
+  font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   color:var(--gold);
   text-align:center;
   white-space:nowrap;
@@ -1129,19 +1134,26 @@ body.cm-theme-dark .rk-timebar{
 
 .rk-coach__desc{
   margin:0;
-  /* RESPONSIVE: açıklama font-size orantılı */
-  font:600 clamp(7px, 1.6vw, 12px)/1.3 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  /* RESPONSIVE: açıklama font-size bubble yüksekliğine orantılı (13% bubble) */
+  font-size: max(6px, min(12px, calc(var(--bubble-height) * 0.13)));
+  font-weight: 600;
+  line-height: 1.3;
+  font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   opacity:.96;
   text-align:center;
+  /* 3 satır garantisi - bubble yüksekliğine dinamik */
   display:-webkit-box;
   -webkit-line-clamp:3;
   -webkit-box-orient:vertical;
   overflow:hidden;
-  max-height:calc(1.3em * 3);
+  max-height: calc(var(--bubble-height) * 0.70);
   hyphens:auto;
-  overflow-wrap:anywhere;
+  overflow-wrap:break-word;
   word-break:break-word;
   flex: 1 1 auto;
+  /* Taşma kontrolü - sağ sol padding dahil */
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .rk-coach .hl{color:var(--gold);font-weight:800}
@@ -1167,14 +1179,8 @@ body.cm-theme-dark .rk-timebar{
     /* Bubble yüksekliği = avatar yüksekliği (768px breakpoint) */
     height: clamp(42px, 10vw, 80px);
     max-height: min(80px, 11vh);
-  }
-  
-  .rk-coach__title {
-    font-size: clamp(7px, 2vw, 12px);
-  }
-  
-  .rk-coach__desc {
-    font-size: clamp(6px, 1.4vw, 10px);
+    /* CSS Variable güncelle */
+    --bubble-height: clamp(42px, 10vw, 80px);
   }
 }
 
@@ -1198,18 +1204,14 @@ body.cm-theme-dark .rk-timebar{
     /* Bubble yüksekliği = avatar yüksekliği (480px breakpoint) */
     height: clamp(38px, 8vw, 68px);
     max-height: min(68px, 10vh);
-  }
-  
-  .rk-coach__title {
-    font-size: clamp(6px, 1.8vw, 10px);
-    margin-bottom: 2px;
+    /* CSS Variable güncelle */
+    --bubble-height: clamp(38px, 8vw, 68px);
   }
   
   .rk-coach__desc {
-    font-size: clamp(5px, 1.2vw, 9px);
-    line-height: 1.2;
+    /* Küçük ekranlarda 2 satıra düş */
     -webkit-line-clamp: 2;
-    max-height: calc(1.2em * 2);
+    max-height: calc(var(--bubble-height) * 0.60);
   }
 }
 
