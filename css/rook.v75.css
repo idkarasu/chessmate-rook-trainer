@@ -1,4 +1,4 @@
-/* rook.css — v74 */
+/* rook.css — v75 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -29,9 +29,11 @@
   --page-bottom-space: clamp(4px, 1svh, 16px);
   --footer-top-space: clamp(2px, 0.8svh, 12px);
   --page-stretch: clamp(0px, 2svh, 20px);
+  /* Board tabanlı ritim + App-Fixed'te svh kaynaklı boşlukları kapat */
   --vr: clamp(4px, calc(var(--rk-board-w) * 0.01), 12px);
 }
 
+/* App-Fixed aktifken svh/clamp tabanlı boşluklar devre dışı */
 body.app-fixed{
   --page-bottom-space: 0px;
   --footer-top-space: 0px;
@@ -121,9 +123,12 @@ body{
   padding-top: 0;
 }
 
+/* Tek sahne: kaydırma kilidi + alt iç boşluk kapalı */
 body.app-fixed{
   overflow: hidden;
   overscroll-behavior: none;
+  /* dinamik tarayıcı çubukları için gerçek viewport yüksekliği */
+  height: 100dvh;
 }
 
 .rk-wrap{
@@ -141,7 +146,7 @@ body.app-fixed{
 }
 
 body.app-fixed .rk-wrap{
-  padding-bottom: 0;
+  padding-bottom: 0;      /* wrap alt iç boşluk kapalı */
 }
 
 @media (min-width:769px){
@@ -166,13 +171,9 @@ body.app-fixed .rk-wrap{
   text-align:center;
 }
 
-body.app-fixed .rk-head{ 
-  margin-bottom: 0; 
-}
+body.app-fixed .rk-head{   margin-bottom: 0; }   /* toolbar alt boşluk yok */
 
-body.app-fixed .rk-coach{ 
-  margin-bottom: var(--vr); 
-}
+body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar bitişik */
 
 .rk-title{font-weight:800;font-size:18px;margin:0}
 .rk-grid{display:grid;grid-template-columns:1fr;justify-items:center}
@@ -547,6 +548,7 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
   margin:6px auto 4px;
 }
 
+/* Kart ↔ HUD boşluğu tek kaynaktan: --vr */
 body.app-fixed #cm-board{
   margin: 6px auto var(--vr);
 }
@@ -626,6 +628,7 @@ body.cm-theme-light .rk-softbar{
   box-sizing:border-box;
 }
 
+/* HUD kendi etrafında ekstra boşluk bırakmasın */
 body.app-fixed .rk-underbar{
   margin: 0 auto 0;
 }
@@ -1188,6 +1191,7 @@ body.cm-theme-dark .rk-timebar{
   position: relative;
 }
 
+/* Footer üstü = --vr, alt stretch kapalı; safe-area korunur */
 body.app-fixed .cm-footer{
   margin-top: var(--vr);
   padding-bottom: env(safe-area-inset-bottom);
@@ -1200,7 +1204,7 @@ body.app-fixed .cm-footer{
 }
 
 body.app-fixed .cm-footer::after{
-  block-size: 0;
+  block-size: 0; /* stretch devre dışı */
 }
 
 .cm-footer .cm-container{
