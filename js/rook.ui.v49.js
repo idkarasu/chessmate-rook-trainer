@@ -1,4 +1,4 @@
-/* rook.ui.js — v48 */
+/* rook.ui.js — v49 */
 
 (function(window,document){'use strict';
 
@@ -44,7 +44,7 @@ function ensureUnderbar(){
   
   // Eğer underbar boşsa içeriği oluştur
   if(underbar.children.length === 0) {
-    // ÜST SATIR - Zaman barı/Seviyeler (ortalı)
+    // ÜSTE SATIR - Zaman barı/Seviyeler (ortalı)
     const centerSection = document.createElement('div'); 
     centerSection.className = 'rk-underbar-center';
     
@@ -156,6 +156,15 @@ function updateHud(){const RK=window.Rook;const hud=document.getElementById('rk-
 /* 10 - Olay köprüleri ---------------------------------------------------- */
 const throttledUpdateHud=throttle(updateHud,100);on(document,'rk:timeup',({detail})=>{if(window.Rook?.st.mode==='timed'){const score=detail?.score??(window.Rook.st.score|0);openResultModal('Süre doldu!',`Skor: ${score} ♟️`);rkConfetti(1800,500);throttledUpdateHud()}});on(document,'rk:levels-finished',({detail})=>{const sec=detail?.seconds??0;openResultModal('Tebrikler!',`Süre: ${fmtMMSS(sec)} ⏱️`);rkConfetti(1800,500);throttledUpdateHud()});on(document,'rk:wave',({detail})=>{if(detail?.wave)updateLevelsBars(detail.wave)});on(document,'rk:mode',({detail})=>{const mode=detail?.mode;const overlay=$('rk-levels');if(overlay)overlay.style.display='none';if(mode==='levels')showLevelsBar();else{showTimedBar();resetTimebarFull()}throttledUpdateHud()});on(document,'rk:timer',throttledUpdateHud);on(document,'rk:score',throttledUpdateHud);on(document,'rk:best',throttledUpdateHud);on(document,'rk:bestTime',throttledUpdateHud);on(document,'cm-sound',(e)=>{const onNow=!!(e?.detail?.on);const btnSound=$('cm-sound-toggle');setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})},{passive:true});on(document,'cm-hints',(e)=>{const onNow=!!(e?.detail?.on);const btnHints=$('cm-hints');setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})},{passive:true});on(document,'cm-theme',(e)=>{const t=e?.detail?.theme||window.Rook?.st.theme||'dark';const btnTheme=$('cm-theme-toggle');setToggleButtonState(btnTheme,{title:'Tema Değiştir',text:(t==='light'?'☀️':'🌙')})},{passive:true});on(document,'cm-board',(e)=>{const s=e?.detail?.skin||window.Rook?.st.boardSkin||'classic';const btnBoard=$('cm-board-toggle');if(btnBoard)btnBoard.title=`Tahta Temasını Değiştir (${s})`},{passive:true});on(window,'storage',(e)=>{if(!e?.key)return;if(e.key==='cm-sound'){const onNow=(e.newValue==='on');const btnSound=$('cm-sound-toggle');setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})}if(e.key==='cm-hints'){const onNow=(e.newValue==='on');const btnHints=$('cm-hints');setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})}if(e.key==='cm-theme'){const t=e.newValue||'dark';const btnTheme=$('cm-theme-toggle');setToggleButtonState(btnTheme,{title:'Tema Değiştir',text:(t==='light'?'☀️':'🌙')})}if(e.key==='cm-board'){const s=e.newValue||'classic';const btnBoard=$('cm-board-toggle');if(btnBoard)btnBoard.title=`Tahta Temasını Değiştir (${s})`}},{passive:true});
 /* Bölüm sonu --------------------------------------------------------------- */
+
+/* App-Fixed modu varsayılan aç (gerekirse ileride toggle yapılabilir) */
+(function(){
+  try{
+    document.addEventListener('DOMContentLoaded', function(){
+      document.body.classList.add('app-fixed');
+    }, {once:true});
+  }catch(_){}
+})();
 
 /* 11 - UI bağlama --------------------------------------------------------- */
 function initToolbarScroll(){
