@@ -213,8 +213,8 @@ body.app-fixed .rk-underbar{
 }
 
 .rk-toolbar-wrap{
-  width: var(--board-size);
-  max-width: min(92vw, calc(100vh - 200px));
+  width: var(--board-size) !important;
+  max-width: min(92vw, calc(100vh - 200px)) !important;
   margin: 0 auto;
   overflow:hidden;
   position:relative;
