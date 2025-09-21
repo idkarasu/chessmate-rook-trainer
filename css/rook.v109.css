@@ -1,4 +1,4 @@
-/* rook.css — v98 */
+/* rook.css — v109 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -24,13 +24,15 @@
   --shadow-md:0 8px 24px rgba(16,24,40,.18);
   --focus:#3AA9FF;
   --cm-dur:180ms;
-  --rk-board-w-base:600px;
-  --rk-board-w:var(--rk-board-w-base);
+  
+  /* PATCH v100→v101: 4 Breakpoint Sabit Board Size Sistemi - Cesur büyütme */
+  --board-size: 400px; /* Default: 375px+ - cesur boyut */
+  
   --page-bottom-space: clamp(4px, 1svh, 16px);
   --footer-top-space: clamp(2px, 0.8svh, 12px);
   --page-stretch: clamp(0px, 2svh, 20px);
   /* Board tabanlı ritim + App-Fixed'te svh kaynaklı boşlukları kapat */
-  --vr: clamp(4px, calc(var(--rk-board-w) * 0.01), 12px);
+  --vr: clamp(4px, calc(var(--board-size) * 0.01), 12px);
   
   /* PATCH 1: UI ölçek (toolbar atomikleri için) + yardımcılar */
   /* Ekran ve tahta referanslı yumuşak ölçek */
@@ -43,6 +45,23 @@
   --ui-padY:  calc(var(--ui-scale) * 8px);
   --ui-minbtn:calc(var(--ui-scale) * 44px);
   --ui-rad:   calc(var(--ui-scale) * 12px);
+}
+
+/* PATCH v100→v101: Cesur board büyütme */
+@media (min-width: 1920px) {
+  :root { --board-size: 640px; }
+}
+
+@media (min-width: 1024px) and (max-width: 1919px) {
+  :root { --board-size: 560px; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root { --board-size: 480px; }
+}
+
+@media (min-width: 375px) and (max-width: 767px) {
+  :root { --board-size: 400px; }
 }
 
 /* App-Fixed aktifken svh/clamp tabanlı boşluklar devre dışı */
@@ -94,12 +113,31 @@ body.dark, body.dark-mode, .theme-dark, [data-theme="dark"], .cm-dark{
   --shadow-md:0 8px 24px rgba(16,24,40,.18);
   --focus:#3AA9FF;
   --cm-dur:180ms;
-  --rk-board-w-base:600px;
-  --rk-board-w:var(--rk-board-w-base);
+  
+  /* PATCH v100→v101: board-size tek referans */
+  --board-size: 400px;
+  
   --page-bottom-space: clamp(4px, 1svh, 16px);
   --footer-top-space: clamp(2px, 0.8svh, 12px);
   --page-stretch: clamp(0px, 2svh, 20px);
-  --vr: clamp(4px, calc(var(--rk-board-w) * 0.01), 12px);
+  --vr: clamp(4px, calc(var(--board-size) * 0.01), 12px);
+}
+
+/* PATCH v100→v101: 4 Breakpoint cesur büyütme */
+@media (min-width: 1920px) {
+  :root { --board-size: 640px; }
+}
+
+@media (min-width: 1024px) and (max-width: 1919px) {
+  :root { --board-size: 560px; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root { --board-size: 480px; }
+}
+
+@media (min-width: 375px) and (max-width: 767px) {
+  :root { --board-size: 400px; }
 }
 
 body.app-fixed{
@@ -153,7 +191,8 @@ body.app-fixed{
   padding:6px 20px;
   padding-bottom: max(var(--page-bottom-space), env(safe-area-inset-bottom));
   box-shadow:var(--shadow-md);
-  min-height: calc(var(--vh) - var(--ab) - var(--hdr) - var(--ftr) - var(--fit-epsilon));
+  /* PATCH v108: Kart yükseklik azaltma - footer görünürlük için */
+  min-height: calc(var(--vh) - var(--ab) - var(--hdr) - var(--ftr) - 40px);
   border-top:1px solid transparent;
   /* PATCH 1: Flex container + column direction */
   display:flex; 
@@ -188,7 +227,18 @@ body.app-fixed .rk-wrap{
 
 body.app-fixed .rk-head{   margin-bottom: 0; }   /* toolbar alt boşluk yok */
 
-body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar bitişik */
+/* PATCH v107: App-fixed modda VISIBLE HUD spacing */
+body.app-fixed .rk-coach{  
+  margin-bottom: 3px;   /* koç baloncuğu ile toolbar MINIMAL */
+}
+
+body.app-fixed .cm-toolbar{  
+  margin-bottom: 8px;   /* toolbar ile board COMFORTABLE */
+}
+
+body.app-fixed .rk-underbar{  
+  margin-top: 16px !important;      /* board ile HUD FORCED VISIBLE */
+}
 
 /* PATCH 1: Sabit boyut blokları */
 .rk-head, .rk-coach, .rk-underbar{ 
@@ -197,9 +247,9 @@ body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar 
 
 .rk-title{font-weight:800;font-size:18px;margin:0}
 
-/* PATCH 1: Esnek merkez alan - tahta tam ortada */
+/* PATCH v104: Compact layout için rk-grid değişikliği */
 .rk-grid{
-  flex:1 1 auto; 
+  flex:0 0 auto; 
   display:flex; 
   align-items:center; 
   justify-content:center; 
@@ -212,13 +262,13 @@ body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar 
   display:block;
   -webkit-user-select:none; 
   user-select:none;
-  /* RESPONSIVE: toolbar alt boşluk orantılı */
-  margin-bottom: clamp(8px, 1.5vw, 16px);
+  /* PATCH v106: Toolbar → Board arası GENEROUS spacing */
+  margin-bottom: clamp(12px, 1.8vh, 24px);
 }
 
-/* PATCH 1: Toolbar kapsayıcısını tahta ile aynı genişlik hesaplamasına bağla */
+/* PATCH v98→v99: Toolbar kapsayıcısını board-size ile aynı genişlik */
 .rk-toolbar-wrap{
-  inline-size: min(var(--rk-board-w), calc(100vh - 200px));
+  inline-size: var(--board-size);
   max-inline-size: min(92vw, calc(100vh - 200px));
   margin-inline: auto;
   overflow:hidden;
@@ -249,20 +299,20 @@ body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar 
   flex-wrap:wrap;
 }
 
-/* PATCH 2: Arka plan katmanı: tek satırda, ölçekli pad/gap ile tam sığma */
+/* PATCH v109: v97 style toolbar - basit ve temiz */
 .cm-toolbar .rk-toolbar.rk-toolbar--single{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: max(8px, calc(var(--ui-gap) * .8));
-  padding: var(--ui-padY) var(--ui-padX);
-  border-radius: var(--ui-rad);
-  inline-size: 100%;           /* v95'te mevcut — teyit */
-  box-sizing: border-box;       /* v95'te mevcut — teyit */
-  flex-wrap: nowrap;
-  min-height: calc(var(--ui-scale) * 38px);
+  display:flex; 
+  flex-direction:row; 
+  flex-wrap:nowrap; 
+  align-items:flex-end; 
+  justify-content:flex-start;
+  /* RESPONSIVE: gap orantılı */
+  gap: clamp(10px, 2vw, 18px);
+  /* RESPONSIVE: padding orantılı */
+  padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.6vw, 14px);
   margin:0;
   min-width:0;
+  border-radius:12px;
   background:rgba(255,255,255,.02);
   border:1px solid var(--line);
   overflow-x:auto;
@@ -299,11 +349,11 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   background:linear-gradient(to right, transparent, rgba(255,255,255,0.9));
 }
 
-/* PATCH 2: Grup içleri de ölçeğe uysun */
 .rk-group{
   display:inline-flex;
   align-items:center;
-  gap: max(6px, calc(var(--ui-gap) * .6));
+  /* RESPONSIVE: grup içi gap orantılı */
+  gap: clamp(3px, 0.6vw, 6px);
   flex:0 0 auto;
   min-width:0;
 }
@@ -523,14 +573,13 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 4 - Butonlar ve seçim kutuları ------------------------------------------- */
-/* PATCH 3: Buton/selektör kapsülleri: font, min-width ve padding ölçekli */
+/* PATCH v109: v97 style button system */
 button.cm-btn, button.rk-btn, select.cm-sel{
-  font-size: calc(.92 * var(--ui-font));
-  min-inline-size: var(--ui-minbtn);
-  padding-inline: calc(var(--ui-padX) * .9);
-  padding-block:  calc(var(--ui-padY) * .85);
-  border-radius: var(--ui-rad);
-  line-height: 1.1;
+  /* RESPONSIVE: buton yükseklik orantılı */
+  height: clamp(34px, 6vw, 44px); 
+  /* RESPONSIVE: buton padding orantılı */
+  padding: 0 clamp(8px, 1.6vw, 16px); 
+  border-radius: clamp(8px, 1.5vw, 14px); 
   border:1px solid var(--line);
   background:var(--btn); 
   color:var(--text); 
@@ -543,6 +592,10 @@ button.cm-btn, button.rk-btn, select.cm-sel{
   align-items:center;
   justify-content:center;
   gap:.5rem;
+  /* RESPONSIVE: minimum dokunma hedefi */
+  min-width: clamp(40px, 7vw, 48px);
+  /* RESPONSIVE: buton font-size orantılı */
+  font: 600 clamp(10px, 1.8vw, 14px)/1 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,Arial,sans-serif;
 }
 
 button.cm-btn:hover, button.rk-btn:hover, select.cm-sel:hover{ 
@@ -580,30 +633,6 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
   min-width: clamp(34px, 6vw, 44px);
 }
 
-/* PATCH 3: İkonlar: tek ölçekten beslensin */
-.cm-btn .cm-icon,
-.rk-btn .cm-icon,
-.rk-btn .rk-icon,
-.cm-sel .cm-icon{
-  font-size: var(--ui-icon);
-  line-height: 1;
-}
-
-/* PATCH 3: Etiket/yardım metinleri: küçük ekranda da okunaklı ve sığ */
-.rk-ctl-label, .cm-label{
-  font-size: clamp(12px, calc(.90 * var(--ui-font)), 16px);
-  line-height: 1.2;
-}
-
-/* PATCH 3: Aşırı dar ekranlarda kontrollü sığma */
-.rk-toolbar .rk-group--icons{ flex-wrap: nowrap; }
-.rk-toolbar .rk-group--mode,
-.rk-toolbar .rk-group--side,
-.rk-toolbar .rk-group--start{
-  flex-wrap: nowrap;
-  min-inline-size: 0;
-}
-
 /* RESPONSIVE BUTTON: mobil optimizasyonları */
 @media (max-width:560px){
   button.cm-btn, button.rk-btn, select.cm-sel{ 
@@ -628,8 +657,8 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
 /* 5 - Tahta ---------------------------------------------------------------- */
 #cm-board{
   position:relative;
-  /* RESPONSIVE: tahta genişliği - viewport yüksekliği bazlı güvenli sınır */
-  width: min(var(--rk-board-w), calc(100vh - 200px));
+  /* PATCH v98→v99: Tahta genişlik board-size değişkenine bağlandı */
+  width: var(--board-size);
   max-width: min(92vw, calc(100vh - 200px));
   /* RESPONSIVE: tahta yüksekliği - HUD/footer görünürlük garantisi */
   max-height: calc(100vh - 200px);
@@ -656,7 +685,7 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
 /* Kart ↔ HUD boşluğu tek kaynaktan: --vr */
 body.app-fixed #cm-board{
   /* APP-FIXED: viewport height bazlı daha agresif sınır */
-  width: min(var(--rk-board-w), calc(100dvh - 180px));
+  width: var(--board-size);
   max-width: min(92vw, calc(100dvh - 180px));
   max-height: calc(100dvh - 180px);
 }
@@ -671,53 +700,7 @@ body.app-fixed #cm-board{
   }
 }
 
-/* RESPONSIVE BOARD: büyük ekran optimizasyonu */
-@media (min-width: 1024px) {
-  #cm-board {
-    /* Masaüstü: toolbar genişliği ile hizalama + güvenli yükseklik */
-    width: min(var(--rk-board-w), calc(100vh - 240px));
-    max-width: min(var(--rk-board-w), calc(100vh - 240px));
-    max-height: calc(100vh - 240px);
-  }
-  
-  body.app-fixed #cm-board {
-    width: min(var(--rk-board-w), calc(100dvh - 200px));
-    max-width: min(var(--rk-board-w), calc(100dvh - 200px));
-    max-height: calc(100dvh - 200px);
-  }
-}
-
-/* RESPONSIVE BOARD: tablet/mobil optimizasyonu */
-@media (max-width: 768px) {
-  #cm-board {
-    /* Mobil: daha cömert alan kullanımı */
-    width: min(var(--rk-board-w), calc(100vh - 160px));
-    max-width: min(92vw, calc(100vh - 160px));
-    max-height: calc(100vh - 160px);
-  }
-  
-  body.app-fixed #cm-board {
-    width: min(var(--rk-board-w), calc(100dvh - 140px));
-    max-width: min(92vw, calc(100dvh - 140px));
-    max-height: calc(100dvh - 140px);
-  }
-}
-
-/* RESPONSIVE BOARD: ultra mobil optimizasyonu */
-@media (max-width: 480px) {
-  #cm-board {
-    /* Ultra mobil: minimum UI alanı koruma */
-    width: min(var(--rk-board-w), calc(100vh - 140px));
-    max-width: min(94vw, calc(100vh - 140px));
-    max-height: calc(100vh - 140px);
-  }
-  
-  body.app-fixed #cm-board {
-    width: min(var(--rk-board-w), calc(100dvh - 120px));
-    max-width: min(94vw, calc(100dvh - 120px));
-    max-height: calc(100dvh - 120px);
-  }
-}
+/* PATCH v98→v99: Responsive board media queries kaldırıldı - board-size tek kaynak */
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 6 - Yumuşak kapsül paneller ---------------------------------------------- */
@@ -735,7 +718,8 @@ body.cm-theme-dark{
 }
 
 .rk-softbar{
-  width:var(--rk-board-w);
+  /* PATCH v98→v99: Softbar genişlik board-size ile hizalı */
+  width:var(--board-size);
   max-width:92vw;
   box-sizing:border-box;
   margin:0 auto 4px;
@@ -764,9 +748,12 @@ body.cm-theme-light .rk-softbar{
 }
 
 .rk-underbar{
-  width:var(--rk-board-w);
+  /* PATCH v107: Underbar genişlik board-size ile hizalı */
+  width:var(--board-size);
   max-width:92vw;
   margin:0 auto;
+  /* PATCH v107: Board → HUD arası FORCED spacing with !important */
+  margin-top: clamp(20px, 3vh, 40px) !important;
   margin-bottom: 0;
   /* RESPONSIVE: HUD padding orantılı */
   padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px);
@@ -1285,9 +1272,12 @@ body.cm-theme-dark .rk-timebar{
 
 /* 14 - Koç baloncuğu ------------------------------------------------------- */
 .rk-coach{
-  width:var(--rk-board-w);
+  /* PATCH v106: Coach genişlik board-size ile hizalı */
+  width:var(--board-size);
   max-width:92vw;
-  margin:0 auto 2px;
+  margin:0 auto;
+  /* PATCH v106: Coach → Toolbar arası COMFORTABLE spacing */
+  margin-bottom: clamp(6px, 1vh, 12px);
   display:flex;
   align-items:center;
   /* RESPONSIVE: avatar ile flex gap orantılı */
@@ -1411,84 +1401,6 @@ body.cm-theme-dark .rk-timebar{
   box-sizing: border-box;
 }
 
-  flex:1 1 0;
-  min-width:0;
-  /* RESPONSIVE: bubble padding orantılı */
-  padding: clamp(8px, 1.6vw, 14px) clamp(10px, 2vw, 16px);
-  border:1px solid var(--line);
-  border-radius:12px;
-  background:var(--rk-softbar-bg);
-  color:var(--text);
-  box-shadow:0 2px 10px rgba(0,0,0,.08),inset 0 -1px 0 rgba(255,255,255,.06);
-  /* RESPONSIVE: bubble yüksekliği = avatar yüksekliği */
-  height: clamp(48px, 12vw, 96px);
-  max-height: min(96px, 12vh);
-  /* Bubble içeriği taşarsa scroll */
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  /* PERFECT CENTER: İçerik tam ortaya hizalama */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  /* CSS Variable - bubble yüksekliğini text scaling için */
-  --bubble-height: clamp(48px, 12vw, 96px);
-}
-
-.rk-coach__bubble::-webkit-scrollbar {
-  display: none;
-}
-
-.rk-coach__title{
-  /* PERFECT CENTER: margin sıfırla */
-  margin: 0;
-  /* RESPONSIVE: başlık font-size bubble yüksekliğine orantılı (20% bubble) */
-  font-size: max(8px, min(14px, calc(var(--bubble-height) * 0.20)));
-  font-weight: 800;
-  line-height: 1.2;
-  font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  color:var(--gold);
-  text-align:center;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  /* PERFECT CENTER: flex shrink kaldır */
-  flex: 0 0 auto;
-  /* PERFECT CENTER: tam genişlik kontrol */
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-.rk-coach__desc{
-  /* PERFECT CENTER: margin sıfırla + spacing kontrol */
-  margin: 0;
-  margin-top: clamp(2px, calc(var(--bubble-height) * 0.04), 6px);
-  /* RESPONSIVE: açıklama font-size bubble yüksekliğine orantılı (13% bubble) */
-  font-size: max(6px, min(12px, calc(var(--bubble-height) * 0.13)));
-  font-weight: 600;
-  line-height: 1.3;
-  font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  opacity:.96;
-  text-align:center;
-  /* 3 satır garantisi - bubble yüksekliğine dinamik */
-  display:-webkit-box;
-  -webkit-line-clamp:3;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-  max-height: calc(var(--bubble-height) * 0.65);
-  hyphens:auto;
-  overflow-wrap:break-word;
-  word-break:break-word;
-  /* PERFECT CENTER: flex grow kaldır */
-  flex: 0 0 auto;
-  /* PERFECT CENTER: tam genişlik kontrol */
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
 .rk-coach .hl{color:var(--gold);font-weight:800}
 .rk-wrap.rk-has-coach .rk-title{display:none}
 
@@ -1497,7 +1409,8 @@ body.cm-theme-dark .rk-timebar{
   .rk-coach {
     gap: clamp(6px, 1.4vw, 12px);
     max-height: clamp(72px, 13vh, 130px);
-    margin: 0 auto 1px;
+    /* PATCH v103: Mobilde de compact spacing */
+    margin-bottom: clamp(3px, 0.4vh, 6px);
   }
   
   .rk-coach__avatar {
@@ -1522,7 +1435,8 @@ body.cm-theme-dark .rk-timebar{
   .rk-coach {
     gap: clamp(4px, 1vw, 8px);
     max-height: clamp(64px, 11vh, 110px);
-    margin: 0 auto 1px;
+    /* PATCH v103: Ultra mobilde de compact spacing */
+    margin-bottom: clamp(2px, 0.3vh, 4px);
   }
   
   .rk-coach__avatar {
