@@ -1,4 +1,4 @@
-/* rook.css — v115 */
+/* rook.css — v116 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -226,13 +226,61 @@ body.app-fixed .rk-toolbar-wrap{
   max-width: min(92vw, calc(100dvh - 180px));
 }
 
+:root {
+  --toolbar-gap-main: 18px;
+  --toolbar-gap-group: 8px;
+  --toolbar-gap-icons: 14px;
+  --toolbar-padding-x: 14px;
+  --toolbar-padding-y: 10px;
+}
+
+@media (min-width: 1024px) and (max-width: 1919px) {
+  :root {
+    --toolbar-gap-main: 14px;
+    --toolbar-gap-group: 6px;
+    --toolbar-gap-icons: 12px;
+    --toolbar-padding-x: 12px;
+    --toolbar-padding-y: 8px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --toolbar-gap-main: 10px;
+    --toolbar-gap-group: 5px;
+    --toolbar-gap-icons: 8px;
+    --toolbar-padding-x: 10px;
+    --toolbar-padding-y: 6px;
+  }
+}
+
+@media (min-width: 375px) and (max-width: 767px) {
+  :root {
+    --toolbar-gap-main: 6px;
+    --toolbar-gap-group: 3px;
+    --toolbar-gap-icons: 5px;
+    --toolbar-padding-x: 8px;
+    --toolbar-padding-y: 4px;
+  }
+}
+
+@media (max-width: 374px) {
+  :root {
+    --toolbar-gap-main: 4px;
+    --toolbar-gap-group: 2px;
+    --toolbar-gap-icons: 3px;
+    --toolbar-padding-x: 6px;
+    --toolbar-padding-y: 3px;
+  }
+}
+
 .rk-toolbar{
   display:flex; 
   flex-wrap:wrap; 
   align-items:center; 
   justify-content:center;
-  gap: clamp(8px, 1.6vw, 14px);
-  padding: clamp(2px, 0.6vw, 5px) clamp(3px, 0.8vw, 6px);
+  gap: var(--toolbar-gap-main);
+  padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
   width: 100%;
   box-sizing: border-box;
 }
@@ -254,8 +302,8 @@ body.app-fixed .rk-toolbar-wrap{
   flex-wrap:nowrap; 
   align-items:flex-end; 
   justify-content:flex-start;
-  gap: clamp(10px, 2vw, 18px);
-  padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.6vw, 14px);
+  gap: var(--toolbar-gap-main);
+  padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
   margin:0;
   min-width:0;
   width: 100%;
@@ -300,7 +348,7 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 .rk-group{
   display:inline-flex;
   align-items:center;
-  gap: clamp(3px, 0.6vw, 6px);
+  gap: var(--toolbar-gap-group);
   flex:0 0 auto;
   min-width:0;
 }
@@ -333,12 +381,12 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 .rk-group--icons{
   display:inline-flex;
-  gap: clamp(6px, 1.2vw, 12px);
+  gap: var(--toolbar-gap-icons);
   flex:0 0 auto;
 }
 
 .cm-toolbar .rk-toolbar--single .rk-group--icons{
-  gap: clamp(4px, 0.8vw, 8px);
+  gap: var(--toolbar-gap-icons);
 }
 
 .cm-toolbar label, .rk-ctl-label{
@@ -373,7 +421,6 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   flex:0 0 auto;
 }
 
-/* RESPONSIVE BREAKPOINT DÜZELTMELERI */
 @media (min-width: 1920px) {
   .rk-toolbar-wrap{
     width: var(--board-size);
@@ -420,8 +467,8 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 @media (max-width:768px){
   .cm-toolbar .rk-toolbar--single{
-    gap: clamp(8px, 1.4vw, 12px);
-    padding: clamp(4px, 0.8vw, 8px) clamp(6px, 1.2vw, 10px);
+    gap: var(--toolbar-gap-main);
+    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group{
@@ -439,19 +486,19 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group--icons{
-    gap: clamp(3px, 0.6vw, 6px);
+    gap: var(--toolbar-gap-icons);
   }
   
   .rk-toolbar--top{
     flex-wrap:wrap;
     justify-content:center;
-    gap: clamp(6px, 1.2vw, 10px);
+    gap: var(--toolbar-gap-main);
   }
   
   .rk-toolbar--bottom{
     flex-wrap:wrap;
     justify-content:center;
-    gap: clamp(6px, 1.2vw, 10px);
+    gap: var(--toolbar-gap-main);
   }
   
   .rk-group--mode, .rk-group--start{
@@ -461,8 +508,8 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 @media (max-width:560px){
   .cm-toolbar .rk-toolbar--single{
-    gap: clamp(6px, 1vw, 10px);
-    padding: clamp(3px, 0.6vw, 6px) clamp(4px, 0.8vw, 8px);
+    gap: var(--toolbar-gap-main);
+    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-btn--icon{
@@ -491,7 +538,7 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   .rk-toolbar--top, .rk-toolbar--bottom{
     flex-wrap:wrap;
     justify-content:center;
-    gap: clamp(5px, 1vw, 9px);
+    gap: var(--toolbar-gap-main);
   }
   
   .rk-group--mode, .rk-group--start{
@@ -501,8 +548,8 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 @media (max-width:480px){
   .cm-toolbar .rk-toolbar--single{
-    gap: clamp(4px, 0.8vw, 8px);
-    padding: clamp(2px, 0.4vw, 4px) clamp(3px, 0.6vw, 6px);
+    gap: var(--toolbar-gap-main);
+    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group{
@@ -525,6 +572,23 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   .cm-toolbar .rk-toolbar--single .cm-sel{
     font-size: clamp(6px, 1vw, 9px);
     padding: 0 clamp(4px, 0.8vw, 7px);
+  }
+}
+
+.cm-toolbar .rk-toolbar.rk-toolbar--single[data-overflow="detected"] {
+  justify-content: flex-start;
+  overflow-x: auto;
+}
+
+.cm-toolbar .rk-toolbar.rk-toolbar--single[data-overflow="none"] {
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+@media (max-width: 320px) {
+  .cm-toolbar .rk-toolbar.rk-toolbar--single {
+    justify-content: flex-start;
+    overflow-x: auto;
   }
 }
 /* Bölüm sonu --------------------------------------------------------------- */
