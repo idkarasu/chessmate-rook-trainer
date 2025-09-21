@@ -1,4 +1,4 @@
-/* rook.css — v91 */
+/* rook.css — v93 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -143,6 +143,9 @@ body.app-fixed{
   box-shadow:var(--shadow-md);
   min-height: calc(var(--vh) - var(--ab) - var(--hdr) - var(--ftr) - var(--fit-epsilon));
   border-top:1px solid transparent;
+  /* PATCH 1: Flex container + column direction */
+  display:flex; 
+  flex-direction:column;
 }
 
 body.app-fixed .rk-wrap{
@@ -175,8 +178,21 @@ body.app-fixed .rk-head{   margin-bottom: 0; }   /* toolbar alt boşluk yok */
 
 body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar bitişik */
 
+/* PATCH 1: Sabit boyut blokları */
+.rk-head, .rk-coach, .rk-underbar{ 
+  flex:0 0 auto; 
+}
+
 .rk-title{font-weight:800;font-size:18px;margin:0}
-.rk-grid{display:grid;grid-template-columns:1fr;justify-items:center}
+
+/* PATCH 1: Esnek merkez alan - tahta tam ortada */
+.rk-grid{
+  flex:1 1 auto; 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  min-block-size:0;
+}
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 3 - Araç çubuğu ---------------------------------------------------------- */
@@ -597,12 +613,12 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
   -webkit-backface-visibility:hidden;
   backface-visibility:hidden;
   transform:translateZ(0);
-  margin:6px auto 4px;
+  /* PATCH 2: Margin kaynaklı dikey sapma kaldırıldı */
+  margin:0;
 }
 
 /* Kart ↔ HUD boşluğu tek kaynaktan: --vr */
 body.app-fixed #cm-board{
-  margin: 6px auto var(--vr);
   /* APP-FIXED: viewport height bazlı daha agresif sınır */
   width: min(var(--rk-board-w), calc(100dvh - 180px));
   max-width: min(92vw, calc(100dvh - 180px));
