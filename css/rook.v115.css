@@ -219,6 +219,7 @@ body.app-fixed .rk-underbar{
   overflow:hidden;
   position:relative;
   box-sizing: border-box;
+  padding: 0;
 }
 
 body.app-fixed .rk-toolbar-wrap{
