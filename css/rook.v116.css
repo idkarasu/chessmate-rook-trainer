@@ -232,6 +232,11 @@ body.app-fixed .rk-toolbar-wrap{
   --toolbar-gap-icons: 14px;
   --toolbar-padding-x: 14px;
   --toolbar-padding-y: 10px;
+  --btn-height: 44px;
+  --btn-icon-size: 44px;
+  --btn-font-size: 14px;
+  --btn-icon-font: 20px;
+  --btn-padding: 16px;
 }
 
 @media (min-width: 1024px) and (max-width: 1919px) {
@@ -241,6 +246,11 @@ body.app-fixed .rk-toolbar-wrap{
     --toolbar-gap-icons: 12px;
     --toolbar-padding-x: 12px;
     --toolbar-padding-y: 8px;
+    --btn-height: 40px;
+    --btn-icon-size: 40px;
+    --btn-font-size: 13px;
+    --btn-icon-font: 18px;
+    --btn-padding: 14px;
   }
 }
 
@@ -251,6 +261,11 @@ body.app-fixed .rk-toolbar-wrap{
     --toolbar-gap-icons: 8px;
     --toolbar-padding-x: 10px;
     --toolbar-padding-y: 6px;
+    --btn-height: 38px;
+    --btn-icon-size: 38px;
+    --btn-font-size: 12px;
+    --btn-icon-font: 16px;
+    --btn-padding: 12px;
   }
 }
 
@@ -261,6 +276,11 @@ body.app-fixed .rk-toolbar-wrap{
     --toolbar-gap-icons: 5px;
     --toolbar-padding-x: 8px;
     --toolbar-padding-y: 4px;
+    --btn-height: 36px;
+    --btn-icon-size: 36px;
+    --btn-font-size: 11px;
+    --btn-icon-font: 15px;
+    --btn-padding: 10px;
   }
 }
 
@@ -271,6 +291,11 @@ body.app-fixed .rk-toolbar-wrap{
     --toolbar-gap-icons: 3px;
     --toolbar-padding-x: 6px;
     --toolbar-padding-y: 3px;
+    --btn-height: 34px;
+    --btn-icon-size: 34px;
+    --btn-font-size: 10px;
+    --btn-icon-font: 14px;
+    --btn-padding: 8px;
   }
 }
 
@@ -593,11 +618,11 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 4 - Butonlar ve seçim kutuları ------------------------------------------- */
+/* 4 - Butonlar ve seçim kutuları - RESPONSIVE BOYUTLANDIRMA ------------------------------------------- */
 button.cm-btn, button.rk-btn, select.cm-sel{
-  height: clamp(34px, 6vw, 44px); 
-  padding: 0 clamp(8px, 1.6vw, 16px); 
-  border-radius: clamp(8px, 1.5vw, 14px); 
+  height: var(--btn-height);
+  padding: 0 var(--btn-padding);
+  border-radius: clamp(8px, 1.5vw, 14px);
   border:1px solid var(--line);
   background:var(--btn); 
   color:var(--text); 
@@ -610,8 +635,8 @@ button.cm-btn, button.rk-btn, select.cm-sel{
   align-items:center;
   justify-content:center;
   gap:.5rem;
-  min-width: clamp(40px, 7vw, 48px);
-  font: 600 clamp(10px, 1.8vw, 14px)/1 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,Arial,sans-serif;
+  min-width: var(--btn-height);
+  font: 600 var(--btn-font-size)/1 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,Arial,sans-serif;
 }
 
 button.cm-btn:hover, button.rk-btn:hover, select.cm-sel:hover{ 
@@ -635,32 +660,41 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
 #cm-board-toggle,
 #cm-sound-toggle,
 #cm-hints{
-  width: clamp(34px, 6vw, 44px); 
-  height: clamp(34px, 6vw, 44px); 
+  width: var(--btn-icon-size);
+  height: var(--btn-icon-size);
   padding:0; 
   display:inline-grid; 
   place-items:center; 
-  font-size: clamp(14px, 2.4vw, 20px); 
+  font-size: var(--btn-icon-font);
   line-height:1;
   border-radius: clamp(6px, 1.2vw, 12px);
-  min-width: clamp(34px, 6vw, 44px);
+  min-width: var(--btn-icon-size);
 }
 
-@media (max-width:560px){
-  button.cm-btn, button.rk-btn, select.cm-sel{ 
-    height: clamp(38px, 7vw, 48px); 
-    min-height: clamp(38px, 7vw, 48px);
-  }
-  
-  .rk-btn--icon, 
-  #cm-theme-toggle,
-  #cm-board-toggle,
-  #cm-sound-toggle,
-  #cm-hints{
-    width: clamp(38px, 7vw, 48px);
-    height: clamp(38px, 7vw, 48px);
-    min-width: clamp(38px, 7vw, 48px);
-  }
+.cm-toolbar .rk-toolbar--single .cm-sel{
+  min-width:auto;
+  max-width:none;
+  width:auto;
+  height: var(--btn-height);
+  font-size: var(--btn-font-size);
+  text-align:center;
+  padding: 0 var(--btn-padding);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  flex:0 0 auto;
+}
+
+.cm-toolbar .rk-toolbar--single #rk-start{
+  height: var(--btn-height);
+  padding: 0 var(--btn-padding);
+  font-size: var(--btn-font-size);
+}
+
+.cm-toolbar .rk-toolbar--single .rk-btn--icon{
+  width: var(--btn-icon-size);
+  height: var(--btn-icon-size);
+  font-size: var(--btn-icon-font);
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
