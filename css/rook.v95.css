@@ -1,4 +1,4 @@
-/* rook.css — v94 */
+/* rook.css — v95 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -204,10 +204,11 @@ body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar 
   margin-bottom: clamp(8px, 1.5vw, 16px);
 }
 
+/* PATCH 1: Toolbar kapsayıcısını tahta ile aynı genişlik hesaplamasına bağla */
 .rk-toolbar-wrap{
-  width:var(--rk-board-w);
-  max-width:92vw;
-  margin:0 auto;
+  inline-size: min(var(--rk-board-w), calc(100vh - 200px));
+  max-inline-size: min(92vw, calc(100vh - 200px));
+  margin-inline: auto;
   overflow:hidden;
   position:relative;
 }
@@ -236,6 +237,7 @@ body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar 
   flex-wrap:wrap;
 }
 
+/* PATCH 2: Arka plan katmanını kapsayıcı içine tam sığdır (padding/border dahil) */
 .cm-toolbar .rk-toolbar.rk-toolbar--single{
   display:flex; 
   flex-direction:row; 
@@ -258,6 +260,9 @@ body.app-fixed .rk-coach{  margin-bottom: 0; }   /* koç baloncuğu ile toolbar 
   scrollbar-width:none;
   -ms-overflow-style:none;
   position:relative;
+  /* PATCH 2: Full width + box-sizing */
+  inline-size: 100%;
+  box-sizing: border-box;
 }
 
 .cm-toolbar .rk-toolbar.rk-toolbar--single::-webkit-scrollbar{
