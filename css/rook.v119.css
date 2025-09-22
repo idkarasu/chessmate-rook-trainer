@@ -1,4 +1,4 @@
-/* rook.css — v118 */
+/* rook.css — v119 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -248,6 +248,13 @@ body.app-fixed .rk-toolbar-wrap{
   --footer-text: 12px;
   --footer-gap: 5px;
   --footer-margin: 8px;
+  --modal-width: 420px;
+  --modal-title: 28px;
+  --modal-desc: 20px;
+  --modal-padding: 22px;
+  --modal-gap: 14px;
+  --modal-close: 32px;
+  --modal-close-font: 16px;
 }
 
 @media (min-width: 1024px) and (max-width: 1919px) {
@@ -273,6 +280,13 @@ body.app-fixed .rk-toolbar-wrap{
     --footer-text: 11px;
     --footer-gap: 4px;
     --footer-margin: 6px;
+    --modal-width: 380px;
+    --modal-title: 25px;
+    --modal-desc: 18px;
+    --modal-padding: 20px;
+    --modal-gap: 12px;
+    --modal-close: 30px;
+    --modal-close-font: 15px;
   }
 }
 
@@ -299,6 +313,13 @@ body.app-fixed .rk-toolbar-wrap{
     --footer-text: 10px;
     --footer-gap: 3px;
     --footer-margin: 4px;
+    --modal-width: 340px;
+    --modal-title: 22px;
+    --modal-desc: 16px;
+    --modal-padding: 18px;
+    --modal-gap: 10px;
+    --modal-close: 28px;
+    --modal-close-font: 14px;
   }
 }
 
@@ -325,6 +346,13 @@ body.app-fixed .rk-toolbar-wrap{
     --footer-text: 9px;
     --footer-gap: 2px;
     --footer-margin: 3px;
+    --modal-width: 300px;
+    --modal-title: 19px;
+    --modal-desc: 14px;
+    --modal-padding: 16px;
+    --modal-gap: 8px;
+    --modal-close: 26px;
+    --modal-close-font: 13px;
   }
 }
 
@@ -351,6 +379,13 @@ body.app-fixed .rk-toolbar-wrap{
     --footer-text: 8px;
     --footer-gap: 1px;
     --footer-margin: 2px;
+    --modal-width: 280px;
+    --modal-title: 16px;
+    --modal-desc: 12px;
+    --modal-padding: 14px;
+    --modal-gap: 6px;
+    --modal-close: 24px;
+    --modal-close-font: 12px;
   }
 }
 
@@ -1231,7 +1266,7 @@ body.cm-theme-light #rk-levels-inline .lvl.done{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 13 - Sonuç modalı -------------------------------------------------------- */
+/* 13 - Sonuç modalı - RESPONSIVE 4 BREAKPOINT SİSTEMİ -------------------------------------------------------- */
 #rk-modal-back{
   display:none;
   position:absolute;
@@ -1247,11 +1282,11 @@ body.cm-theme-light #rk-levels-inline .lvl.done{
 
 .rk-modal{
   position:relative;
-  width:min(90vw,420px);
+  width: min(90vw, var(--modal-width));
   border:1px solid var(--line);
-  border-radius:14px;
+  border-radius: calc(var(--modal-padding) * 0.64);
   box-shadow:0 12px 36px rgba(0,0,0,.35);
-  padding:22px 20px 18px 20px;
+  padding: var(--modal-padding) calc(var(--modal-padding) * 0.9) calc(var(--modal-padding) * 0.8);
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -1261,15 +1296,15 @@ body.cm-theme-light #rk-levels-inline .lvl.done{
 }
 
 .rk-modal-title{
-  margin:0 0 8px 0;
-  font:800 clamp(22px,3.2vw,28px)/1.25 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  margin: 0 0 calc(var(--modal-gap) * 0.57) 0;
+  font: 800 var(--modal-title)/1.25 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   text-align:center;
   color:var(--gold);
 }
 
 .rk-modal-desc{
-  margin:0 0 14px 0;
-  font:700 clamp(16px,2.4vw,20px)/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  margin: 0 0 var(--modal-gap) 0;
+  font: 700 var(--modal-desc)/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   opacity:.98;
   text-align:center;
   color:var(--text);
@@ -1277,22 +1312,22 @@ body.cm-theme-light #rk-levels-inline .lvl.done{
 
 .rk-modal-actions{
   display:flex;
-  gap:10px;
+  gap: calc(var(--modal-gap) * 0.71);
   justify-content:center;
   width:100%;
 }
 
 .rk-modal__close{
   position:absolute;
-  top:10px;
-  right:10px;
-  width:32px;
-  height:32px;
-  border-radius:8px;
+  top: calc(var(--modal-gap) * 0.71);
+  right: calc(var(--modal-gap) * 0.71);
+  width: var(--modal-close);
+  height: var(--modal-close);
+  border-radius: calc(var(--modal-close) * 0.25);
   border:1px solid var(--line);
   background:var(--btn);
   color:var(--text);
-  font-size:16px;
+  font-size: var(--modal-close-font);
   line-height:1;
   cursor:pointer;
   display:inline-flex;
