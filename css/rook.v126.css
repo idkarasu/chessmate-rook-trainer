@@ -1,4 +1,4 @@
-/* rook.css — v125 */
+/* rook.css — v126 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -1845,7 +1845,7 @@ body.cm-theme-light .rk-coach .hl{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 18 - Responsive ve erişilebilirlik --------------------------------------- */
+/* 18 - Responsive ve erişilebilirlik + DİNAMİK DROPDOWN FIX --------------------------------------- */
 @media (max-width:560px){
   button.cm-btn, button.rk-btn, select.cm-sel{ 
     height:44px; 
@@ -1861,8 +1861,11 @@ body.cm-theme-light .rk-coach .hl{
     line-height:1.05; 
   }
   
+  /* DİNAMİK DROPDOWN - GENEL .CM-SEL KURALI DÜZELTMESİ */
   .cm-sel{ 
-    max-width:110px; 
+    max-width: 100px;     /* ESKİ: max-width:110px; */
+    min-width: 50px;      /* YENİ: Minimum genişlik ekle */
+    width: max-content;   /* YENİ: Dinamik genişlik */
     font-size:12px; 
     padding:0 8px; 
   }
