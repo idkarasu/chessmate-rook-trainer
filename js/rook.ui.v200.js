@@ -1,4 +1,4 @@
-/* rook.ui.js — v57 */
+/* rook.ui.js — v200 */
 
 (function(window,document){'use strict';
 
@@ -16,6 +16,9 @@ const addCleanupItem=(item)=>{RookUI._cleanupItems.push(item)};
 const $=(id)=>document.getElementById(id);
 
 const throttle=(func,delay)=>{let timeoutId;let lastExecTime=0;return function(...args){const currentTime=Date.now();if(currentTime-lastExecTime>delay){func.apply(this,args);lastExecTime=currentTime}else{clearTimeout(timeoutId);timeoutId=setTimeout(()=>{func.apply(this,args);lastExecTime=Date.now()},delay-(currentTime-lastExecTime));addCleanupItem(()=>clearTimeout(timeoutId))}}};
+
+// Translation helper
+const t=(key,...args)=>window.Rook?.t?.(key,...args)||key;
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 2 - Önyükleme ve yardımcılar ------------------------------------------- */
@@ -166,7 +169,7 @@ function ensureResultModal(){
     back=document.createElement('div');
     back.id='rk-modal-back';
     back.style.display='none';
-    back.innerHTML='<div class="rk-modal" role="dialog" aria-modal="true" aria-labelledby="rk-modal-title" aria-describedby="rk-modal-desc"><button id="rk-modal-close" class="rk-modal__close" type="button" aria-label="Kapat">✕</button><h3 class="rk-modal-title" id="rk-modal-title">Sonuç</h3><p class="rk-modal-desc" id="rk-modal-desc">—</p><div class="rk-modal-actions"><button id="rk-modal-newgame" class="rk-btn" type="button">Yeni Oyun</button></div></div>';
+    back.innerHTML=`<div class="rk-modal" role="dialog" aria-modal="true" aria-labelledby="rk-modal-title" aria-describedby="rk-modal-desc"><button id="rk-modal-close" class="rk-modal__close" type="button" aria-label="${t('btn.close')}">✕</button><h3 class="rk-modal-title" id="rk-modal-title">${t('modal.timeup.title')}</h3><p class="rk-modal-desc" id="rk-modal-desc">—</p><div class="rk-modal-actions"><button id="rk-modal-newgame" class="rk-btn" type="button">${t('btn.newgame')}</button></div></div>`;
     host.appendChild(back)
   }else if(back.parentElement!==host){
     back.remove();
@@ -271,7 +274,7 @@ function ensureUnderbar(){
     underbar.id = 'rk-underbar';
     underbar.className = 'rk-underbar';
     underbar.setAttribute('role', 'region');
-    underbar.setAttribute('aria-label', 'Oyun bilgileri');
+    underbar.setAttribute('aria-label', t('aria.gameinfo'));
     insertAfter(board, underbar);
   }
   
@@ -315,8 +318,8 @@ function ensureUnderbar(){
     const hudTime = document.createElement('div');
     hudTime.id = 'hud-time';
     hudTime.className = 'hud-chip';
-    hudTime.setAttribute('aria-label', 'Süre');
-    hudTime.innerHTML = '<span class="ico">⏱️</span><span class="lbl">Süre</span><span class="val">00:00</span>';
+    hudTime.setAttribute('aria-label', t('hud.time'));
+    hudTime.innerHTML = `<span class="ico">⏱️</span><span class="lbl">${t('hud.time')}</span><span class="val">00:00</span>`;
     leftSection.appendChild(hudTime);
     
     // Orta grup
@@ -327,8 +330,8 @@ function ensureUnderbar(){
     const hudScore = document.createElement('div');
     hudScore.id = 'hud-score'; 
     hudScore.className = 'hud-chip';
-    hudScore.setAttribute('aria-label', 'Skor');
-    hudScore.innerHTML = '<span class="lbl">Skor</span><span class="val">00</span><span class="ico">♟️</span>';
+    hudScore.setAttribute('aria-label', t('hud.score'));
+    hudScore.innerHTML = `<span class="lbl">${t('hud.score')}</span><span class="val">00</span><span class="ico">♟️</span>`;
     middleSection.appendChild(hudScore);
     
     // Sağ grup
@@ -339,8 +342,8 @@ function ensureUnderbar(){
     const hudBest = document.createElement('div');
     hudBest.id = 'hud-best';
     hudBest.className = 'hud-chip';
-    hudBest.setAttribute('aria-label', 'En İyi');  
-    hudBest.innerHTML = '<span class="lbl" id="hud-best-label">En İyi</span><span class="val">—</span><span class="ico">⏱️</span>';
+    hudBest.setAttribute('aria-label', t('hud.best'));  
+    hudBest.innerHTML = `<span class="lbl" id="hud-best-label">${t('hud.best')}</span><span class="val">—</span><span class="ico">⏱️</span>`;
     rightSection.appendChild(hudBest);
     
     // Alt satırı oluştur
@@ -414,16 +417,39 @@ function updateHud(){
   
   if(RK.st.mode==='timed'){
     if($time)$time.textContent=fmtMMSSDown60(Math.max(0,RK.st.timeLeft|0));
-    if(bestWrap)bestWrap.setAttribute('aria-label','En İyi');
-    if($bestLbl)$bestLbl.textContent='En İyi';
+    if(bestWrap)bestWrap.setAttribute('aria-label',t('hud.best'));
+    if($bestLbl)$bestLbl.textContent=t('hud.best');
     if($best)$best.textContent=pad2(RK.st.bestTimed|0);
     if($bestIco)$bestIco.textContent='♟️'
   }else{
     if($time)$time.textContent=fmtMMSS(Math.max(0,RK.st.timeLeft|0));
-    if(bestWrap)bestWrap.setAttribute('aria-label','En Hızlı');
-    if($bestLbl)$bestLbl.textContent='En Hızlı';
+    if(bestWrap)bestWrap.setAttribute('aria-label',t('hud.fastest'));
+    if($bestLbl)$bestLbl.textContent=t('hud.fastest');
     if($best)$best.textContent=fmtOrDashMMSS(RK.st.bestLevelsTime|0);
     if($bestIco)$bestIco.textContent='⏱️'
+  }
+}
+
+function updateHudLabels(){
+  const $timeLabel=document.querySelector('#hud-time .lbl');
+  const $scoreLabel=document.querySelector('#hud-score .lbl');
+  const $bestLabel=document.querySelector('#hud-best .lbl');
+  const $timeWrap=document.getElementById('hud-time');
+  const $scoreWrap=document.getElementById('hud-score');
+  const $bestWrap=document.getElementById('hud-best');
+  
+  if($timeLabel)$timeLabel.textContent=t('hud.time');
+  if($scoreLabel)$scoreLabel.textContent=t('hud.score');
+  if($timeWrap)$timeWrap.setAttribute('aria-label',t('hud.time'));
+  if($scoreWrap)$scoreWrap.setAttribute('aria-label',t('hud.score'));
+  
+  const RK=window.Rook;
+  if(RK?.st.mode==='timed'){
+    if($bestLabel)$bestLabel.textContent=t('hud.best');
+    if($bestWrap)$bestWrap.setAttribute('aria-label',t('hud.best'));
+  }else{
+    if($bestLabel)$bestLabel.textContent=t('hud.fastest');
+    if($bestWrap)$bestWrap.setAttribute('aria-label',t('hud.fastest'));
   }
 }
 /* Bölüm sonu --------------------------------------------------------------- */
@@ -434,7 +460,7 @@ const throttledUpdateHud=throttle(updateHud,100);
 on(document,'rk:timeup',({detail})=>{
   if(window.Rook?.st.mode==='timed'){
     const score=detail?.score??(window.Rook.st.score|0);
-    openResultModal('Süre doldu!',`Skor: ${score} ♟️`);
+    openResultModal(t('modal.timeup.title'),t('modal.timeup.desc',score));
     rkConfetti(1800,500);
     throttledUpdateHud()
   }
@@ -442,7 +468,7 @@ on(document,'rk:timeup',({detail})=>{
 
 on(document,'rk:levels-finished',({detail})=>{
   const sec=detail?.seconds??0;
-  openResultModal('Tebrikler!',`Süre: ${fmtMMSS(sec)} ⏱️`);
+  openResultModal(t('modal.levels.title'),t('modal.levels.desc',fmtMMSS(sec)));
   rkConfetti(1800,500);
   throttledUpdateHud()
 });
@@ -458,33 +484,114 @@ on(document,'rk:mode',({detail})=>{
   throttledUpdateHud()
 });
 
+on(document,'cm-lang',()=>{
+  updateHudLabels();
+  updateSideLabels();
+  updateModeLabels();
+  updateButtonLabels();
+  updateModalLabels();
+});
+
 on(document,'rk:timer',throttledUpdateHud);
 on(document,'rk:score',throttledUpdateHud);
 on(document,'rk:best',throttledUpdateHud);
 on(document,'rk:bestTime',throttledUpdateHud);
 
+function updateSideLabels(){
+  const sideLabel=document.querySelector('.rk-group--side .rk-ctl-label');
+  const whiteOption=document.querySelector('#rk-side-select option[value="white"]');
+  const blackOption=document.querySelector('#rk-side-select option[value="black"]');
+  
+  if(sideLabel)sideLabel.textContent=t('label.side');
+  if(whiteOption)whiteOption.textContent=t('side.white');
+  if(blackOption)blackOption.textContent=t('side.black');
+}
+
+function updateModeLabels(){
+  const modeLabel=document.querySelector('.rk-group--mode .rk-ctl-label');
+  const timedOption=document.querySelector('#rk-mode-select option[value="timed"]');
+  const levelsOption=document.querySelector('#rk-mode-select option[value="levels"]');
+  
+  if(modeLabel)modeLabel.textContent=t('label.mode');
+  if(timedOption)timedOption.textContent=t('mode.timed');
+  if(levelsOption)levelsOption.textContent=t('mode.levels');
+}
+
+function updateButtonLabels(){
+  const RK=window.Rook;
+  if(!RK)return;
+  
+  const btnTheme=$('cm-theme-toggle');
+  const btnBoard=$('cm-board-toggle');
+  const btnSound=$('cm-sound-toggle');
+  const btnHints=$('cm-hints');
+  const btnStart=$('rk-start');
+  
+  if(btnTheme)btnTheme.title=t('tooltip.theme');
+  if(btnBoard)btnBoard.title=t('tooltip.board')+` (${RK.st.boardSkin||'classic'})`;
+  if(btnStart){
+    btnStart.title=t('tooltip.start');
+    btnStart.textContent=t('btn.start');
+  }
+  
+  if(btnSound){
+    const onNow=!!RK.st.soundOn;
+    setToggleButtonState(btnSound,{
+      pressed:onNow,
+      title:onNow?t('tooltip.sound.on'):t('tooltip.sound.off'),
+      text:onNow?'🔊':'🔇'
+    });
+  }
+  
+  if(btnHints){
+    const onNow=!!RK.st.hintsOn;
+    setToggleButtonState(btnHints,{
+      pressed:onNow,
+      title:onNow?t('tooltip.hints.on'):t('tooltip.hints.off')
+    });
+  }
+}
+
+function updateModalLabels(){
+  const closeBtn=$('rk-modal-close');
+  const newGameBtn=$('rk-modal-newgame');
+  
+  if(closeBtn)closeBtn.setAttribute('aria-label',t('btn.close'));
+  if(newGameBtn)newGameBtn.textContent=t('btn.newgame');
+}
+
 on(document,'cm-sound',(e)=>{
   const onNow=!!(e?.detail?.on);
   const btnSound=$('cm-sound-toggle');
-  setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})
+  setToggleButtonState(btnSound,{
+    pressed:onNow,
+    title:onNow?t('tooltip.sound.on'):t('tooltip.sound.off'),
+    text:onNow?'🔊':'🔇'
+  })
 },{passive:true});
 
 on(document,'cm-hints',(e)=>{
   const onNow=!!(e?.detail?.on);
   const btnHints=$('cm-hints');
-  setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})
+  setToggleButtonState(btnHints,{
+    pressed:onNow,
+    title:onNow?t('tooltip.hints.on'):t('tooltip.hints.off')
+  })
 },{passive:true});
 
 on(document,'cm-theme',(e)=>{
-  const t=e?.detail?.theme||window.Rook?.st.theme||'dark';
+  const theme=e?.detail?.theme||window.Rook?.st.theme||'dark';
   const btnTheme=$('cm-theme-toggle');
-  setToggleButtonState(btnTheme,{title:'Tema Değiştir',text:(t==='light'?'☀️':'🌙')})
+  setToggleButtonState(btnTheme,{
+    title:t('tooltip.theme'),
+    text:(theme==='light'?'☀️':'🌙')
+  })
 },{passive:true});
 
 on(document,'cm-board',(e)=>{
   const s=e?.detail?.skin||window.Rook?.st.boardSkin||'classic';
   const btnBoard=$('cm-board-toggle');
-  if(btnBoard)btnBoard.title=`Tahta Temasını Değiştir (${s})`
+  if(btnBoard)btnBoard.title=t('tooltip.board')+` (${s})`
 },{passive:true});
 
 on(window,'storage',(e)=>{
@@ -492,22 +599,32 @@ on(window,'storage',(e)=>{
   if(e.key==='cm-sound'){
     const onNow=(e.newValue==='on');
     const btnSound=$('cm-sound-toggle');
-    setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})
+    setToggleButtonState(btnSound,{
+      pressed:onNow,
+      title:onNow?t('tooltip.sound.on'):t('tooltip.sound.off'),
+      text:onNow?'🔊':'🔇'
+    })
   }
   if(e.key==='cm-hints'){
     const onNow=(e.newValue==='on');
     const btnHints=$('cm-hints');
-    setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})
+    setToggleButtonState(btnHints,{
+      pressed:onNow,
+      title:onNow?t('tooltip.hints.on'):t('tooltip.hints.off')
+    })
   }
   if(e.key==='cm-theme'){
-    const t=e.newValue||'dark';
+    const theme=e.newValue||'dark';
     const btnTheme=$('cm-theme-toggle');
-    setToggleButtonState(btnTheme,{title:'Tema Değiştir',text:(t==='light'?'☀️':'🌙')})
+    setToggleButtonState(btnTheme,{
+      title:t('tooltip.theme'),
+      text:(theme==='light'?'☀️':'🌙')
+    })
   }
   if(e.key==='cm-board'){
     const s=e.newValue||'classic';
     const btnBoard=$('cm-board-toggle');
-    if(btnBoard)btnBoard.title=`Tahta Temasını Değiştir (${s})`
+    if(btnBoard)btnBoard.title=t('tooltip.board')+` (${s})`
   }
 },{passive:true});
 /* Bölüm sonu --------------------------------------------------------------- */
@@ -563,13 +680,6 @@ function initToolbarScroll(){
 
 on(document,'rk:ready',()=>{
   const RK=window.Rook;
-  const modeSel=$('rk-mode-select');
-  if(modeSel){
-    const t=modeSel.querySelector('option[value="timed"]');
-    const l=modeSel.querySelector('option[value="levels"]');
-    if(t)t.textContent='⏱️ Zamana Karşı';
-    if(l)l.textContent='🌊 Sekiz Dalga'
-  }
   
   ensureResultModal();
   ensureUnderbar();
@@ -577,6 +687,11 @@ on(document,'rk:ready',()=>{
   else{showTimedBar();resetTimebarFull()}
   updateLevelsBars(RK.st.wave||1);
   updateHud();
+  updateHudLabels();
+  updateSideLabels();
+  updateModeLabels();
+  updateButtonLabels();
+  updateModalLabels();
   initToolbarScroll();
   
   const sideSel=$('rk-side-select');
@@ -585,6 +700,7 @@ on(document,'rk:ready',()=>{
     on(sideSel,'change',e=>{RK.setSide(e.target.value);RK.hardReset()})
   }
   
+  const modeSel=$('rk-mode-select');
   if(modeSel){
     modeSel.value=RK.st.mode;
     on(modeSel,'change',e=>RK.setMode(e.target.value))
@@ -597,21 +713,31 @@ on(document,'rk:ready',()=>{
   const btnStart=$('rk-start');
   
   if(btnTheme){
-    btnTheme.title='Tema Değiştir';
+    btnTheme.title=t('tooltip.theme');
     btnTheme.textContent=(RK.st.theme==='light'?'☀️':'🌙')
   }
   if(btnBoard){
-    btnBoard.title=`Tahta Temasını Değiştir (${RK.st.boardSkin||'classic'})`
+    btnBoard.title=t('tooltip.board')+` (${RK.st.boardSkin||'classic'})`
   }
-  if(btnStart)btnStart.title='Başlat';
+  if(btnStart){
+    btnStart.title=t('tooltip.start');
+    btnStart.textContent=t('btn.start');
+  }
   
   if(btnSound){
     const onNow=!!RK.st.soundOn;
-    setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})
+    setToggleButtonState(btnSound,{
+      pressed:onNow,
+      title:onNow?t('tooltip.sound.on'):t('tooltip.sound.off'),
+      text:onNow?'🔊':'🔇'
+    })
   }
   if(btnHints){
     const onNow=!!RK.st.hintsOn;
-    setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})
+    setToggleButtonState(btnHints,{
+      pressed:onNow,
+      title:onNow?t('tooltip.hints.on'):t('tooltip.hints.off')
+    })
   }
   
   on(btnTheme,'click',()=>RK.toggleTheme?.());
@@ -619,12 +745,19 @@ on(document,'rk:ready',()=>{
   on(btnSound,'click',()=>{
     const onNow=!RK.st.soundOn;
     RK.setSound(onNow);
-    setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})
+    setToggleButtonState(btnSound,{
+      pressed:onNow,
+      title:onNow?t('tooltip.sound.on'):t('tooltip.sound.off'),
+      text:onNow?'🔊':'🔇'
+    })
   });
   on(btnHints,'click',()=>{
     RK.toggleHints();
     const onNow=RK.st.hintsOn;
-    setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})
+    setToggleButtonState(btnHints,{
+      pressed:onNow,
+      title:onNow?t('tooltip.hints.on'):t('tooltip.hints.off')
+    })
   });
   on(btnStart,'click',async()=>{
     if(RK.st.mode==='timed')resetTimebarFull();
