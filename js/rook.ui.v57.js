@@ -1,4 +1,4 @@
-/* rook.ui.js — v56 */
+/* rook.ui.js — v57 */
 
 (function(window,document){'use strict';
 
@@ -52,6 +52,11 @@ async function rkCountdown(n=3){
   if(countdownActive)return;
   countdownActive=true;
   try{
+    // Geri sayım başladığında ses çal
+    if(window.Rook?.playCountdown){
+      window.Rook.playCountdown();
+    }
+    
     const back=ensureCountdownDom();
     const num=$('rk-countdown');
     if(!back||!num)return;
@@ -205,6 +210,11 @@ function addEscToClose(){
 }
 
 function openResultModal(title,desc){
+  // Sonuç paneli açılırken ses çal
+  if(window.Rook?.playResult){
+    window.Rook.playResult();
+  }
+  
   ensureResultModal();
   const back=$('rk-modal-back');
   const modal=back?.querySelector('.rk-modal');
