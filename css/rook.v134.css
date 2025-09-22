@@ -124,6 +124,12 @@ html:has(body.light-mode){
 /* 2 - Sayfa düzeni ve temel stiller ---------------------------------------- */
 html { -webkit-text-size-adjust: 100%; }
 html, body { height:100%; }
+
+/* Cross-browser normalization */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
 body{
   margin:0; 
   color:var(--text);
