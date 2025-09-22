@@ -1,4 +1,4 @@
-/* rook.core.js — v73 */
+/* rook.core.js — v74 */
 
 (function(window,document){'use strict';
 
@@ -86,7 +86,7 @@ makePosition(){const p={};p[this.st.rookSq]=this.st.rookPiece;const pp=this.st.p
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 11 - Zamanlayıcı -------------------------------------------------------- */
-startTimer(dir){if(this.st.timer)return;this.st.timerDir=(dir==='up')?'up':'down';this.st.playing=true;const now=performance.now();if(this.st.timerDir==='down'){this._timerEndAt=now+(this.st.timeLeft*1000)}else{this._timerStartAt=now-(this.st.timeLeft*1000)}let prevWhole=Math.round(this.st.timeLeft);const tick=(tNow)=>{if(this.st.timerDir==='down'){this.st.timeLeft=Math.max(0,(this._timerEndAt-tNow)/1000)}else{this.st.timeLeft=Math.max(0,(tNow-this._timerStartAt)/1000)}this.updateBar(60);const whole=Math.round(this.st.timeLeft);if(whole!==prevWhole){emit('rk:timer',{timeLeft:this.st.timeLeft,dir:this.st.timerDir});prevWhole=whole}if(this.st.timerDir==='down'&&this.st.timeLeft<=0){this.stopTimer();this.st.playing=false;if(this.st.score>this.currentBest()){this.setBest(this.st.score)}this.updateInfo(`Süre doldu! Skor: ${this.st.score}`);emit('rk:timeup',{score:this.st.score,best:this.currentBest()});return}this.st.timer=requestAnimationFrame(tick)};this.st.timer=requestAnimationFrame(tick)},
+startTimer(dir){if(this.st.timer)return;this.st.timerDir=(dir==='up')?'up':'down';this.st.playing=true;const now=performance.now();if(this.st.timerDir==='down'){this._timerEndAt=now+(this.st.timeLeft*1000)}else{this._timerStartAt=now-(this.st.timeLeft*1000)}let prevWhole=Math.round(this.st.timeLeft);const tick=(tNow)=>{if(this.st.timerDir==='down'){this.st.timeLeft=Math.max(0,(this._timerEndAt-tNow)/1000)}else{this.st.timeLeft=Math.max(0,(tNow-this._timerStartAt)/1000)}this.updateBar(60);const whole=Math.round(this.st.timeLeft);if(whole!==prevWhole){emit('rk:timer',{timeLeft:this.st.timeLeft,dir:this.st.timerDir});prevWhole=whole}if(this.st.timerDir==='down'&&this.st.timeLeft<=0){this.stopTimer();this.st.playing=false;if(this.st.score>this.currentBest()){this.setBest(this.st.score)}this.updateInfo(this.t('msg.timeup')+` ${this.t('hud.score')}: ${this.st.score}`);emit('rk:timeup',{score:this.st.score,best:this.currentBest()});return}this.st.timer=requestAnimationFrame(tick)};this.st.timer=requestAnimationFrame(tick)},
 stopTimer(){if(this.st.timer){cancelAnimationFrame(this.st.timer)}this.st.timer=null},
 /* Bölüm sonu --------------------------------------------------------------- */
 
@@ -429,7 +429,7 @@ initBoard(){
     appearSpeed:200,
     onDragStart(source,piece){
       if(piece!==self.st.rookPiece)return false;
-      if(!self.st.playing)self.updateInfo("Önce Start'a basın.");
+      if(!self.st.playing)self.updateInfo(self.t('msg.start.first'));
       
       // Audio context'i hazırla (mobil için kritik)
       if(self.audio && !self.audio.audioPrimed()){
@@ -473,7 +473,7 @@ initBoard(){
         self.st.score++;
         emit('rk:score',{score:self.st.score});
         if(self.modes?.onCapture){self.modes.onCapture(self,target)}
-        self.updateInfo('Harika! Skor +1')
+        self.updateInfo(self.t('msg.capture'))
       }
     },
     onSnapEnd(){
@@ -501,12 +501,13 @@ initBoard(){
 /* 15 - Oyun kontrolleri --------------------------------------------------- */
 hardReset(){this.stopTimer();this.st.playing=false;this.st.score=0;const p=this._startForSide(this.st.side);this.st.rookPiece=p.rookPiece;this.st.pawnPiece=p.pawnPiece;this.setWave(1);this.st.levelsStartAt=null;if(this.st.mode==='levels'){this.st.timeLeft=0;this.st.timerDir='up'}else{this.st.timeLeft=60;this.st.timerDir='down'}if(this.modes?.reset){this.modes.reset(this)}else{this.st.rookSq=p.rookSq;const pool=this.allSquares().filter(sq=>sq!==this.st.rookSq);this.st.pawns=[pool[Math.floor(Math.random()*pool.length)]]}this.updateInfo('—');this.draw()},
 start(){this.hardReset();this.st.score=0;emit('rk:score',{score:0});this.updateInfo('—');if(this.st.mode==='levels'){this.st.levelsStartAt=Date.now()}if(this.modes?.onStart)this.modes.onStart(this);if(!this.st.timer)this.startTimer(this.st.timerDir);this.st.playing=true;emit('rk:start',{mode:this.st.mode})},
-stop(){this.st.playing=false;this.stopTimer();this.updateInfo('Duraklatıldı.');emit('rk:stop',{})},
+stop(){this.st.playing=false;this.stopTimer();this.updateInfo(this.t('msg.paused'));emit('rk:stop',{})},
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 16 - Cleanup ve önyükleme ----------------------------------------------- */
 cleanup(){this._eventListeners.forEach(({target,event,handler,options})=>{try{target.removeEventListener(event,handler,options)}catch(err){console.warn(`Failed to remove event listener ${event}:`,err)}});this._eventListeners.length=0;this._observers.forEach(observer=>{try{observer.disconnect()}catch(err){console.warn('Failed to disconnect observer:',err)}});this._observers.length=0;this.stopTimer();this._disableTouchLock()},
 init(){
+this.initLang();
 this.initAudio();
 const self=this;
 const syncSoundFromGlobal=()=>{
@@ -583,23 +584,275 @@ const setupCoachBubble=()=>{
   const $desc=coach.querySelector('#rk-coach-desc');
   const setCoachText=(mode)=>{
     if(!$title||!$desc)return;
-    $title.textContent='Kale Eğitim Moduna Hoşgeldin.';
-    const hint='<br><span class="rk-coach__hint"><strong>İpucu:</strong> Kale yalnızca aynı satır/sütunda hareket eder ve aradan atlayamaz.</span><span class="rk-coach__hint"></span>';
+    $title.textContent=self.t('coach.title');
+    const hint=`<br><span class="rk-coach__hint">${self.t('coach.hint')}</span><span class="rk-coach__hint"></span>`;
     if(mode==='levels'){
-      $desc.innerHTML='8 seviyeyi en hızlı kaç saniyede bitirebilirsin görmek isterim.'+hint
+      $desc.innerHTML=self.t('coach.desc.levels')+hint
     }else{
-      $desc.innerHTML='<span class="hl">60 saniyede</span> kaç piyonu toplayabilirsin?'+hint
+      $desc.innerHTML=self.t('coach.desc.timed')+hint
     }
   };
   setCoachText(self.st.mode);
   
   const modeHandler=(e)=>{const mode=e?.detail?.mode||self.st.mode;setCoachText(mode)};
-  this._addTrackedListener(document,'rk:mode',modeHandler,{passive:true})
+  this._addTrackedListener(document,'rk:mode',modeHandler,{passive:true});
+  this._addTrackedListener(document,'cm-lang',()=>setCoachText(self.st.mode),{passive:true})
 };
 setupCoachBubble();
 
 this._addTrackedListener(window,'beforeunload',()=>this.cleanup(),{passive:true})
 }};
+
+/* 17 - Çok dilli destek sistemi ------------------------------------------- */
+Core.initLang=function(){
+  const TEXTS = {
+    en: {
+      // Game modes
+      'mode.timed': '⏱️ Timed Mode',
+      'mode.levels': '🌊 Eight Waves',
+      
+      // Buttons and controls
+      'btn.start': 'Start',
+      'btn.newgame': 'New Game',
+      'btn.close': 'Close',
+      
+      // Tooltips
+      'tooltip.theme': 'Toggle Theme',
+      'tooltip.board': 'Change Board Theme',
+      'tooltip.sound.on': 'Sound: On',
+      'tooltip.sound.off': 'Sound: Off',
+      'tooltip.hints.on': 'Hints: On',
+      'tooltip.hints.off': 'Hints: Off',
+      'tooltip.start': 'Start Game',
+      
+      // HUD labels
+      'hud.time': 'Time',
+      'hud.score': 'Score',
+      'hud.best': 'Best',
+      'hud.fastest': 'Fastest',
+      
+      // Side selection
+      'side.white': 'White',
+      'side.black': 'Black',
+      'label.side': 'Side:',
+      'label.mode': 'Game Mode:',
+      
+      // Coach messages
+      'coach.title': 'Welcome to Rook Training Mode.',
+      'coach.desc.timed': 'How many pawns can you capture in <span class="hl">60 seconds</span>?',
+      'coach.desc.levels': 'How fast can you complete all 8 levels?',
+      'coach.hint': '<strong>Hint:</strong> Rook moves only horizontally/vertically and cannot jump over pieces.',
+      
+      // Game messages
+      'msg.start.first': "Press Start first.",
+      'msg.capture': 'Great! Score +1',
+      'msg.paused': 'Paused.',
+      'msg.timeup': 'Time up!',
+      'msg.congratulations': 'Congratulations!',
+      
+      // Modal content
+      'modal.timeup.title': 'Time Up!',
+      'modal.timeup.desc': 'Score: {0} ♟️',
+      'modal.levels.title': 'Congratulations!',
+      'modal.levels.desc': 'Time: {0} ⏱️',
+      
+      // Accessibility
+      'aria.board': 'Chess Board',
+      'aria.gameinfo': 'Game Information',
+      'aria.toolbar': 'Game Controls'
+    },
+    
+    tr: {
+      // Game modes
+      'mode.timed': '⏱️ Zamana Karşı',
+      'mode.levels': '🌊 Sekiz Dalga',
+      
+      // Buttons and controls
+      'btn.start': 'Başlat',
+      'btn.newgame': 'Yeni Oyun',
+      'btn.close': 'Kapat',
+      
+      // Tooltips
+      'tooltip.theme': 'Tema Değiştir',
+      'tooltip.board': 'Tahta Temasını Değiştir',
+      'tooltip.sound.on': 'Ses: Açık',
+      'tooltip.sound.off': 'Ses: Kapalı',
+      'tooltip.hints.on': 'İpuçları: Açık',
+      'tooltip.hints.off': 'İpuçları: Kapalı',
+      'tooltip.start': 'Oyunu Başlat',
+      
+      // HUD labels
+      'hud.time': 'Süre',
+      'hud.score': 'Skor',
+      'hud.best': 'En İyi',
+      'hud.fastest': 'En Hızlı',
+      
+      // Side selection
+      'side.white': 'Beyaz',
+      'side.black': 'Siyah',
+      'label.side': 'Taraf:',
+      'label.mode': 'Oyun Modu:',
+      
+      // Coach messages
+      'coach.title': 'Kale Eğitim Moduna Hoşgeldin.',
+      'coach.desc.timed': '<span class="hl">60 saniyede</span> kaç piyonu toplayabilirsin?',
+      'coach.desc.levels': '8 seviyeyi en hızlı kaç saniyede bitirebilirsin görmek isterim.',
+      'coach.hint': '<strong>İpucu:</strong> Kale yalnızca aynı satır/sütunda hareket eder ve aradan atlayamaz.',
+      
+      // Game messages
+      'msg.start.first': "Önce Start'a basın.",
+      'msg.capture': 'Harika! Skor +1',
+      'msg.paused': 'Duraklatıldı.',
+      'msg.timeup': 'Süre doldu!',
+      'msg.congratulations': 'Tebrikler!',
+      
+      // Modal content
+      'modal.timeup.title': 'Süre Doldu!',
+      'modal.timeup.desc': 'Skor: {0} ♟️',
+      'modal.levels.title': 'Tebrikler!',
+      'modal.levels.desc': 'Süre: {0} ⏱️',
+      
+      // Accessibility
+      'aria.board': 'Satranç Tahtası',
+      'aria.gameinfo': 'Oyun Bilgileri',
+      'aria.toolbar': 'Oyun Kontrolleri'
+    },
+    
+    de: {
+      // Game modes
+      'mode.timed': '⏱️ Zeitlimit',
+      'mode.levels': '🌊 Acht Wellen',
+      
+      // Buttons and controls
+      'btn.start': 'Start',
+      'btn.newgame': 'Neues Spiel',
+      'btn.close': 'Schließen',
+      
+      // Tooltips
+      'tooltip.theme': 'Thema Wechseln',
+      'tooltip.board': 'Brett-Thema Ändern',
+      'tooltip.sound.on': 'Ton: An',
+      'tooltip.sound.off': 'Ton: Aus',
+      'tooltip.hints.on': 'Hinweise: An',
+      'tooltip.hints.off': 'Hinweise: Aus',
+      'tooltip.start': 'Spiel Starten',
+      
+      // HUD labels
+      'hud.time': 'Zeit',
+      'hud.score': 'Punkte',
+      'hud.best': 'Beste',
+      'hud.fastest': 'Schnellste',
+      
+      // Side selection
+      'side.white': 'Weiß',
+      'side.black': 'Schwarz',
+      'label.side': 'Seite:',
+      'label.mode': 'Spielmodus:',
+      
+      // Coach messages
+      'coach.title': 'Willkommen beim Turm-Training.',
+      'coach.desc.timed': 'Wie viele Bauern kannst du in <span class="hl">60 Sekunden</span> schlagen?',
+      'coach.desc.levels': 'Wie schnell kannst du alle 8 Level schaffen?',
+      'coach.hint': '<strong>Tipp:</strong> Der Turm bewegt sich nur horizontal/vertikal und kann nicht über Figuren springen.',
+      
+      // Game messages
+      'msg.start.first': "Zuerst Start drücken.",
+      'msg.capture': 'Großartig! Punkte +1',
+      'msg.paused': 'Pausiert.',
+      'msg.timeup': 'Zeit abgelaufen!',
+      'msg.congratulations': 'Herzlichen Glückwunsch!',
+      
+      // Modal content
+      'modal.timeup.title': 'Zeit Abgelaufen!',
+      'modal.timeup.desc': 'Punkte: {0} ♟️',
+      'modal.levels.title': 'Herzlichen Glückwunsch!',
+      'modal.levels.desc': 'Zeit: {0} ⏱️',
+      
+      // Accessibility
+      'aria.board': 'Schachbrett',
+      'aria.gameinfo': 'Spiel-Information',
+      'aria.toolbar': 'Spiel-Steuerung'
+    }
+  };
+
+  // URL parameter detection
+  const getUrlLang = () => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const lang = params.get('lang');
+      return ['en', 'tr', 'de'].includes(lang) ? lang : 'en';
+    } catch(_) {
+      return 'en';
+    }
+  };
+
+  // Language state
+  this.lang = {
+    current: safeGetItem('cm-lang', getUrlLang()),
+    texts: TEXTS,
+    
+    // Get localized text
+    t(key, ...args) {
+      const text = this.texts[this.current]?.[key] || this.texts.en[key] || key;
+      if (args.length === 0) return text;
+      
+      // Simple placeholder replacement {0}, {1}, etc.
+      return text.replace(/\{(\d+)\}/g, (match, index) => {
+        const argIndex = parseInt(index, 10);
+        return args[argIndex] !== undefined ? args[argIndex] : match;
+      });
+    },
+    
+    // Set language
+    setLang(langCode) {
+      const validLangs = ['en', 'tr', 'de'];
+      const lang = validLangs.includes(langCode) ? langCode : 'en';
+      
+      if (this.current === lang) return;
+      
+      this.current = lang;
+      safeSetItem('cm-lang', lang);
+      
+      // Update URL without reload
+      try {
+        const url = new URL(window.location);
+        url.searchParams.set('lang', lang);
+        window.history.replaceState({}, '', url);
+      } catch(_) {}
+      
+      // Emit language change event
+      emit('cm-lang', { lang, from: 'rook' });
+    },
+    
+    // Get available languages
+    getAvailableLangs() {
+      return [
+        { code: 'en', name: 'English' },
+        { code: 'tr', name: 'Türkçe' },
+        { code: 'de', name: 'Deutsch' }
+      ];
+    }
+  };
+
+  // Initialize language from URL or storage
+  const urlLang = getUrlLang();
+  if (urlLang !== this.lang.current) {
+    this.lang.setLang(urlLang);
+  }
+};
+
+// Helper method for getting translations
+Core.t = function(key, ...args) {
+  return this.lang?.t(key, ...args) || key;
+};
+
+// Language setter
+Core.setLang = function(langCode) {
+  if (this.lang?.setLang) {
+    this.lang.setLang(langCode);
+  }
+};
+/* Bölüm sonu --------------------------------------------------------------- */
 
 window.Rook=Core;
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',()=>Core.init(),{once:true})}else{Core.init()}
