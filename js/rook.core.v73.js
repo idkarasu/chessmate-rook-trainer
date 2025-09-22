@@ -1,4 +1,4 @@
-/* rook.core.js — v72 */
+/* rook.core.js — v73 */
 
 (function(window,document){'use strict';
 
@@ -107,12 +107,18 @@ toggleHints(){this.applyHints(!this.st.hintsOn)},
 initAudio(){
   const moveAudio = new Audio('/wp-content/uploads/chess/sounds/move.wav'); 
   const captureAudio = new Audio('/wp-content/uploads/chess/sounds/capture.wav');
+  const countdownAudio = new Audio('/wp-content/uploads/chess/sounds/countdown.wav');
+  const resultAudio = new Audio('/wp-content/uploads/chess/sounds/result.wav');
   moveAudio.preload='auto';
   captureAudio.preload='auto';
+  countdownAudio.preload='auto';
+  resultAudio.preload='auto';
   moveAudio.volume=0.7;
   captureAudio.volume=0.6;
+  countdownAudio.volume=0.8;
+  resultAudio.volume=0.75;
   
-  let audioCtx=null, moveBuf=null, captureBuf=null, audioPrimed=false;
+  let audioCtx=null, moveBuf=null, captureBuf=null, countdownBuf=null, resultBuf=null, audioPrimed=false;
   
   const installAudioUnlock=()=>{
     if(audioPrimed) return;
@@ -147,6 +153,28 @@ initAudio(){
               console.warn('Failed to load capture sound buffer:', err);
             }
           }
+          
+          // Load countdown sound buffer
+          if(!countdownBuf){
+            try{
+              const resp3=await fetch('/wp-content/uploads/chess/sounds/countdown.wav',{cache:'force-cache'});
+              const arr3=await resp3.arrayBuffer();
+              countdownBuf=await audioCtx.decodeAudioData(arr3);
+            }catch(err){
+              console.warn('Failed to load countdown sound buffer:', err);
+            }
+          }
+          
+          // Load result sound buffer
+          if(!resultBuf){
+            try{
+              const resp4=await fetch('/wp-content/uploads/chess/sounds/result.wav',{cache:'force-cache'});
+              const arr4=await resp4.arrayBuffer();
+              resultBuf=await audioCtx.decodeAudioData(arr4);
+            }catch(err){
+              console.warn('Failed to load result sound buffer:', err);
+            }
+          }
         }
         
         // Prime HTML5 Audio fallback
@@ -164,6 +192,22 @@ initAudio(){
           captureAudio.pause(); 
           captureAudio.currentTime=0; 
           captureAudio.muted=false; 
+        }catch(_){}
+        
+        try{ 
+          countdownAudio.muted=true; 
+          await countdownAudio.play().catch(()=>{}); 
+          countdownAudio.pause(); 
+          countdownAudio.currentTime=0; 
+          countdownAudio.muted=false; 
+        }catch(_){}
+        
+        try{ 
+          resultAudio.muted=true; 
+          await resultAudio.play().catch(()=>{}); 
+          resultAudio.pause(); 
+          resultAudio.currentTime=0; 
+          resultAudio.muted=false; 
         }catch(_){}
         
       }catch(err){
@@ -187,9 +231,13 @@ initAudio(){
   this.audio = {
     moveAudio,
     captureAudio,
+    countdownAudio,
+    resultAudio,
     audioCtx: () => audioCtx,
     moveBuf: () => moveBuf,
     captureBuf: () => captureBuf,
+    countdownBuf: () => countdownBuf,
+    resultBuf: () => resultBuf,
     audioPrimed: () => audioPrimed,
     installAudioUnlock
   };
@@ -259,6 +307,74 @@ playCapture(){
   }catch(_){
     // Double fallback to move sound
     this.playMove();
+  }
+},
+
+playCountdown(){
+  if(!this.st.soundOn)return;
+  const A=this.audio;
+  if(!A)return;
+  
+  // Try WebAudio first (low latency)
+  const audioCtx = A.audioCtx();
+  const countdownBuf = A.countdownBuf();
+  
+  if(audioCtx && countdownBuf && audioCtx.state === 'running'){ 
+    try{ 
+      const src=audioCtx.createBufferSource();
+      const gainNode=audioCtx.createGain();
+      gainNode.gain.value=0.8;
+      src.buffer=countdownBuf; 
+      src.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      src.start(0); 
+      return; 
+    }catch(err){ 
+      console.warn('WebAudio countdown playback failed:', err);
+    } 
+  }
+  
+  // Fallback to HTML5 Audio
+  try{ 
+    A.countdownAudio.currentTime=0; 
+    A.countdownAudio.play().catch(()=>{});
+  }catch(_){
+    // Fallback to move sound
+    this.playMove();
+  }
+},
+
+playResult(){
+  if(!this.st.soundOn)return;
+  const A=this.audio;
+  if(!A)return;
+  
+  // Try WebAudio first (low latency)
+  const audioCtx = A.audioCtx();
+  const resultBuf = A.resultBuf();
+  
+  if(audioCtx && resultBuf && audioCtx.state === 'running'){ 
+    try{ 
+      const src=audioCtx.createBufferSource();
+      const gainNode=audioCtx.createGain();
+      gainNode.gain.value=0.75;
+      src.buffer=resultBuf; 
+      src.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      src.start(0); 
+      return; 
+    }catch(err){ 
+      console.warn('WebAudio result playback failed:', err);
+    } 
+  }
+  
+  // Fallback to HTML5 Audio
+  try{ 
+    A.resultAudio.currentTime=0; 
+    A.resultAudio.play().catch(()=>{});
+  }catch(_){
+    // Fallback to capture sound
+    this.playCapture();
   }
 },
 
