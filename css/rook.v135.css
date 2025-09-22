@@ -141,18 +141,62 @@ body{
 
 .rk-wrap{
   position:relative;
-  max-width:900px;
   margin:0 auto;
   background:var(--panel);
   border:1px solid var(--line);
   border-radius:var(--radius-lg);
-  padding:6px 20px;
-  padding-bottom: max(var(--page-bottom-space), env(safe-area-inset-bottom));
   box-shadow:var(--shadow-md);
-  min-height: calc(var(--vh) - var(--ab) - var(--hdr) - var(--ftr) - 40px);
   border-top:1px solid transparent;
   display:flex; 
   flex-direction:column;
+  
+  /* 4 BREAKPOINT SİSTEMİ - Tahta ile orantılı */
+  max-width: calc(var(--board-size) + 80px);
+  padding: clamp(6px, 1.2vw, 20px) clamp(16px, 3vw, 24px);
+  padding-bottom: max(var(--page-bottom-space), env(safe-area-inset-bottom));
+  min-height: calc(var(--vh) - var(--ab) - var(--hdr) - var(--ftr) - 40px);
+}
+
+/* 1920px+: Desktop XL */
+@media (min-width: 1920px) {
+  .rk-wrap{
+    max-width: 720px; /* 640px tahta + 80px padding */
+    padding: 12px 28px;
+  }
+}
+
+/* 1024px-1919px: Desktop */
+@media (min-width: 1024px) and (max-width: 1919px) {
+  .rk-wrap{
+    max-width: 640px; /* 560px tahta + 80px padding */
+    padding: 10px 24px;
+  }
+}
+
+/* 768px-1023px: Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .rk-wrap{
+    max-width: 560px; /* 480px tahta + 80px padding */
+    padding: 8px 20px;
+  }
+}
+
+/* 375px-767px: Mobile */
+@media (min-width: 375px) and (max-width: 767px) {
+  .rk-wrap{
+    max-width: 480px; /* 400px tahta + 80px padding */
+    padding: 6px 16px;
+    margin: 0 auto;
+  }
+}
+
+/* <375px: Small Mobile */
+@media (max-width: 374px) {
+  .rk-wrap{
+    max-width: 95vw;
+    padding: 4px 12px;
+    margin: 0 auto;
+  }
 }
 
 body.app-fixed .rk-wrap{
