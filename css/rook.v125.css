@@ -1,4 +1,4 @@
-/* rook.css — v124 */
+/* rook.css — v125 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -641,7 +641,7 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   
   .cm-toolbar .rk-toolbar--single .cm-sel{
     height: clamp(32px, 6vw, 40px);
-    max-width:none;
+    max-width: 100px;
     font-size: clamp(7px, 1.2vw, 11px);
     padding: 0 clamp(5px, 1vw, 9px);
   }
