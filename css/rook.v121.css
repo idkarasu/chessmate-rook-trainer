@@ -1,4 +1,4 @@
-/* rook.css — v120 */
+/* rook.css — v121 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -1821,7 +1821,7 @@ body.cm-theme-light .rk-coach__desc{
 }
 
 body.cm-theme-light .rk-coach .hl{
-  color: var(--gold) !important;
+  color: var(--text) !important;
   font-weight: 800;
 }
 /* Bölüm sonu --------------------------------------------------------------- */
