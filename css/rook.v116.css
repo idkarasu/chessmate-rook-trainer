@@ -231,8 +231,8 @@ body.app-fixed .rk-toolbar-wrap{
   flex-wrap:wrap; 
   align-items:center; 
   justify-content:center;
-  gap: clamp(8px, 1.6vw, 14px);
-  padding: clamp(2px, 0.6vw, 5px) clamp(3px, 0.8vw, 6px);
+  gap: var(--toolbar-gap-main);
+  padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
   width: 100%;
   box-sizing: border-box;
 }
@@ -254,8 +254,8 @@ body.app-fixed .rk-toolbar-wrap{
   flex-wrap:nowrap; 
   align-items:flex-end; 
   justify-content:flex-start;
-  gap: clamp(10px, 2vw, 18px);
-  padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.6vw, 14px);
+  gap: var(--toolbar-gap-main);
+  padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
   margin:0;
   min-width:0;
   width: 100%;
@@ -300,7 +300,7 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 .rk-group{
   display:inline-flex;
   align-items:center;
-  gap: clamp(3px, 0.6vw, 6px);
+  gap: var(--toolbar-gap-group);
   flex:0 0 auto;
   min-width:0;
 }
@@ -333,12 +333,12 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 .rk-group--icons{
   display:inline-flex;
-  gap: clamp(6px, 1.2vw, 12px);
+  gap: var(--toolbar-gap-icons);
   flex:0 0 auto;
 }
 
 .cm-toolbar .rk-toolbar--single .rk-group--icons{
-  gap: clamp(4px, 0.8vw, 8px);
+  gap: var(--toolbar-gap-icons);
 }
 
 .cm-toolbar label, .rk-ctl-label{
@@ -521,8 +521,8 @@ body.cm-theme-light .rk-toolbar-scroll-right:hover {
 
 @media (max-width:768px){
   .cm-toolbar .rk-toolbar--single{
-    gap: clamp(8px, 1.4vw, 12px);
-    padding: clamp(4px, 0.8vw, 8px) clamp(6px, 1.2vw, 10px);
+    gap: var(--toolbar-gap-main);
+    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group{
@@ -540,19 +540,19 @@ body.cm-theme-light .rk-toolbar-scroll-right:hover {
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group--icons{
-    gap: clamp(3px, 0.6vw, 6px);
+    gap: var(--toolbar-gap-icons);
   }
   
   .rk-toolbar--top{
     flex-wrap:wrap;
     justify-content:center;
-    gap: clamp(6px, 1.2vw, 10px);
+    gap: var(--toolbar-gap-main);
   }
   
   .rk-toolbar--bottom{
     flex-wrap:wrap;
     justify-content:center;
-    gap: clamp(6px, 1.2vw, 10px);
+    gap: var(--toolbar-gap-main);
   }
   
   .rk-group--mode, .rk-group--start{
@@ -562,8 +562,8 @@ body.cm-theme-light .rk-toolbar-scroll-right:hover {
 
 @media (max-width:560px){
   .cm-toolbar .rk-toolbar--single{
-    gap: clamp(6px, 1vw, 10px);
-    padding: clamp(3px, 0.6vw, 6px) clamp(4px, 0.8vw, 8px);
+    gap: var(--toolbar-gap-main);
+    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-btn--icon{
@@ -592,7 +592,7 @@ body.cm-theme-light .rk-toolbar-scroll-right:hover {
   .rk-toolbar--top, .rk-toolbar--bottom{
     flex-wrap:wrap;
     justify-content:center;
-    gap: clamp(5px, 1vw, 9px);
+    gap: var(--toolbar-gap-main);
   }
   
   .rk-group--mode, .rk-group--start{
@@ -602,8 +602,8 @@ body.cm-theme-light .rk-toolbar-scroll-right:hover {
 
 @media (max-width:480px){
   .cm-toolbar .rk-toolbar--single{
-    gap: clamp(4px, 0.8vw, 8px);
-    padding: clamp(2px, 0.4vw, 4px) clamp(3px, 0.6vw, 6px);
+    gap: var(--toolbar-gap-main);
+    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group{
