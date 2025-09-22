@@ -1,4 +1,4 @@
-/* rook.css — v129 */
+/* rook.css — v130 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -1764,7 +1764,7 @@ html::before{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 17 - Tema uyumluluk - v122 STYLE DÖNÜŞ ------------------------------------------------------ */
+/* 17 - Tema uyumluluk - GÜNCELLENMIŞ BUG FIX ------------------------------------------------------ */
 body.cm-theme-light .rk-wrap{
   background:var(--panel);
   color:var(--text);
@@ -1781,20 +1781,6 @@ body.cm-theme-light .cm-btn{
 body.cm-theme-light .rk-btn:hover,
 body.cm-theme-light .cm-btn:hover{
   background:var(--btn-border);
-}
-
-/* 1. SADECE DARK MODE SELECT ARROW FIX */
-body.cm-theme-dark select.cm-sel,
-body.dark select.cm-sel,
-body.dark-mode select.cm-sel{
-  color: var(--text);
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg fill='%23E9EDF1' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  background-size: 16px;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 }
 
 /* 2. LIGHT MODE HUD LEVELS GOLD COLOR FIX */
