@@ -1,4 +1,4 @@
-/* rook.ui.js — v52 */
+/* rook.ui.js — v53 */
 
 (function(window,document){'use strict';
 
@@ -166,152 +166,48 @@ const throttledUpdateHud=throttle(updateHud,100);on(document,'rk:timeup',({detai
   }catch(_){}
 })();
 
-/* 11 - UI bağlama - GÜNCELLENMIŞ TOOLBAR SCROLL --------------------------------------------------------- */
+/* 11 - UI bağlama --------------------------------------------------------- */
 function initToolbarScroll(){
-  const toolbarWrap = document.querySelector('.rk-toolbar-wrap');
-  const toolbar = document.querySelector('.cm-toolbar .rk-toolbar--single');
+  const toolbar=document.querySelector('.cm-toolbar .rk-toolbar--single');
+  if(!toolbar)return;
   
-  if (!toolbarWrap || !toolbar) return;
-  
-  // HTML SCROLL ARROW EKLEME
-  if (!toolbarWrap.querySelector('.rk-toolbar-scroll-left')) {
-    toolbarWrap.insertAdjacentHTML('beforeend', `
-      <button class="rk-toolbar-scroll-left" aria-label="Sola kaydır" type="button">
-        <span>‹</span>
-      </button>
-      <button class="rk-toolbar-scroll-right" aria-label="Sağa kaydır" type="button">
-        <span>›</span>
-      </button>
-    `);
-  }
-  
-  const leftArrow = toolbarWrap.querySelector('.rk-toolbar-scroll-left');
-  const rightArrow = toolbarWrap.querySelector('.rk-toolbar-scroll-right');
-  
-  // SCROLL DURUMU KONTROL FONKSIYONU
-  function updateScrollArrows() {
-    const scrollLeft = toolbar.scrollLeft;
-    const scrollWidth = toolbar.scrollWidth;
-    const clientWidth = toolbar.clientWidth;
-    const maxScroll = scrollWidth - clientWidth;
-    
-    // SCROLL POZISYONUNA GÖRE ARROW DURUMU
-    if (maxScroll <= 5) {
-      // İçerik sığıyor, arrow gerekmez
-      toolbarWrap.setAttribute('data-scroll', 'none');
-    } else if (scrollLeft <= 5) {
-      // Başlangıçta, sadece sağ arrow
-      toolbarWrap.setAttribute('data-scroll', 'right');
-    } else if (scrollLeft >= maxScroll - 5) {
-      // Sonda, sadece sol arrow
-      toolbarWrap.setAttribute('data-scroll', 'left');
-    } else {
-      // Ortada, iki arrow da
-      toolbarWrap.setAttribute('data-scroll', 'both');
+  function checkOverflow(){
+    const isOverflowing=toolbar.scrollWidth>toolbar.clientWidth;
+    toolbar.classList.toggle('is-overflowing',isOverflowing);
+    if(isOverflowing){
+      toolbar.scrollLeft=0
     }
-    
-    // OVERFLOW CLASS TOGGLE
-    const isOverflowing = scrollWidth > clientWidth;
-    toolbar.classList.toggle('is-overflowing', isOverflowing);
   }
   
-  // SCROLL FONKSIYONLARI
-  function scrollLeft() {
-    const scrollAmount = toolbar.clientWidth * 0.7;
-    toolbar.scrollBy({
-      left: -scrollAmount,
-      behavior: 'smooth'
-    });
-  }
-  
-  function scrollRight() {
-    const scrollAmount = toolbar.clientWidth * 0.7;
-    toolbar.scrollBy({
-      left: scrollAmount,
-      behavior: 'smooth'
-    });
-  }
-  
-  // EVENT LISTENERS
-  if (leftArrow) {
-    on(leftArrow, 'click', scrollLeft);
-    on(leftArrow, 'keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+  function addScrollHelpers(){
+    on(toolbar,'wheel',(e)=>{
+      if(e.shiftKey||Math.abs(e.deltaX)>Math.abs(e.deltaY)){
         e.preventDefault();
-        scrollLeft();
+        const delta=e.deltaY||e.deltaX;
+        toolbar.scrollLeft+=delta*0.5
       }
-    });
-  }
-  
-  if (rightArrow) {
-    on(rightArrow, 'click', scrollRight);
-    on(rightArrow, 'keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+    },{passive:false});
+    
+    on(toolbar,'keydown',(e)=>{
+      if(e.key==='ArrowLeft'){
         e.preventDefault();
-        scrollRight();
+        toolbar.scrollLeft-=50
+      }else if(e.key==='ArrowRight'){
+        e.preventDefault();
+        toolbar.scrollLeft+=50
       }
-    });
+    })
   }
   
-  // SCROLL EVENT LISTENER
-  on(toolbar, 'scroll', updateScrollArrows);
+  checkOverflow();
+  addScrollHelpers();
   
-  // TOUCH/SWIPE SUPPORT
-  let startX = 0;
-  let scrollStart = 0;
-  let isDown = false;
-  
-  on(toolbar, 'touchstart', (e) => {
-    if (e.touches.length !== 1) return;
-    isDown = true;
-    startX = e.touches[0].pageX;
-    scrollStart = toolbar.scrollLeft;
-  }, { passive: true });
-  
-  on(toolbar, 'touchmove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.touches[0].pageX;
-    const walk = (x - startX) * 2;
-    toolbar.scrollLeft = scrollStart - walk;
-  }, { passive: false });
-  
-  on(toolbar, 'touchend', () => {
-    isDown = false;
-  }, { passive: true });
-  
-  // KEYBOARD ACCESSIBILITY
-  on(toolbar, 'keydown', (e) => {
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      toolbar.scrollBy({ left: -100, behavior: 'smooth' });
-    } else if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      toolbar.scrollBy({ left: 100, behavior: 'smooth' });
-    }
-  });
-  
-  // WHEEL SCROLL SUPPORT
-  on(toolbar, 'wheel', (e) => {
-    if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-      e.preventDefault();
-      const delta = e.deltaY || e.deltaX;
-      toolbar.scrollLeft += delta * 0.5;
-    }
-  }, { passive: false });
-  
-  // RESIZE OBSERVER
-  const resizeObserver = new ResizeObserver(throttle(() => {
-    updateScrollArrows();
-  }, 100));
-  
+  const resizeObserver=new ResizeObserver(throttle(checkOverflow,100));
   resizeObserver.observe(toolbar);
-  resizeObserver.observe(toolbarWrap);
-  RookUI._observers.push(resizeObserver);
-  
-  // İLK KONTROL
-  setTimeout(updateScrollArrows, 100);
+  RookUI._observers.push(resizeObserver)
 }
+
+on(document,'rk:ready',()=>{const RK=window.Rook;const modeSel=$('rk-mode-select');if(modeSel){const t=modeSel.querySelector('option[value="timed"]');const l=modeSel.querySelector('option[value="levels"]');if(t)t.textContent='⏱️ Zamana Karşı';if(l)l.textContent='🌊 Sekiz Dalga'}ensureResultModal();ensureLevelsBar();const overlay=$('rk-levels');if(overlay)overlay.style.display='none';ensureUnderbar();if(RK.st.mode==='levels')showLevelsBar();else{showTimedBar();resetTimebarFull()}updateLevelsBars(RK.st.wave||1);updateHud();initToolbarScroll();const sideSel=$('rk-side-select');if(sideSel){sideSel.value=RK.st.side;on(sideSel,'change',e=>{RK.setSide(e.target.value);RK.hardReset()})}if(modeSel){modeSel.value=RK.st.mode;on(modeSel,'change',e=>RK.setMode(e.target.value))}const btnTheme=$('cm-theme-toggle');const btnBoard=$('cm-board-toggle');const btnSound=$('cm-sound-toggle');const btnHints=$('cm-hints');const btnStart=$('rk-start');if(btnTheme){btnTheme.title='Tema Değiştir';btnTheme.textContent=(RK.st.theme==='light'?'☀️':'🌙')}if(btnBoard){btnBoard.title=`Tahta Temasını Değiştir (${RK.st.boardSkin||'classic'})`}if(btnStart)btnStart.title='Başlat';if(btnSound){const onNow=!!RK.st.soundOn;setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})}if(btnHints){const onNow=!!RK.st.hintsOn;setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})}if(hasCMUI()){document.dispatchEvent(new CustomEvent('cm-theme',{detail:{theme:RK.st.theme}}));document.dispatchEvent(new CustomEvent('cm-board',{detail:{skin:RK.st.boardSkin}}))}on(btnTheme,'click',()=>RK.toggleTheme?.());on(btnBoard,'click',()=>RK.cycleBoard?.());on(btnSound,'click',()=>{const onNow=!RK.st.soundOn;RK.setSound(onNow);setToggleButtonState(btnSound,{pressed:onNow,title:onNow?'Ses: Açık':'Ses: Kapalı',text:onNow?'🔊':'🔇'})});on(btnHints,'click',()=>{RK.toggleHints();const onNow=RK.st.hintsOn;setToggleButtonState(btnHints,{pressed:onNow,title:onNow?'İpuçları: Açık':'İpuçları: Kapalı'})});on(btnStart,'click',async()=>{if(RK.st.mode==='timed')resetTimebarFull();updateHud();await rkCountdown(3);RK.start()});if(btnSound)btnSound.setAttribute('aria-pressed',RK.st.soundOn?'true':'false');if(btnHints)btnHints.setAttribute('aria-pressed',RK.st.hintsOn?'true':'false')},{once:true});
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 12 - Cleanup ve lifecycle management ----------------------------------- */
