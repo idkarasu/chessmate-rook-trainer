@@ -9,7 +9,7 @@ const emit=(name,detail)=>{try{document.dispatchEvent(new CustomEvent(name,{deta
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 3 - Core iskeleti ve sabitler ------------------------------------------- */
-const Core={cfg:{pieceBase:'/wp-content/uploads/chess/img/chesspieces/wikipedia'},_eventListeners:[],_observers:[],
+const Core={cfg:{pieceBase:'https://chessmate.ink/wp-content/uploads/chess/img/chesspieces/wikipedia'},_eventListeners:[],_observers:[],
 
 _memoryStorage:{},
 _setStorage(key,value){try{localStorage.setItem(key,value)}catch(err){console.warn(`Storage failed for ${key}:`,err);this._memoryStorage[key]=value}},
@@ -54,8 +54,8 @@ boardEl(){return document.getElementById('cm-board')},squareEl(sq){return docume
 
 /* 13 - Ses ---------------------------------------------------------------- */
 initAudio(){
-  const moveAudio = new Audio('/wp-content/uploads/chess/sounds/move.wav'); 
-  const captureAudio = new Audio('/wp-content/uploads/chess/sounds/capture.wav');
+  const moveAudio = new Audio('https://chessmate.ink/wp-content/uploads/chess/sounds/move.wav'); 
+  const captureAudio = new Audio('https://chessmate.ink/wp-content/uploads/chess/sounds/capture.wav');
   moveAudio.preload='auto';
   captureAudio.preload='auto';
   moveAudio.volume=0.7;
@@ -74,7 +74,7 @@ initAudio(){
             try{ await audioCtx.resume(); }catch(_){ } 
           }
           if(!moveBuf){
-            const resp=await fetch('/wp-content/uploads/chess/sounds/move.wav',{cache:'force-cache'});
+            const resp=await fetch('https://chessmate.ink/wp-content/uploads/chess/sounds/move.wav',{cache:'force-cache'});
             const arr=await resp.arrayBuffer();
             moveBuf=await new Promise((res,rej)=>{ 
               const p=audioCtx.decodeAudioData(arr,res,rej); 
@@ -82,7 +82,7 @@ initAudio(){
             });
           }
           if(!captureBuf){
-            const resp2=await fetch('/wp-content/uploads/chess/sounds/capture.wav',{cache:'force-cache'});
+            const resp2=await fetch('https://chessmate.ink/wp-content/uploads/chess/sounds/capture.wav',{cache:'force-cache'});
             const arr2=await resp2.arrayBuffer();
             captureBuf=await new Promise((res,rej)=>{ 
               const p=audioCtx.decodeAudioData(arr2,res,rej); 
