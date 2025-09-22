@@ -1,4 +1,4 @@
-/* rook.css — v121 */
+/* rook.css — v122 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -708,7 +708,7 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 4 - Butonlar ve seçim kutuları - RESPONSIVE BOYUTLANDIRMA ------------------------------------------- */
+/* 4 - Butonlar ve seçim kutuları - RESPONSIVE BOYUTLANDIRMA + DİNAMİK DROPDOWN ------------------------------------------- */
 button.cm-btn, button.rk-btn, select.cm-sel{
   height: var(--btn-height);
   padding: 0 var(--btn-padding);
@@ -761,18 +761,19 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
   min-width: var(--btn-icon-size);
 }
 
+/* DİNAMİK DROPDOWN - GÜNCELLENMIŞ BÖLÜM */
 .cm-toolbar .rk-toolbar--single .cm-sel{
-  min-width:auto;
-  max-width:none;
-  width:auto;
+  min-width: 60px;            /* Minimum genişlik küçültüldü */
+  max-width: 140px;           /* Maksimum sınır eklendi */
+  width: max-content;         /* İçeriğe göre boyutlama */
   height: var(--btn-height);
   font-size: var(--btn-font-size);
-  text-align:center;
-  padding: 0 var(--btn-padding);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  flex:0 0 auto;
+  text-align: center;
+  padding: 0 clamp(6px, 1.2vw, 12px);  /* Padding küçültüldü */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 0 0 auto;
 }
 
 .cm-toolbar .rk-toolbar--single #rk-start{
@@ -785,6 +786,24 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
   width: var(--btn-icon-size);
   height: var(--btn-icon-size);
   font-size: var(--btn-icon-font);
+}
+
+/* DİNAMİK DROPDOWN RESPONSIVE BREAKPOINT DÜZELTMELERİ */
+@media (max-width: 560px) {
+  .cm-toolbar .rk-toolbar--single .cm-sel{
+    height: clamp(32px, 6vw, 40px);
+    max-width: 120px;           /* Mobilde daha küçük */
+    font-size: clamp(7px, 1.2vw, 11px);
+    padding: 0 clamp(4px, 0.8vw, 8px);  /* Mobil padding */
+  }
+}
+
+@media (max-width: 480px) {
+  .cm-toolbar .rk-toolbar--single .cm-sel{
+    font-size: clamp(6px, 1vw, 9px);
+    padding: 0 clamp(3px, 0.6vw, 6px);  /* En küçük ekranlarda minimum */
+    max-width: 100px;
+  }
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
