@@ -1,4 +1,4 @@
-/* rook.core.js — v71 */
+/* rook.core.js — v72 */
 
 (function(window,document){'use strict';
 
@@ -103,33 +103,162 @@ applyHints(on){this.st.hintsOn=!!on;safeSetItem('cm-hints',on?'on':'off');if(!on
 toggleHints(){this.applyHints(!this.st.hintsOn)},
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 13 - Ses - BASİLEŞTİRİLMİŞ VERSİYON ------------------------------------ */
+/* 13 - Ses - GELİŞTİRİLMİŞ WEBAUDIO SİSTEMİ ----------------------------- */
 initAudio(){
-  const moveAudio = new Audio('/wp-content/uploads/chess/sounds/move.wav');
+  const moveAudio = new Audio('/wp-content/uploads/chess/sounds/move.wav'); 
   const captureAudio = new Audio('/wp-content/uploads/chess/sounds/capture.wav');
-  moveAudio.preload = 'auto';
-  captureAudio.preload = 'auto';
-  moveAudio.volume = 0.7;
-  captureAudio.volume = 0.6;
+  moveAudio.preload='auto';
+  captureAudio.preload='auto';
+  moveAudio.volume=0.7;
+  captureAudio.volume=0.6;
   
-  this.audio = { moveAudio, captureAudio };
+  let audioCtx=null, moveBuf=null, captureBuf=null, audioPrimed=false;
+  
+  const installAudioUnlock=()=>{
+    if(audioPrimed) return;
+    const prime=async()=>{
+      audioPrimed=true;
+      try{
+        const Ctx=window.AudioContext||window.webkitAudioContext;
+        if(Ctx){
+          if(!audioCtx) audioCtx=new Ctx();
+          if(audioCtx.state==='suspended'){ 
+            try{ await audioCtx.resume(); }catch(_){ } 
+          }
+          
+          // Load move sound buffer
+          if(!moveBuf){
+            try{
+              const resp=await fetch('/wp-content/uploads/chess/sounds/move.wav',{cache:'force-cache'});
+              const arr=await resp.arrayBuffer();
+              moveBuf=await audioCtx.decodeAudioData(arr);
+            }catch(err){
+              console.warn('Failed to load move sound buffer:', err);
+            }
+          }
+          
+          // Load capture sound buffer
+          if(!captureBuf){
+            try{
+              const resp2=await fetch('/wp-content/uploads/chess/sounds/capture.wav',{cache:'force-cache'});
+              const arr2=await resp2.arrayBuffer();
+              captureBuf=await audioCtx.decodeAudioData(arr2);
+            }catch(err){
+              console.warn('Failed to load capture sound buffer:', err);
+            }
+          }
+        }
+        
+        // Prime HTML5 Audio fallback
+        try{ 
+          moveAudio.muted=true; 
+          await moveAudio.play().catch(()=>{}); 
+          moveAudio.pause(); 
+          moveAudio.currentTime=0; 
+          moveAudio.muted=false; 
+        }catch(_){}
+        
+        try{ 
+          captureAudio.muted=true; 
+          await captureAudio.play().catch(()=>{}); 
+          captureAudio.pause(); 
+          captureAudio.currentTime=0; 
+          captureAudio.muted=false; 
+        }catch(_){}
+        
+      }catch(err){
+        console.warn('Audio unlock failed:', err);
+      }finally{
+        // Remove unlock listeners
+        window.removeEventListener('pointerdown',prime,true);
+        window.removeEventListener('touchend',prime,true);
+        window.removeEventListener('keydown',prime,true);
+        window.removeEventListener('click',prime,true);
+      }
+    };
+    
+    // Install unlock listeners
+    window.addEventListener('pointerdown',prime,true);
+    window.addEventListener('touchend',prime,true);
+    window.addEventListener('keydown',prime,true);
+    window.addEventListener('click',prime,true);
+  };
+
+  this.audio = {
+    moveAudio,
+    captureAudio,
+    audioCtx: () => audioCtx,
+    moveBuf: () => moveBuf,
+    captureBuf: () => captureBuf,
+    audioPrimed: () => audioPrimed,
+    installAudioUnlock
+  };
+
+  installAudioUnlock();
 },
 
 playMove(){
-  if(!this.st.soundOn || !this.audio) return;
-  try {
-    this.audio.moveAudio.currentTime = 0;
-    this.audio.moveAudio.play().catch(() => {});
-  } catch(_) {}
+  if(!this.st.soundOn)return;
+  const A=this.audio;
+  if(!A)return;
+  
+  // Try WebAudio first (low latency)
+  const audioCtx = A.audioCtx();
+  const moveBuf = A.moveBuf();
+  
+  if(audioCtx && moveBuf && audioCtx.state === 'running'){ 
+    try{ 
+      const src=audioCtx.createBufferSource();
+      const gainNode=audioCtx.createGain();
+      gainNode.gain.value=0.7;
+      src.buffer=moveBuf; 
+      src.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      src.start(0); 
+      return; 
+    }catch(err){ 
+      console.warn('WebAudio move playback failed:', err);
+    } 
+  }
+  
+  // Fallback to HTML5 Audio
+  try{ 
+    A.moveAudio.currentTime=0; 
+    A.moveAudio.play().catch(()=>{});
+  }catch(_){}
 },
 
 playCapture(){
-  if(!this.st.soundOn || !this.audio) return;
-  try {
-    this.audio.captureAudio.currentTime = 0;
-    this.audio.captureAudio.play().catch(() => {});
-  } catch(_) {
-    this.playMove(); // fallback
+  if(!this.st.soundOn)return;
+  const A=this.audio;
+  if(!A)return;
+  
+  // Try WebAudio first (low latency)
+  const audioCtx = A.audioCtx();
+  const captureBuf = A.captureBuf();
+  
+  if(audioCtx && captureBuf && audioCtx.state === 'running'){ 
+    try{ 
+      const src=audioCtx.createBufferSource();
+      const gainNode=audioCtx.createGain();
+      gainNode.gain.value=0.6;
+      src.buffer=captureBuf; 
+      src.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      src.start(0); 
+      return; 
+    }catch(err){ 
+      console.warn('WebAudio capture playback failed:', err);
+    } 
+  }
+  
+  // Fallback to HTML5 Audio
+  try{ 
+    A.captureAudio.currentTime=0; 
+    A.captureAudio.play().catch(()=>{});
+  }catch(_){
+    // Double fallback to move sound
+    this.playMove();
   }
 },
 
@@ -185,6 +314,16 @@ initBoard(){
     onDragStart(source,piece){
       if(piece!==self.st.rookPiece)return false;
       if(!self.st.playing)self.updateInfo("Önce Start'a basın.");
+      
+      // Audio context'i hazırla (mobil için kritik)
+      if(self.audio && !self.audio.audioPrimed()){
+        try{
+          const audioCtx = self.audio.audioCtx();
+          if(audioCtx && audioCtx.state==='suspended'){
+            audioCtx.resume().catch(()=>{});
+          }
+        }catch(_){}
+      }
       
       self.showHintsFor(source);
       self._enableTouchLock();
