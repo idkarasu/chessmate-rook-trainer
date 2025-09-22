@@ -1,4 +1,4 @@
-/* rook.css — v126 */
+/* rook.css — v127 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -1839,7 +1839,11 @@ body.cm-theme-light .rk-coach__desc{
   color: var(--text) !important;
 }
 
-body.cm-theme-light .rk-coach .hl{
+body.cm-theme-light .rk-coach__bubble .hl,
+body.cm-theme-light .rk-coach__title .hl,
+body.cm-theme-light .rk-coach__subtitle .hl,
+body.cm-theme-light .rk-coach__hint .hl,
+body.cm-theme-light .rk-coach__desc .hl{
   color: var(--text) !important;
   font-weight: 800;
 }
