@@ -226,86 +226,13 @@ body.app-fixed .rk-toolbar-wrap{
   max-width: min(92vw, calc(100dvh - 180px));
 }
 
-:root {
-  --toolbar-gap-main: 18px;
-  --toolbar-gap-group: 8px;
-  --toolbar-gap-icons: 14px;
-  --toolbar-padding-x: 14px;
-  --toolbar-padding-y: 10px;
-  --btn-height: 44px;
-  --btn-icon-size: 44px;
-  --btn-font-size: 14px;
-  --btn-icon-font: 20px;
-  --btn-padding: 16px;
-}
-
-@media (min-width: 1024px) and (max-width: 1919px) {
-  :root {
-    --toolbar-gap-main: 14px;
-    --toolbar-gap-group: 6px;
-    --toolbar-gap-icons: 12px;
-    --toolbar-padding-x: 12px;
-    --toolbar-padding-y: 8px;
-    --btn-height: 40px;
-    --btn-icon-size: 40px;
-    --btn-font-size: 13px;
-    --btn-icon-font: 18px;
-    --btn-padding: 14px;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  :root {
-    --toolbar-gap-main: 10px;
-    --toolbar-gap-group: 5px;
-    --toolbar-gap-icons: 8px;
-    --toolbar-padding-x: 10px;
-    --toolbar-padding-y: 6px;
-    --btn-height: 38px;
-    --btn-icon-size: 38px;
-    --btn-font-size: 12px;
-    --btn-icon-font: 16px;
-    --btn-padding: 12px;
-  }
-}
-
-@media (min-width: 375px) and (max-width: 767px) {
-  :root {
-    --toolbar-gap-main: 6px;
-    --toolbar-gap-group: 3px;
-    --toolbar-gap-icons: 5px;
-    --toolbar-padding-x: 8px;
-    --toolbar-padding-y: 4px;
-    --btn-height: 36px;
-    --btn-icon-size: 36px;
-    --btn-font-size: 11px;
-    --btn-icon-font: 15px;
-    --btn-padding: 10px;
-  }
-}
-
-@media (max-width: 374px) {
-  :root {
-    --toolbar-gap-main: 4px;
-    --toolbar-gap-group: 2px;
-    --toolbar-gap-icons: 3px;
-    --toolbar-padding-x: 6px;
-    --toolbar-padding-y: 3px;
-    --btn-height: 34px;
-    --btn-icon-size: 34px;
-    --btn-font-size: 10px;
-    --btn-icon-font: 14px;
-    --btn-padding: 8px;
-  }
-}
-
 .rk-toolbar{
   display:flex; 
   flex-wrap:wrap; 
   align-items:center; 
   justify-content:center;
-  gap: var(--toolbar-gap-main);
-  padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
+  gap: clamp(8px, 1.6vw, 14px);
+  padding: clamp(2px, 0.6vw, 5px) clamp(3px, 0.8vw, 6px);
   width: 100%;
   box-sizing: border-box;
 }
@@ -327,8 +254,8 @@ body.app-fixed .rk-toolbar-wrap{
   flex-wrap:nowrap; 
   align-items:flex-end; 
   justify-content:flex-start;
-  gap: var(--toolbar-gap-main);
-  padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
+  gap: clamp(10px, 2vw, 18px);
+  padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.6vw, 14px);
   margin:0;
   min-width:0;
   width: 100%;
@@ -373,7 +300,7 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 .rk-group{
   display:inline-flex;
   align-items:center;
-  gap: var(--toolbar-gap-group);
+  gap: clamp(3px, 0.6vw, 6px);
   flex:0 0 auto;
   min-width:0;
 }
@@ -406,12 +333,12 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 .rk-group--icons{
   display:inline-flex;
-  gap: var(--toolbar-gap-icons);
+  gap: clamp(6px, 1.2vw, 12px);
   flex:0 0 auto;
 }
 
 .cm-toolbar .rk-toolbar--single .rk-group--icons{
-  gap: var(--toolbar-gap-icons);
+  gap: clamp(4px, 0.8vw, 8px);
 }
 
 .cm-toolbar label, .rk-ctl-label{
@@ -446,6 +373,82 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   flex:0 0 auto;
 }
 
+/* SCROLL ARROW SİSTEMİ */
+.rk-toolbar-scroll-left,
+.rk-toolbar-scroll-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(34px, 6vw, 44px);
+  height: clamp(34px, 6vw, 44px);
+  background: var(--btn);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  font-size: clamp(14px, 2.4vw, 20px);
+  color: var(--text);
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.rk-toolbar-scroll-left {
+  left: -8px;
+}
+
+.rk-toolbar-scroll-right {
+  right: -8px;
+}
+
+.rk-toolbar-scroll-left:hover,
+.rk-toolbar-scroll-right:hover {
+  background: var(--btn-border);
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 8px 24px rgba(16,24,40,.25);
+}
+
+.rk-toolbar-scroll-left:active,
+.rk-toolbar-scroll-right:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.rk-toolbar-wrap[data-scroll="left"] .rk-toolbar-scroll-left,
+.rk-toolbar-wrap[data-scroll="right"] .rk-toolbar-scroll-right,
+.rk-toolbar-wrap[data-scroll="both"] .rk-toolbar-scroll-left,
+.rk-toolbar-wrap[data-scroll="both"] .rk-toolbar-scroll-right {
+  display: flex;
+}
+
+body.cm-theme-light .rk-toolbar-scroll-left,
+body.cm-theme-light .rk-toolbar-scroll-right {
+  background: var(--btn);
+  border-color: var(--btn-border);
+  color: var(--text);
+}
+
+body.cm-theme-light .rk-toolbar-scroll-left:hover,
+body.cm-theme-light .rk-toolbar-scroll-right:hover {
+  background: var(--btn-border);
+}
+
+.rk-toolbar-scroll-left:focus,
+.rk-toolbar-scroll-right:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.rk-toolbar-scroll-left:focus-visible,
+.rk-toolbar-scroll-right:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* RESPONSIVE BREAKPOINT DÜZELTMELERI */
 @media (min-width: 1920px) {
   .rk-toolbar-wrap{
     width: var(--board-size);
@@ -477,6 +480,14 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   body.app-fixed .rk-toolbar-wrap{
     max-width: min(92vw, calc(100dvh - 180px));
   }
+  
+  .rk-toolbar-scroll-left {
+    left: -6px;
+  }
+  
+  .rk-toolbar-scroll-right {
+    right: -6px;
+  }
 }
 
 @media (min-width: 375px) and (max-width: 767px) {
@@ -488,12 +499,30 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   body.app-fixed .rk-toolbar-wrap{
     max-width: min(92vw, calc(100dvh - 180px));
   }
+  
+  .rk-toolbar-scroll-left {
+    left: -4px;
+  }
+  
+  .rk-toolbar-scroll-right {
+    right: -4px;
+  }
+}
+
+@media (max-width: 374px) {
+  .rk-toolbar-scroll-left {
+    left: -2px;
+  }
+  
+  .rk-toolbar-scroll-right {
+    right: -2px;
+  }
 }
 
 @media (max-width:768px){
   .cm-toolbar .rk-toolbar--single{
-    gap: var(--toolbar-gap-main);
-    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
+    gap: clamp(8px, 1.4vw, 12px);
+    padding: clamp(4px, 0.8vw, 8px) clamp(6px, 1.2vw, 10px);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group{
@@ -511,19 +540,19 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group--icons{
-    gap: var(--toolbar-gap-icons);
+    gap: clamp(3px, 0.6vw, 6px);
   }
   
   .rk-toolbar--top{
     flex-wrap:wrap;
     justify-content:center;
-    gap: var(--toolbar-gap-main);
+    gap: clamp(6px, 1.2vw, 10px);
   }
   
   .rk-toolbar--bottom{
     flex-wrap:wrap;
     justify-content:center;
-    gap: var(--toolbar-gap-main);
+    gap: clamp(6px, 1.2vw, 10px);
   }
   
   .rk-group--mode, .rk-group--start{
@@ -533,8 +562,8 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 @media (max-width:560px){
   .cm-toolbar .rk-toolbar--single{
-    gap: var(--toolbar-gap-main);
-    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
+    gap: clamp(6px, 1vw, 10px);
+    padding: clamp(3px, 0.6vw, 6px) clamp(4px, 0.8vw, 8px);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-btn--icon{
@@ -563,7 +592,7 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   .rk-toolbar--top, .rk-toolbar--bottom{
     flex-wrap:wrap;
     justify-content:center;
-    gap: var(--toolbar-gap-main);
+    gap: clamp(5px, 1vw, 9px);
   }
   
   .rk-group--mode, .rk-group--start{
@@ -573,8 +602,8 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
 
 @media (max-width:480px){
   .cm-toolbar .rk-toolbar--single{
-    gap: var(--toolbar-gap-main);
-    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
+    gap: clamp(4px, 0.8vw, 8px);
+    padding: clamp(2px, 0.4vw, 4px) clamp(3px, 0.6vw, 6px);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-group{
