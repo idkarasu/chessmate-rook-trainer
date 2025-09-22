@@ -1,4 +1,4 @@
-/* rook.css — v128 */
+/* rook.css — v129 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -1764,7 +1764,7 @@ html::before{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 17 - Tema uyumluluk - GÜNCELLENMIŞ BUG FIX ------------------------------------------------------ */
+/* 17 - Tema uyumluluk - v122 STYLE DÖNÜŞ ------------------------------------------------------ */
 body.cm-theme-light .rk-wrap{
   background:var(--panel);
   color:var(--text);
@@ -1783,7 +1783,7 @@ body.cm-theme-light .cm-btn:hover{
   background:var(--btn-border);
 }
 
-/* 1. DARK MODE SELECT ARROW FIX */
+/* 1. SADECE DARK MODE SELECT ARROW FIX */
 body.cm-theme-dark select.cm-sel,
 body.dark select.cm-sel,
 body.dark-mode select.cm-sel{
