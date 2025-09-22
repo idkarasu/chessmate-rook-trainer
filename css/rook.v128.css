@@ -1,4 +1,4 @@
-/* rook.css — v127 */
+/* rook.css — v128 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -523,17 +523,54 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   order:-1;
 }
 
+/* DROPDOWN - 4 BREAKPOINT SİSTEMİ İLE UYUMLU DİNAMİK GENİŞLİK */
 .cm-toolbar .rk-toolbar--single .cm-sel{
-  min-width: 60px;            /* ESKİ: min-width:auto; */
-  max-width: 140px;           /* ESKİ: max-width:none; */
-  width: max-content;         /* ESKİ: width:auto; */
+  min-width: 60px;
+  max-width: 140px;           /* 1920px+ için */
+  width: max-content;
   font-size: clamp(9px, 1.6vw, 13px);
   text-align:center;
-  padding: 0 clamp(6px, 1.2vw, 12px);  /* ESKİ: padding: 0 clamp(8px, 1.6vw, 16px); */
+  padding: 0 clamp(6px, 1.2vw, 12px);
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
   flex:0 0 auto;
+}
+
+/* 1024px-1919px: Desktop/Tablet */
+@media (min-width: 1024px) and (max-width: 1919px) {
+  .cm-toolbar .rk-toolbar--single .cm-sel{
+    max-width: 120px;
+    min-width: 55px;
+  }
+}
+
+/* 768px-1023px: Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .cm-toolbar .rk-toolbar--single .cm-sel{
+    max-width: 100px;
+    min-width: 50px;
+  }
+}
+
+/* 375px-767px: Mobile */
+@media (min-width: 375px) and (max-width: 767px) {
+  .cm-toolbar .rk-toolbar--single .cm-sel{
+    max-width: 90px;
+    min-width: 45px;
+    font-size: clamp(8px, 1.4vw, 11px);
+    padding: 0 clamp(5px, 1vw, 8px);
+  }
+}
+
+/* <375px: Small Mobile */
+@media (max-width: 374px) {
+  .cm-toolbar .rk-toolbar--single .cm-sel{
+    max-width: 80px;
+    min-width: 40px;
+    font-size: clamp(7px, 1.2vw, 9px);
+    padding: 0 clamp(4px, 0.8vw, 6px);
+  }
 }
 
 @media (min-width: 1920px) {
@@ -594,16 +631,6 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
     font-size: clamp(7px, 1.2vw, 10px);
   }
   
-  .cm-toolbar .rk-toolbar--single .cm-sel{
-    max-width: 120px;
-    font-size: clamp(8px, 1.4vw, 12px);
-    padding: 0 clamp(6px, 1.2vw, 12px);
-  }
-  
-  .cm-toolbar .rk-toolbar--single .rk-group--icons{
-    gap: var(--toolbar-gap-icons);
-  }
-  
   .rk-toolbar--top{
     flex-wrap:wrap;
     justify-content:center;
@@ -637,13 +664,6 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
     padding: 0 clamp(6px, 1.2vw, 10px);
     font-size: clamp(9px, 1.6vw, 13px);
     height: clamp(32px, 6vw, 40px);
-  }
-  
-  .cm-toolbar .rk-toolbar--single .cm-sel{
-    height: clamp(32px, 6vw, 40px);
-    max-width: 100px;
-    font-size: clamp(7px, 1.2vw, 11px);
-    padding: 0 clamp(5px, 1vw, 9px);
   }
   
   .cm-toolbar .rk-toolbar--single .rk-ctl-label{
@@ -682,11 +702,6 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
   .cm-toolbar .rk-toolbar--single .rk-group--start,
   .cm-toolbar .rk-toolbar--single .rk-group--icons{
     flex-basis:auto;
-  }
-  
-  .cm-toolbar .rk-toolbar--single .cm-sel{
-    font-size: clamp(6px, 1vw, 9px);
-    padding: 0 clamp(4px, 0.8vw, 7px);
   }
 }
 
@@ -761,21 +776,6 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
   min-width: var(--btn-icon-size);
 }
 
-/* DİNAMİK DROPDOWN - GÜNCELLENMIŞ BÖLÜM */
-.cm-toolbar .rk-toolbar--single .cm-sel{
-  min-width: 60px;            /* Minimum genişlik küçültüldü */
-  max-width: 140px;           /* Maksimum sınır eklendi */
-  width: max-content;         /* İçeriğe göre boyutlama */
-  height: var(--btn-height);
-  font-size: var(--btn-font-size);
-  text-align: center;
-  padding: 0 clamp(6px, 1.2vw, 12px);  /* Padding küçültüldü */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 0 0 auto;
-}
-
 .cm-toolbar .rk-toolbar--single #rk-start{
   height: var(--btn-height);
   padding: 0 var(--btn-padding);
@@ -786,24 +786,6 @@ button.cm-btn:focus, button.rk-btn:focus, select.cm-sel:focus{
   width: var(--btn-icon-size);
   height: var(--btn-icon-size);
   font-size: var(--btn-icon-font);
-}
-
-/* DİNAMİK DROPDOWN RESPONSIVE BREAKPOINT DÜZELTMELERİ */
-@media (max-width: 560px) {
-  .cm-toolbar .rk-toolbar--single .cm-sel{
-    height: clamp(32px, 6vw, 40px);
-    max-width: 120px;           /* Mobilde daha küçük */
-    font-size: clamp(7px, 1.2vw, 11px);
-    padding: 0 clamp(4px, 0.8vw, 8px);  /* Mobil padding */
-  }
-}
-
-@media (max-width: 480px) {
-  .cm-toolbar .rk-toolbar--single .cm-sel{
-    font-size: clamp(6px, 1vw, 9px);
-    padding: 0 clamp(3px, 0.6vw, 6px);  /* En küçük ekranlarda minimum */
-    max-width: 100px;
-  }
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
@@ -1849,7 +1831,7 @@ body.cm-theme-light .rk-coach__desc .hl{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 18 - Responsive ve erişilebilirlik + DİNAMİK DROPDOWN FIX --------------------------------------- */
+/* 18 - Responsive ve erişilebilirlik - DROPDOWN OVERRIDE KURALI KALDIRILDI --------------------------------------- */
 @media (max-width:560px){
   button.cm-btn, button.rk-btn, select.cm-sel{ 
     height:44px; 
@@ -1863,15 +1845,6 @@ body.cm-theme-light .rk-coach__desc .hl{
   .rk-group--mode .rk-ctl-label{ 
     font-size:11px; 
     line-height:1.05; 
-  }
-  
-  /* DİNAMİK DROPDOWN - GENEL .CM-SEL KURALI DÜZELTMESİ */
-  .cm-sel{ 
-    max-width: 100px;     /* ESKİ: max-width:110px; */
-    min-width: 50px;      /* YENİ: Minimum genişlik ekle */
-    width: max-content;   /* YENİ: Dinamik genişlik */
-    font-size:12px; 
-    padding:0 8px; 
   }
   
   .rk-toolbar--top{
