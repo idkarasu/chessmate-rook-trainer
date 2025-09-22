@@ -1,4 +1,4 @@
-/* rook.css — v131 */
+/* rook.css — v134 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -570,50 +570,6 @@ body.cm-theme-light .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::a
     min-width: 40px;
     font-size: clamp(7px, 1.2vw, 9px);
     padding: 0 clamp(4px, 0.8vw, 6px);
-  }
-}
-
-@media (min-width: 1920px) {
-  .rk-toolbar-wrap{
-    width: var(--board-size);
-    max-width: min(92vw, calc(100vh - 200px));
-  }
-  
-  body.app-fixed .rk-toolbar-wrap{
-    max-width: min(92vw, calc(100dvh - 180px));
-  }
-}
-
-@media (min-width: 1024px) and (max-width: 1919px) {
-  .rk-toolbar-wrap{
-    width: var(--board-size);
-    max-width: min(92vw, calc(100vh - 200px));
-  }
-  
-  body.app-fixed .rk-toolbar-wrap{
-    max-width: min(92vw, calc(100dvh - 180px));
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  .rk-toolbar-wrap{
-    width: var(--board-size);
-    max-width: min(92vw, calc(100vh - 200px));
-  }
-  
-  body.app-fixed .rk-toolbar-wrap{
-    max-width: min(92vw, calc(100dvh - 180px));
-  }
-}
-
-@media (min-width: 375px) and (max-width: 767px) {
-  .rk-toolbar-wrap{
-    width: var(--board-size);
-    max-width: min(92vw, calc(100vh - 200px));
-  }
-  
-  body.app-fixed .rk-toolbar-wrap{
-    max-width: min(92vw, calc(100dvh - 180px));
   }
 }
 
@@ -1734,8 +1690,7 @@ body.app-fixed .cm-footer::after{
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 16 - Arka plan deseni ---------------------------------------------------- */
-html, body{ background: transparent !important; }
-html{ position:relative; isolation:isolate; }
+html { position:relative; isolation:isolate; }
 
 html::before{
   content:"";
@@ -1817,7 +1772,7 @@ body.cm-theme-light .rk-coach__desc .hl{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 18 - Responsive ve erişilebilirlik - DROPDOWN OVERRIDE KURALI KALDIRILDI --------------------------------------- */
+/* 18 - Responsive ve erişilebilirlik --------------------------------------- */
 @media (max-width:560px){
   button.cm-btn, button.rk-btn, select.cm-sel{ 
     height:44px; 
@@ -1991,11 +1946,6 @@ body{
     -webkit-user-select: none;
     -webkit-touch-callout: none;
     -webkit-text-size-adjust: none;
-  }
-  
-  audio{
-    preload: auto;
-    volume: 0.7;
   }
 }
 
