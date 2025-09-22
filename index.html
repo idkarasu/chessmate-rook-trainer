@@ -1,0 +1,127 @@
+<!-- html.html — v51 -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<!-- Tam ekran uygulama benzeri görünüm ve zoom kilidi -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Kale Eğitimi - ChessMate.ink</title>
+</head>
+<body>
+
+<!-- 1 - Header --------------------------------------------------------------- -->
+<header class="cm-nav" id="cm-site-header" aria-label="ChessMate.ink">
+  <div class="cm-container cm-nav-inner">
+    <a class="cm-brand" href="/" aria-label="ChessMate.ink">
+      <img src="https://chessmate.ink/wp-content/uploads/2025/08/Untitled-image.jpeg"
+           alt="" class="cm-logo-img" loading="lazy">
+      <span class="cm-brand-text">ChessMate.ink</span>
+    </a>
+    <nav class="cm-menu" aria-label="Primary"></nav>
+  </div>
+</header>
+<!-- Bölüm sonu --------------------------------------------------------------- -->
+
+<!-- 2 - Stil dosyaları ------------------------------------------------------- -->
+<link rel="stylesheet" href="/wp-content/uploads/chess/libs/chessboard-1.0.0.min.css">
+<link rel="stylesheet" href="/wp-content/uploads/rook/rook.css?v=rook.css-[sürüm numarası]">
+<link rel="stylesheet" href="/wp-content/uploads/rook/rook.theme.css?v=rook.theme.css-[sürüm numarası]">
+<!-- Bölüm sonu --------------------------------------------------------------- -->
+
+<!-- 3 - Uygulama kapsayıcısı ------------------------------------------------ -->
+<main class="rk-wrap cm-wrap" id="cm-app" role="main" aria-label="Rook Trainer" data-avatar="/wp-content/uploads/2025/08/avatar.png">
+<div class="rk-head">
+<div class="cm-toolbar rk-toolbar-wrap" role="toolbar" aria-label="Oyun Kontrolleri">
+<div class="rk-toolbar rk-toolbar--single" role="toolbar" aria-label="Oyun toolbar">
+<div class="rk-group rk-group--side" aria-label="Taraf">
+<label for="rk-side-select" class="rk-ctl-label">Taraf:</label>
+<select id="rk-side-select" class="cm-sel" aria-label="Taraf">
+<option value="white">Beyaz</option>
+<option value="black">Siyah</option>
+</select>
+</div>
+<div class="rk-group rk-group--mode" aria-label="Oyun Modu">
+<label for="rk-mode-select" class="rk-ctl-label">Oyun Modu:</label>
+<select id="rk-mode-select" class="cm-sel" aria-label="Oyun Modu">
+<option value="timed">⏱️ Zamana Karşı</option>
+<option value="levels">🌊 Sekiz Dalga</option>
+</select>
+</div>
+<div class="rk-group rk-group--start">
+<button id="rk-start" class="cm-btn rk-btn rk-btn--primary" type="button">▶ Start</button>
+</div>
+<div class="rk-group rk-group--icons">
+<button id="cm-hints" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="true" title="Hamle ipuçları">🎯</button>
+<button id="cm-board-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-label="Tahtayı değiştir">♟️</button>
+<button id="cm-sound-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="true" title="Sesi aç/kapat">🔊</button>
+<button id="cm-theme-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="false" title="Tema değiştir">🌙</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 4 - İçerik: tahta ------------------------------------------------------- -->
+<div class="rk-grid">
+<div id="cm-board" aria-label="Satranç Tahtası"></div>
+</div>
+
+<!-- Tahta altı birleşik panel ----------------------------------------------- -->
+<div class="rk-underbar" id="rk-underbar" role="region" aria-label="Oyun bilgileri">
+  <!-- İçerik JS tarafından dinamik eklenir -->
+</div>
+<!-- Bölüm sonu --------------------------------------------------------------- -->
+
+</main>
+<!-- Bölüm sonu --------------------------------------------------------------- -->
+
+<!-- 5 - Scriptler ------------------------------------------------------------ -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>if(!window.jQuery){var s=document.createElement('script');s.src='/wp-includes/js/jquery/jquery.min.js';document.head.appendChild(s)}</script>
+<script src="/wp-content/uploads/chess/libs/chessboard-1.0.0.min.js"></script>
+
+<script>window.CM_NO_CHROME = true;</script>
+
+<script src="/wp-content/uploads/rook/rook.core.js?v=[sürüm numarası]"></script>
+<script src="/wp-content/uploads/rook/rook.modes.js?v=[sürüm numarası]"></script>
+<script src="/wp-content/uploads/rook/rook.theme.js?v=[sürüm numarası]"></script>
+<script src="/wp-content/uploads/rook/rook.ui.js?v=[sürüm numarası]"></script>
+<!-- Bölüm sonu --------------------------------------------------------------- -->
+
+<!-- 6 - Noscript ------------------------------------------------------------- -->
+<noscript>
+<div style="padding:20px;margin:20px;border:2px solid #ff6b6b;border-radius:8px;background:#fff2f2;color:#d63031;text-align:center;font-family:Arial,sans-serif;">
+<h2>⚠️ JavaScript Gerekli</h2>
+<p><strong>Kale Eğitimi</strong> uygulaması çalışması için JavaScript'in etkin olması gerekiyor.</p>
+<p>Lütfen tarayıcınızdan JavaScript'i etkinleştirip sayfayı yenileyin.</p>
+</div>
+</noscript>
+<!-- Bölüm sonu --------------------------------------------------------------- -->
+
+<!-- 7 - Footer --------------------------------------------------------------- -->
+<footer class="cm-footer" id="cm-site-footer">
+  <div class="cm-container">
+    <div class="cm-social">
+      <a class="cm-ico" href="https://www.instagram.com/chessmate.ink/" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.9a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+      </a>
+      <a class="cm-ico" href="https://www.tiktok.com/@chessmate.ink" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 8.1a6.8 6.8 0 0 1-4-1.3v7.4a5.7 5.7 0 1 1-5.7-5.7c.4 0 .7 0 1 .1v2.5A3.2 3.2 0 1 0 11 16V2h2a6.8 6.8 0 0 0 4 4.1c.6.3 1.3.5 2 .6v2.2c-.7-.1-1.4-.3-2-.6z"/></svg>
+      </a>
+      <a class="cm-ico" href="https://www.youtube.com/@ChessMate-ink"
+         target="_blank" rel="noopener" title="YouTube" aria-label="YouTube">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor"
+            d="M23.498 6.186a2.996 2.996 0 0 0-2.112-2.12C19.773 3.5 12 3.5 12 3.5s-7.773 0-9.386.566a2.996 2.996 0 0 0-2.112 2.12A31.49 31.49 0 0 0 0 12c0 2.05.17 4.098.502 5.814a2.996 2.996 0 0 0 2.112 2.12C4.227 20.5 12 20.5 12 20.5s7.773 0 9.386-.566a2.996 2.996 0 0 0 2.112-2.12C23.83 16.098 24 14.05 24 12s-.17-4.098-.502-5.814zM9.75 15.02v-6.04L15.5 12 9.75 15.02z"/>
+        </svg>
+      </a>
+      <a class="cm-ico" href="mailto:Chessmate.ink@gmail.com" title="E-posta" aria-label="E-posta">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 5h20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm1.6 2 8.4 6 8.4-6H3.6zm18.8 1.7-8.9 6.3a2 2 0 0 1-2.4 0L2.2 8.7V17h20.2V8.7z"/></svg>
+      </a>
+    </div>
+    <p class="cm-copy">© ChessMate.ink — Everything About Chess.</p>
+  </div>
+</footer>
+<!-- Bölüm sonu --------------------------------------------------------------- -->
+
+</body>
+</html>
