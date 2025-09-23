@@ -1,4 +1,4 @@
-/* rook.ui.js — v200 */
+/* rook.ui.js — v201 */
 
 (function(window,document){'use strict';
 
@@ -31,7 +31,139 @@ const fmtOrDashMMSS=(sec)=>(sec&&sec>0)?fmtMMSS(sec):'—';
 function setToggleButtonState(btn,{pressed,title,text}){if(!btn)return;if(typeof pressed==='boolean'){btn.setAttribute('aria-pressed',pressed?'true':'false')}if(typeof title==='string')btn.title=title;if(typeof text==='string')btn.textContent=text}
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 3 - Geri sayım arayüzü ------------------------------------------------- */
+/* 3 - I18N DOM Update System - ENHANCED ----------------------------------- */
+function updateI18nAttributes() {
+  const elements = document.querySelectorAll('[data-i18n], [data-i18n-title], [data-i18n-aria], [data-i18n-placeholder]');
+  
+  elements.forEach(el => {
+    // Standard text content
+    const i18nKey = el.getAttribute('data-i18n');
+    if (i18nKey) {
+      el.textContent = t(i18nKey);
+    }
+    
+    // Title attribute
+    const titleKey = el.getAttribute('data-i18n-title');
+    if (titleKey) {
+      el.title = t(titleKey);
+    }
+    
+    // Aria-label attribute
+    const ariaKey = el.getAttribute('data-i18n-aria');
+    if (ariaKey) {
+      el.setAttribute('aria-label', t(ariaKey));
+    }
+    
+    // Placeholder attribute
+    const placeholderKey = el.getAttribute('data-i18n-placeholder');
+    if (placeholderKey) {
+      el.setAttribute('placeholder', t(placeholderKey));
+    }
+  });
+}
+
+function updatePageLanguage() {
+  const RK = window.Rook;
+  if (!RK?.lang) return;
+  
+  const currentLang = RK.lang.current;
+  
+  // Update HTML lang attribute
+  const htmlEl = document.getElementById('html-root') || document.documentElement;
+  if (htmlEl) {
+    htmlEl.setAttribute('lang', currentLang);
+  }
+  
+  // Update page title
+  const titles = {
+    en: 'Rook Training - ChessMate.ink',
+    tr: 'Kale Eğitimi - ChessMate.ink',
+    de: 'Turm Training - ChessMate.ink'
+  };
+  
+  const titleEl = document.getElementById('page-title');
+  if (titleEl && titles[currentLang]) {
+    titleEl.textContent = titles[currentLang];
+  } else if (titles[currentLang]) {
+    document.title = titles[currentLang];
+  }
+  
+  // Update all i18n attributes
+  updateI18nAttributes();
+}
+
+function updateDynamicTooltips() {
+  const RK = window.Rook;
+  if (!RK) return;
+  
+  // Sound button - dynamic based on state
+  const btnSound = $('cm-sound-toggle');
+  if (btnSound) {
+    const isOn = !!RK.st?.soundOn;
+    const tooltipKey = isOn ? 'tooltip.sound.on' : 'tooltip.sound.off';
+    btnSound.title = t(tooltipKey);
+    btnSound.textContent = isOn ? '🔊' : '🔇';
+    btnSound.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+  }
+  
+  // Hints button - dynamic based on state
+  const btnHints = $('cm-hints');
+  if (btnHints) {
+    const isOn = !!RK.st?.hintsOn;
+    const tooltipKey = isOn ? 'tooltip.hints.on' : 'tooltip.hints.off';
+    btnHints.title = t(tooltipKey);
+    btnHints.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+  }
+  
+  // Board button - dynamic based on skin
+  const btnBoard = $('cm-board-toggle');
+  if (btnBoard) {
+    const skin = RK.st?.boardSkin || 'classic';
+    btnBoard.title = t('tooltip.board') + ` (${skin})`;
+  }
+  
+  // Theme button
+  const btnTheme = $('cm-theme-toggle');
+  if (btnTheme) {
+    const theme = RK.st?.theme || 'dark';
+    btnTheme.title = t('tooltip.theme');
+    btnTheme.textContent = theme === 'light' ? '☀️' : '🌙';
+  }
+  
+  // Start button
+  const btnStart = $('rk-start');
+  if (btnStart) {
+    btnStart.title = t('tooltip.start');
+    // Keep the icon if it exists
+    const currentText = btnStart.textContent;
+    const hasIcon = currentText.includes('▶');
+    btnStart.textContent = hasIcon ? `▶ ${t('btn.start')}` : t('btn.start');
+  }
+}
+
+function updateModalContent() {
+  // Modal close button
+  const closeBtn = $('rk-modal-close');
+  if (closeBtn) {
+    closeBtn.setAttribute('aria-label', t('btn.close'));
+  }
+  
+  // Modal new game button
+  const newGameBtn = $('rk-modal-newgame');
+  if (newGameBtn) {
+    newGameBtn.textContent = t('btn.newgame');
+  }
+  
+  // Update modal title and description if they have static text
+  const modalTitle = document.getElementById('rk-modal-title');
+  const modalDesc = document.getElementById('rk-modal-desc');
+  
+  // These will be updated when modals are opened with proper content
+  // but we ensure the structure is ready for translations
+}
+/* Bölüm sonu --------------------------------------------------------------- */
+
+/* 4 - Geri sayım arayüzü ------------------------------------------------- */
 let countdownActive = false;
 
 function ensureCountdownDom(){
@@ -88,7 +220,7 @@ async function rkCountdown(n=3){
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 4 - Konfeti efekti ----------------------------------------------------- */
+/* 5 - Konfeti efekti ----------------------------------------------------- */
 function rkConfetti(duration=1800,fadeMs=500){
   try{
     if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return
@@ -159,7 +291,7 @@ function rkConfetti(duration=1800,fadeMs=500){
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 5 - Sonuç modali ------------------------------------------------------- */
+/* 6 - Sonuç modali ------------------------------------------------------- */
 let modalState={lastFocus:null,trapHandler:null,escHandler:null};
 
 function ensureResultModal(){
@@ -246,7 +378,7 @@ function closeResultModal(){
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 6 - Seviye şeritleri --------------------------------------------------- */
+/* 7 - Seviye şeritleri --------------------------------------------------- */
 function updateLevelsBars(activeWave){
   const update=(rootId)=>{
     const root=$(rootId);
@@ -262,7 +394,7 @@ function updateLevelsBars(activeWave){
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 7 - Birleşik alt panel ------------------------------------------------- */
+/* 8 - Birleşik alt panel ------------------------------------------------- */
 function ensureUnderbar(){
   let underbar = $('rk-underbar');
   const board = $('cm-board');
@@ -380,7 +512,7 @@ function showLevelsBar(){
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 8 - Zaman barı maske yardımcıları -------------------------------------- */
+/* 9 - Zaman barı maske yardımcıları -------------------------------------- */
 function setTimebarCoverage(cov){
   const fill=$('rk-timefill');
   if(!fill)return;
@@ -402,7 +534,7 @@ function updateTimebar(){
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 9 - HUD ----------------------------------------------------------------- */
+/* 10 - HUD ----------------------------------------------------------------- */
 function updateHud(){
   const RK=window.Rook;
   if(!RK)return;
@@ -454,7 +586,7 @@ function updateHudLabels(){
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 10 - Olay köprüleri ---------------------------------------------------- */
+/* 11 - Olay köprüleri ---------------------------------------------------- */
 const throttledUpdateHud=throttle(updateHud,100);
 
 on(document,'rk:timeup',({detail})=>{
@@ -484,12 +616,42 @@ on(document,'rk:mode',({detail})=>{
   throttledUpdateHud()
 });
 
+// ENHANCED LANGUAGE CHANGE HANDLER
 on(document,'cm-lang',()=>{
+  // Update page-level elements
+  updatePageLanguage();
+  
+  // Update HUD labels
   updateHudLabels();
-  updateSideLabels();
-  updateModeLabels();
-  updateButtonLabels();
-  updateModalLabels();
+  
+  // Update all i18n attributes
+  updateI18nAttributes();
+  
+  // Update dynamic tooltips
+  updateDynamicTooltips();
+  
+  // Update modal content
+  updateModalContent();
+  
+  // Update toolbar aria labels
+  const toolbar = document.querySelector('.cm-toolbar');
+  if (toolbar) {
+    toolbar.setAttribute('aria-label', t('aria.toolbar'));
+  }
+  
+  // Update board aria label
+  const board = $('cm-board');
+  if (board) {
+    board.setAttribute('aria-label', t('aria.board'));
+  }
+  
+  // Update underbar aria label
+  const underbar = $('rk-underbar');
+  if (underbar) {
+    underbar.setAttribute('aria-label', t('aria.gameinfo'));
+  }
+  
+  console.log('Language updated to:', window.Rook?.lang?.current);
 });
 
 on(document,'rk:timer',throttledUpdateHud);
@@ -497,69 +659,7 @@ on(document,'rk:score',throttledUpdateHud);
 on(document,'rk:best',throttledUpdateHud);
 on(document,'rk:bestTime',throttledUpdateHud);
 
-function updateSideLabels(){
-  const sideLabel=document.querySelector('.rk-group--side .rk-ctl-label');
-  const whiteOption=document.querySelector('#rk-side-select option[value="white"]');
-  const blackOption=document.querySelector('#rk-side-select option[value="black"]');
-  
-  if(sideLabel)sideLabel.textContent=t('label.side');
-  if(whiteOption)whiteOption.textContent=t('side.white');
-  if(blackOption)blackOption.textContent=t('side.black');
-}
-
-function updateModeLabels(){
-  const modeLabel=document.querySelector('.rk-group--mode .rk-ctl-label');
-  const timedOption=document.querySelector('#rk-mode-select option[value="timed"]');
-  const levelsOption=document.querySelector('#rk-mode-select option[value="levels"]');
-  
-  if(modeLabel)modeLabel.textContent=t('label.mode');
-  if(timedOption)timedOption.textContent=t('mode.timed');
-  if(levelsOption)levelsOption.textContent=t('mode.levels');
-}
-
-function updateButtonLabels(){
-  const RK=window.Rook;
-  if(!RK)return;
-  
-  const btnTheme=$('cm-theme-toggle');
-  const btnBoard=$('cm-board-toggle');
-  const btnSound=$('cm-sound-toggle');
-  const btnHints=$('cm-hints');
-  const btnStart=$('rk-start');
-  
-  if(btnTheme)btnTheme.title=t('tooltip.theme');
-  if(btnBoard)btnBoard.title=t('tooltip.board')+` (${RK.st.boardSkin||'classic'})`;
-  if(btnStart){
-    btnStart.title=t('tooltip.start');
-    btnStart.textContent=t('btn.start');
-  }
-  
-  if(btnSound){
-    const onNow=!!RK.st.soundOn;
-    setToggleButtonState(btnSound,{
-      pressed:onNow,
-      title:onNow?t('tooltip.sound.on'):t('tooltip.sound.off'),
-      text:onNow?'🔊':'🔇'
-    });
-  }
-  
-  if(btnHints){
-    const onNow=!!RK.st.hintsOn;
-    setToggleButtonState(btnHints,{
-      pressed:onNow,
-      title:onNow?t('tooltip.hints.on'):t('tooltip.hints.off')
-    });
-  }
-}
-
-function updateModalLabels(){
-  const closeBtn=$('rk-modal-close');
-  const newGameBtn=$('rk-modal-newgame');
-  
-  if(closeBtn)closeBtn.setAttribute('aria-label',t('btn.close'));
-  if(newGameBtn)newGameBtn.textContent=t('btn.newgame');
-}
-
+// ENHANCED STATE CHANGE HANDLERS
 on(document,'cm-sound',(e)=>{
   const onNow=!!(e?.detail?.on);
   const btnSound=$('cm-sound-toggle');
@@ -638,7 +738,7 @@ on(window,'storage',(e)=>{
   }catch(_){}
 })();
 
-/* 11 - UI bağlama --------------------------------------------------------- */
+/* 12 - UI bağlama --------------------------------------------------------- */
 function initToolbarScroll(){
   const toolbar=document.querySelector('.cm-toolbar .rk-toolbar--single');
   if(!toolbar)return;
@@ -688,10 +788,13 @@ on(document,'rk:ready',()=>{
   updateLevelsBars(RK.st.wave||1);
   updateHud();
   updateHudLabels();
-  updateSideLabels();
-  updateModeLabels();
-  updateButtonLabels();
-  updateModalLabels();
+  
+  // ENHANCED INITIAL SETUP
+  updatePageLanguage();
+  updateI18nAttributes();
+  updateDynamicTooltips();
+  updateModalContent();
+  
   initToolbarScroll();
   
   const sideSel=$('rk-side-select');
@@ -721,7 +824,9 @@ on(document,'rk:ready',()=>{
   }
   if(btnStart){
     btnStart.title=t('tooltip.start');
-    btnStart.textContent=t('btn.start');
+    const currentText = btnStart.textContent;
+    const hasIcon = currentText.includes('▶');
+    btnStart.textContent = hasIcon ? `▶ ${t('btn.start')}` : t('btn.start');
   }
   
   if(btnSound){
@@ -771,7 +876,7 @@ on(document,'rk:ready',()=>{
 },{once:true});
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 12 - Cleanup ve lifecycle management ----------------------------------- */
+/* 13 - Cleanup ve lifecycle management ----------------------------------- */
 RookUI.cleanup=function(){
   this._listeners.forEach(({el,ev,fn,opts})=>{
     try{el.removeEventListener(ev,fn,opts)}catch(err){console.warn(`Failed to remove event listener ${ev}:`,err)}
