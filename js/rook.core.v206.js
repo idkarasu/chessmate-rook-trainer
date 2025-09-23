@@ -1,4 +1,4 @@
-/* rook.core.js — v205 */
+/* rook.core.js — v206 */
 
 (function(window,document){'use strict';
 
@@ -136,14 +136,6 @@ initAudio(){
     '/wp-content/uploads/chess/sounds/capture.wav', 
     '/wp-content/uploads/chess/sounds/countdown.wav',
     '/wp-content/uploads/chess/sounds/result.wav',
-    '/wp-content/uploads/chess/sounds/move.mp3',
-    '/wp-content/uploads/chess/sounds/capture.mp3',
-    '/wp-content/uploads/chess/sounds/countdown.mp3',
-    '/wp-content/uploads/chess/sounds/result.mp3',
-    '/wp-content/uploads/chess/sounds/move.ogg',
-    '/wp-content/uploads/chess/sounds/capture.ogg',
-    '/wp-content/uploads/chess/sounds/countdown.ogg',
-    '/wp-content/uploads/chess/sounds/result.ogg'
   ];
 
   // Audio.play() hijack - sadece bizim seslerimizi çalsın
@@ -197,19 +189,22 @@ initAudio(){
     return source;
   };
 
-  // 4. Browser default ses efektlerini kapat
+  // 4. Browser default ses efektlerini kapat - DÜZELTME: preventDefault kaldırıldı
   document.addEventListener('click', (e) => {
-    e.target.style.outline = 'none';
-    e.preventDefault();
-  }, { passive: false, capture: true });
+    if (e.target) {
+      e.target.style.outline = 'none';
+    }
+  }, { passive: true, capture: true });
 
-  // 5. Chessboard click seslerini engelle
+  // 5. Chessboard click seslerini engelle - DÜZELTME: Sadece board içinde
   const boardElement = document.getElementById('cm-board');
   if (boardElement) {
     boardElement.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-    }, { passive: false, capture: true });
+      // Sadece board içindeki clickleri engelle
+      if (e.target.closest('#cm-board')) {
+        e.stopPropagation();
+      }
+    }, { passive: true, capture: true });
     
     // Drag & drop seslerini engelle
     ['dragstart', 'dragend', 'drop'].forEach(event => {
@@ -824,7 +819,25 @@ emit('rk:mode',{mode:this.st.mode});
 emit('rk:wave',{wave:this.st.wave});
 if(this.st.bestLevelsTime>0){emit('rk:bestTime',{seconds:this.st.bestLevelsTime})}
 
-const guard=(e)=>{const t=e.target;if(!t)return e.preventDefault();const tag=t.tagName;if(tag==='INPUT'||tag==='TEXTAREA'||t.isContentEditable)return;e.preventDefault()};
+// DÜZELTİLMİŞ EVENT GUARD - A tag'leri ve header/footer linklerini koru
+const guard=(e)=>{
+  const t=e.target;
+  if(!t)return e.preventDefault();
+  const tag=t.tagName;
+  
+  // İzin verilen elementler - header/footer linkleri, input'lar
+  if(tag==='A'||tag==='INPUT'||tag==='TEXTAREA'||tag==='BUTTON'||tag==='SELECT'||t.isContentEditable){
+    return; // Bu elementlere dokunma
+  }
+  
+  // Header ve footer içindeki elementleri kontrol et
+  if(t.closest('.cm-nav')||t.closest('.cm-footer')||t.closest('.cm-brand')||t.closest('.cm-ico')){
+    return; // Header/footer linklerini koru
+  }
+  
+  e.preventDefault();
+};
+
 this._addTrackedListener(document,'contextmenu',guard,{capture:true});
 this._addTrackedListener(document,'dragstart',guard,{capture:true});
 this._addTrackedListener(document,'selectstart',guard,{capture:true});
