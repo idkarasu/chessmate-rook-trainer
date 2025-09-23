@@ -1,4 +1,4 @@
-/* rook.core.js — v200 */
+/* rook.core.js — v205 */
 
 (function(window,document){'use strict';
 
@@ -105,128 +105,301 @@ toggleHints(){this.applyHints(!this.st.hintsOn)},
 
 /* 13 - Ses - GELİŞTİRİLMİŞ WEBAUDIO SİSTEMİ ----------------------------- */
 initAudio(){
-  const moveAudio = new Audio('/wp-content/uploads/chess/sounds/move.wav'); 
-  const captureAudio = new Audio('/wp-content/uploads/chess/sounds/capture.wav');
-  const countdownAudio = new Audio('/wp-content/uploads/chess/sounds/countdown.wav');
-  const resultAudio = new Audio('/wp-content/uploads/chess/sounds/result.wav');
-  moveAudio.preload='auto';
-  captureAudio.preload='auto';
-  countdownAudio.preload='auto';
-  resultAudio.preload='auto';
-  moveAudio.volume=0.7;
-  captureAudio.volume=0.6;
-  countdownAudio.volume=0.8;
-  resultAudio.volume=0.75;
+  // DEBUG MODE CONTROL - Core objesi içinde
+  const AUDIO_DEBUG = false; // false = logları kapat, true = logları göster
+
+  const debugLog = (msg, ...args) => {
+    if (AUDIO_DEBUG) console.log(msg, ...args);
+  };
+
+  const warnLog = (msg, ...args) => {
+    if (AUDIO_DEBUG) console.warn(msg, ...args);
+  };
+
+  // ================== SES GÜVENLİK SİSTEMİ ==================
   
-  let audioCtx=null, moveBuf=null, captureBuf=null, countdownBuf=null, resultBuf=null, audioPrimed=false;
+  // 1. Chessboard.js ses sistemini devre dışı bırak
+  if (window.ChessBoard) {
+    try {
+      // Chessboard ses konfigürasyonu varsa kapat
+      window.ChessBoard.prototype.playAudio = function() { /* sessiz */ };
+      window.ChessBoard.prototype.playSound = function() { /* sessiz */ };
+    } catch(e) {
+      warnLog('Failed to disable ChessBoard audio:', e);
+    }
+  }
+
+  // 2. Global Audio nesnelerini kontrol et
+  const originalAudioPlay = window.Audio.prototype.play;
+  const allowedSounds = [
+    '/wp-content/uploads/chess/sounds/move.wav',
+    '/wp-content/uploads/chess/sounds/capture.wav', 
+    '/wp-content/uploads/chess/sounds/countdown.wav',
+    '/wp-content/uploads/chess/sounds/result.wav',
+    '/wp-content/uploads/chess/sounds/move.mp3',
+    '/wp-content/uploads/chess/sounds/capture.mp3',
+    '/wp-content/uploads/chess/sounds/countdown.mp3',
+    '/wp-content/uploads/chess/sounds/result.mp3',
+    '/wp-content/uploads/chess/sounds/move.ogg',
+    '/wp-content/uploads/chess/sounds/capture.ogg',
+    '/wp-content/uploads/chess/sounds/countdown.ogg',
+    '/wp-content/uploads/chess/sounds/result.ogg'
+  ];
+
+  // Audio.play() hijack - sadece bizim seslerimizi çalsın
+  window.Audio.prototype.play = function() {
+    const audioSrc = this.src || this.currentSrc || '';
+    
+    // Eğer ses kapalıysa hiç ses çalmasın
+    if (!window.Rook?.st?.soundOn) {
+      debugLog('🔇 Audio blocked - sound disabled');
+      return Promise.resolve();
+    }
+    
+    // Sadece izin verilen sesler çalsın
+    const isAllowed = allowedSounds.some(allowed => 
+      audioSrc.includes(allowed.replace(/^\//, '')) || 
+      audioSrc.endsWith(allowed)
+    );
+    
+    if (isAllowed) {
+      debugLog('✅ Audio allowed:', audioSrc);
+      return originalAudioPlay.call(this);
+    } else {
+      debugLog('🚫 Audio blocked:', audioSrc);
+      return Promise.resolve();
+    }
+  };
+
+  // 3. Web Audio API ses engellemesi
+  const originalCreateBufferSource = AudioContext.prototype.createBufferSource;
+  AudioContext.prototype.createBufferSource = function() {
+    const source = originalCreateBufferSource.call(this);
+    const originalStart = source.start;
+    
+    source.start = function(when, offset, duration) {
+      // Sadece bizim audio context'imizden gelen sesleri çal
+      if (!window.Rook?.st?.soundOn) {
+        debugLog('🔇 WebAudio blocked - sound disabled');
+        return;
+      }
+      
+      // Eğer bu bizim audio context'imiz değilse engelle
+      if (this.context !== window.Rook?.audio?.audioCtx?.()) {
+        debugLog('🚫 WebAudio blocked - unauthorized context');
+        return;
+      }
+      
+      debugLog('✅ WebAudio allowed');
+      return originalStart.call(this, when, offset, duration);
+    };
+    
+    return source;
+  };
+
+  // 4. Browser default ses efektlerini kapat
+  document.addEventListener('click', (e) => {
+    e.target.style.outline = 'none';
+    e.preventDefault();
+  }, { passive: false, capture: true });
+
+  // 5. Chessboard click seslerini engelle
+  const boardElement = document.getElementById('cm-board');
+  if (boardElement) {
+    boardElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+    }, { passive: false, capture: true });
+    
+    // Drag & drop seslerini engelle
+    ['dragstart', 'dragend', 'drop'].forEach(event => {
+      boardElement.addEventListener(event, (e) => {
+        e.stopPropagation();
+      }, { passive: false, capture: true });
+    });
+  }
+
+  // ================== NORMAL SES SİSTEMİ ==================
   
-  const installAudioUnlock=()=>{
-    if(audioPrimed) return;
-    const prime=async()=>{
-      audioPrimed=true;
-      try{
-        const Ctx=window.AudioContext||window.webkitAudioContext;
-        if(Ctx){
-          if(!audioCtx) audioCtx=new Ctx();
-          if(audioCtx.state==='suspended'){ 
-            try{ await audioCtx.resume(); }catch(_){ } 
+  // MULTIPLE FORMAT SUPPORT + ABSOLUTE URLS
+  const baseUrl = window.location.origin;
+  const soundPath = '/wp-content/uploads/chess/sounds/';
+  
+  // Primary audio objects with multiple format fallback
+  const createAudioWithFallback = (name, volume = 0.7) => {
+    const formats = ['mp3', 'ogg', 'wav'];
+    let audio = null;
+    
+    for (const format of formats) {
+      try {
+        const testAudio = new Audio();
+        const canPlay = testAudio.canPlayType(`audio/${format}`);
+        if (canPlay !== '') {
+          audio = new Audio(`${baseUrl}${soundPath}${name}.${format}`);
+          debugLog(`Using ${format} format for ${name}`);
+          break;
+        }
+      } catch(e) {
+        warnLog(`Failed to test ${format} format:`, e);
+      }
+    }
+    
+    // Fallback to wav if nothing else works
+    if (!audio) {
+      audio = new Audio(`${baseUrl}${soundPath}${name}.wav`);
+      warnLog(`Fallback to WAV for ${name}`);
+    }
+    
+    audio.preload = 'auto';
+    audio.volume = volume;
+    audio.crossOrigin = 'anonymous';  // CORS fix
+    
+    // ÖZEL İŞARET: Bu bizim seslerimiz - HATA DÜZELTİLDİ
+    try {
+      audio.setAttribute('data-rook-allowed', 'true');
+      audio.setAttribute('data-audio-type', name);
+    } catch(e) {
+      warnLog('Failed to set audio attributes:', e);
+    }
+    
+    // Mobile optimization
+    audio.load();
+    
+    return audio;
+  };
+  
+  const moveAudio = createAudioWithFallback('move', 0.7);
+  const captureAudio = createAudioWithFallback('capture', 0.6);  
+  const countdownAudio = createAudioWithFallback('countdown', 0.8);
+  const resultAudio = createAudioWithFallback('result', 0.75);
+  
+  let audioCtx = null;
+  let moveBuf = null, captureBuf = null, countdownBuf = null, resultBuf = null;
+  let audioPrimed = false;
+  let bufferLoadAttempts = 0;
+  const maxBufferAttempts = 3;
+  
+  const loadBufferWithRetry = async (url, maxRetries = 3) => {
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        const response = await fetch(url, {
+          cache: 'force-cache',
+          mode: 'cors',
+          credentials: 'same-origin'
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const arrayBuffer = await response.arrayBuffer();
+        return await audioCtx.decodeAudioData(arrayBuffer);
+      } catch (err) {
+        warnLog(`Buffer load attempt ${i + 1} failed for ${url}:`, err);
+        if (i === maxRetries - 1) throw err;
+        await new Promise(resolve => setTimeout(resolve, 100 * (i + 1)));
+      }
+    }
+  };
+  
+  const installAudioUnlock = () => {
+    if (audioPrimed) return;
+    
+    const prime = async () => {
+      audioPrimed = true;
+      debugLog('🔊 Audio system priming started...');
+      
+      try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (Ctx) {
+          if (!audioCtx) audioCtx = new Ctx();
+          
+          // Force resume context
+          if (audioCtx.state === 'suspended') { 
+            try { 
+              await audioCtx.resume(); 
+              debugLog('AudioContext resumed');
+            } catch(e) { 
+              warnLog('AudioContext resume failed:', e);
+            } 
           }
           
-          // Load move sound buffer
-          if(!moveBuf){
-            try{
-              const resp=await fetch('/wp-content/uploads/chess/sounds/move.wav',{cache:'force-cache'});
-              const arr=await resp.arrayBuffer();
-              moveBuf=await audioCtx.decodeAudioData(arr);
-            }catch(err){
-              console.warn('Failed to load move sound buffer:', err);
-            }
-          }
-          
-          // Load capture sound buffer
-          if(!captureBuf){
-            try{
-              const resp2=await fetch('/wp-content/uploads/chess/sounds/capture.wav',{cache:'force-cache'});
-              const arr2=await resp2.arrayBuffer();
-              captureBuf=await audioCtx.decodeAudioData(arr2);
-            }catch(err){
-              console.warn('Failed to load capture sound buffer:', err);
-            }
-          }
-          
-          // Load countdown sound buffer
-          if(!countdownBuf){
-            try{
-              const resp3=await fetch('/wp-content/uploads/chess/sounds/countdown.wav',{cache:'force-cache'});
-              const arr3=await resp3.arrayBuffer();
-              countdownBuf=await audioCtx.decodeAudioData(arr3);
-            }catch(err){
-              console.warn('Failed to load countdown sound buffer:', err);
-            }
-          }
-          
-          // Load result sound buffer
-          if(!resultBuf){
-            try{
-              const resp4=await fetch('/wp-content/uploads/chess/sounds/result.wav',{cache:'force-cache'});
-              const arr4=await resp4.arrayBuffer();
-              resultBuf=await audioCtx.decodeAudioData(arr4);
-            }catch(err){
-              console.warn('Failed to load result sound buffer:', err);
-            }
+          // Load buffers with retry mechanism
+          if (bufferLoadAttempts < maxBufferAttempts) {
+            bufferLoadAttempts++;
+            
+            const loadTasks = [
+              { name: 'move', url: `${baseUrl}${soundPath}move.wav`, target: 'moveBuf' },
+              { name: 'capture', url: `${baseUrl}${soundPath}capture.wav`, target: 'captureBuf' },
+              { name: 'countdown', url: `${baseUrl}${soundPath}countdown.wav`, target: 'countdownBuf' },
+              { name: 'result', url: `${baseUrl}${soundPath}result.wav`, target: 'resultBuf' }
+            ];
+            
+            const results = await Promise.allSettled(
+              loadTasks.map(async (task) => {
+                try {
+                  const buffer = await loadBufferWithRetry(task.url);
+                  return { task, buffer };
+                } catch (err) {
+                  warnLog(`Final buffer load failed for ${task.name}:`, err);
+                  return { task, buffer: null };
+                }
+              })
+            );
+            
+            results.forEach(result => {
+              if (result.status === 'fulfilled' && result.value.buffer) {
+                const { task, buffer } = result.value;
+                switch(task.target) {
+                  case 'moveBuf': moveBuf = buffer; break;
+                  case 'captureBuf': captureBuf = buffer; break;
+                  case 'countdownBuf': countdownBuf = buffer; break;
+                  case 'resultBuf': resultBuf = buffer; break;
+                }
+                debugLog(`✅ ${task.name} buffer loaded`);
+              }
+            });
           }
         }
         
-        // Prime HTML5 Audio fallback
-        try{ 
-          moveAudio.muted=true; 
-          await moveAudio.play().catch(()=>{}); 
-          moveAudio.pause(); 
-          moveAudio.currentTime=0; 
-          moveAudio.muted=false; 
-        }catch(_){}
+        // Prime HTML5 Audio with error handling
+        const primeAudio = async (audio, name) => {
+          try { 
+            audio.muted = true;
+            const playPromise = audio.play();
+            if (playPromise) await playPromise.catch(() => {});
+            audio.pause(); 
+            audio.currentTime = 0; 
+            audio.muted = false;
+            debugLog(`✅ ${name} HTML5 Audio primed`);
+          } catch(e) {
+            warnLog(`${name} HTML5 Audio prime failed:`, e);
+          }
+        };
         
-        try{ 
-          captureAudio.muted=true; 
-          await captureAudio.play().catch(()=>{}); 
-          captureAudio.pause(); 
-          captureAudio.currentTime=0; 
-          captureAudio.muted=false; 
-        }catch(_){}
+        await Promise.allSettled([
+          primeAudio(moveAudio, 'move'),
+          primeAudio(captureAudio, 'capture'),
+          primeAudio(countdownAudio, 'countdown'),
+          primeAudio(resultAudio, 'result')
+        ]);
         
-        try{ 
-          countdownAudio.muted=true; 
-          await countdownAudio.play().catch(()=>{}); 
-          countdownAudio.pause(); 
-          countdownAudio.currentTime=0; 
-          countdownAudio.muted=false; 
-        }catch(_){}
+        debugLog('🔊 Audio system priming completed');
         
-        try{ 
-          resultAudio.muted=true; 
-          await resultAudio.play().catch(()=>{}); 
-          resultAudio.pause(); 
-          resultAudio.currentTime=0; 
-          resultAudio.muted=false; 
-        }catch(_){}
-        
-      }catch(err){
-        console.warn('Audio unlock failed:', err);
-      }finally{
+      } catch(err) {
+        warnLog('Audio unlock failed:', err);
+      } finally {
         // Remove unlock listeners
-        window.removeEventListener('pointerdown',prime,true);
-        window.removeEventListener('touchend',prime,true);
-        window.removeEventListener('keydown',prime,true);
-        window.removeEventListener('click',prime,true);
+        ['pointerdown', 'touchend', 'touchstart', 'keydown', 'click'].forEach(event => {
+          window.removeEventListener(event, prime, true);
+        });
       }
     };
     
-    // Install unlock listeners
-    window.addEventListener('pointerdown',prime,true);
-    window.addEventListener('touchend',prime,true);
-    window.addEventListener('keydown',prime,true);
-    window.addEventListener('click',prime,true);
+    // Install comprehensive unlock listeners
+    ['pointerdown', 'touchend', 'touchstart', 'keydown', 'click'].forEach(event => {
+      window.addEventListener(event, prime, true);
+    });
   };
+
+  // Store debug functions for play methods
+  this._audioDebug = { debugLog, warnLog };
 
   this.audio = {
     moveAudio,
@@ -239,141 +412,223 @@ initAudio(){
     countdownBuf: () => countdownBuf,
     resultBuf: () => resultBuf,
     audioPrimed: () => audioPrimed,
-    installAudioUnlock
+    installAudioUnlock,
+    
+    // Debug info
+    getDebugInfo: () => ({
+      contextState: audioCtx?.state,
+      buffersLoaded: {
+        move: !!moveBuf,
+        capture: !!captureBuf,
+        countdown: !!countdownBuf,
+        result: !!resultBuf
+      },
+      loadAttempts: bufferLoadAttempts,
+      primed: audioPrimed
+    })
   };
 
   installAudioUnlock();
 },
 
 playMove(){
-  if(!this.st.soundOn)return;
-  const A=this.audio;
-  if(!A)return;
+  if(!this.st.soundOn) return;
+  const A = this.audio;
+  if(!A) return;
   
-  // Try WebAudio first (low latency)
+  const { debugLog, warnLog } = this._audioDebug || { 
+    debugLog: () => {}, 
+    warnLog: () => {} 
+  };
+  
+  // Enhanced WebAudio with better error handling
   const audioCtx = A.audioCtx();
   const moveBuf = A.moveBuf();
   
   if(audioCtx && moveBuf && audioCtx.state === 'running'){ 
     try{ 
-      const src=audioCtx.createBufferSource();
-      const gainNode=audioCtx.createGain();
-      gainNode.gain.value=0.7;
-      src.buffer=moveBuf; 
+      const src = audioCtx.createBufferSource();
+      const gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.7, audioCtx.currentTime);
+      src.buffer = moveBuf; 
       src.connect(gainNode);
       gainNode.connect(audioCtx.destination);
       src.start(0); 
+      debugLog('🔊 Move sound played via WebAudio');
       return; 
     }catch(err){ 
-      console.warn('WebAudio move playback failed:', err);
+      warnLog('WebAudio move playback failed:', err);
     } 
   }
   
-  // Fallback to HTML5 Audio
+  // Enhanced HTML5 Audio fallback
   try{ 
-    A.moveAudio.currentTime=0; 
-    A.moveAudio.play().catch(()=>{});
-  }catch(_){}
+    const audio = A.moveAudio;
+    if (audio.readyState >= 2) {  // HAVE_CURRENT_DATA
+      audio.currentTime = 0;
+      const playPromise = audio.play();
+      if (playPromise) {
+        playPromise
+          .then(() => debugLog('🔊 Move sound played via HTML5'))
+          .catch(err => warnLog('HTML5 move play failed:', err));
+      }
+    } else {
+      warnLog('Move audio not ready, readyState:', audio.readyState);
+    }
+  }catch(err){
+    warnLog('HTML5 move audio failed:', err);
+  }
 },
 
 playCapture(){
-  if(!this.st.soundOn)return;
-  const A=this.audio;
-  if(!A)return;
+  if(!this.st.soundOn) return;
+  const A = this.audio;
+  if(!A) return;
   
-  // Try WebAudio first (low latency)
+  const { debugLog, warnLog } = this._audioDebug || { 
+    debugLog: () => {}, 
+    warnLog: () => {} 
+  };
+  
   const audioCtx = A.audioCtx();
   const captureBuf = A.captureBuf();
   
   if(audioCtx && captureBuf && audioCtx.state === 'running'){ 
     try{ 
-      const src=audioCtx.createBufferSource();
-      const gainNode=audioCtx.createGain();
-      gainNode.gain.value=0.6;
-      src.buffer=captureBuf; 
+      const src = audioCtx.createBufferSource();
+      const gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.6, audioCtx.currentTime);
+      src.buffer = captureBuf; 
       src.connect(gainNode);
       gainNode.connect(audioCtx.destination);
       src.start(0); 
+      debugLog('🔊 Capture sound played via WebAudio');
       return; 
     }catch(err){ 
-      console.warn('WebAudio capture playback failed:', err);
+      warnLog('WebAudio capture playback failed:', err);
     } 
   }
   
-  // Fallback to HTML5 Audio
   try{ 
-    A.captureAudio.currentTime=0; 
-    A.captureAudio.play().catch(()=>{});
-  }catch(_){
-    // Double fallback to move sound
+    const audio = A.captureAudio;
+    if (audio.readyState >= 2) {
+      audio.currentTime = 0;
+      const playPromise = audio.play();
+      if (playPromise) {
+        playPromise
+          .then(() => debugLog('🔊 Capture sound played via HTML5'))
+          .catch(() => {
+            this.playMove();
+            debugLog('🔊 Fallback to move sound');
+          });
+      }
+    } else {
+      this.playMove();
+    }
+  }catch(err){
+    warnLog('HTML5 capture audio failed:', err);
     this.playMove();
   }
 },
 
 playCountdown(){
-  if(!this.st.soundOn)return;
-  const A=this.audio;
-  if(!A)return;
+  if(!this.st.soundOn) return;
+  const A = this.audio;
+  if(!A) return;
   
-  // Try WebAudio first (low latency)
+  const { debugLog, warnLog } = this._audioDebug || { 
+    debugLog: () => {}, 
+    warnLog: () => {} 
+  };
+  
   const audioCtx = A.audioCtx();
   const countdownBuf = A.countdownBuf();
   
   if(audioCtx && countdownBuf && audioCtx.state === 'running'){ 
     try{ 
-      const src=audioCtx.createBufferSource();
-      const gainNode=audioCtx.createGain();
-      gainNode.gain.value=0.8;
-      src.buffer=countdownBuf; 
+      const src = audioCtx.createBufferSource();
+      const gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.8, audioCtx.currentTime);
+      src.buffer = countdownBuf; 
       src.connect(gainNode);
       gainNode.connect(audioCtx.destination);
       src.start(0); 
+      debugLog('🔊 Countdown sound played via WebAudio');
       return; 
     }catch(err){ 
-      console.warn('WebAudio countdown playback failed:', err);
+      warnLog('WebAudio countdown playback failed:', err);
     } 
   }
   
-  // Fallback to HTML5 Audio
   try{ 
-    A.countdownAudio.currentTime=0; 
-    A.countdownAudio.play().catch(()=>{});
-  }catch(_){
-    // Fallback to move sound
+    const audio = A.countdownAudio;
+    if (audio.readyState >= 2) {
+      audio.currentTime = 0;
+      const playPromise = audio.play();
+      if (playPromise) {
+        playPromise
+          .then(() => debugLog('🔊 Countdown sound played via HTML5'))
+          .catch(() => {
+            this.playMove();
+            debugLog('🔊 Fallback to move sound');
+          });
+      }
+    } else {
+      this.playMove();
+    }
+  }catch(err){
+    warnLog('HTML5 countdown audio failed:', err);
     this.playMove();
   }
 },
 
 playResult(){
-  if(!this.st.soundOn)return;
-  const A=this.audio;
-  if(!A)return;
+  if(!this.st.soundOn) return;
+  const A = this.audio;
+  if(!A) return;
   
-  // Try WebAudio first (low latency)
+  const { debugLog, warnLog } = this._audioDebug || { 
+    debugLog: () => {}, 
+    warnLog: () => {} 
+  };
+  
   const audioCtx = A.audioCtx();
   const resultBuf = A.resultBuf();
   
   if(audioCtx && resultBuf && audioCtx.state === 'running'){ 
     try{ 
-      const src=audioCtx.createBufferSource();
-      const gainNode=audioCtx.createGain();
-      gainNode.gain.value=0.75;
-      src.buffer=resultBuf; 
+      const src = audioCtx.createBufferSource();
+      const gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.75, audioCtx.currentTime);
+      src.buffer = resultBuf; 
       src.connect(gainNode);
       gainNode.connect(audioCtx.destination);
       src.start(0); 
+      debugLog('🔊 Result sound played via WebAudio');
       return; 
     }catch(err){ 
-      console.warn('WebAudio result playback failed:', err);
+      warnLog('WebAudio result playback failed:', err);
     } 
   }
   
-  // Fallback to HTML5 Audio
   try{ 
-    A.resultAudio.currentTime=0; 
-    A.resultAudio.play().catch(()=>{});
-  }catch(_){
-    // Fallback to capture sound
+    const audio = A.resultAudio;
+    if (audio.readyState >= 2) {
+      audio.currentTime = 0;
+      const playPromise = audio.play();
+      if (playPromise) {
+        playPromise
+          .then(() => debugLog('🔊 Result sound played via HTML5'))
+          .catch(() => {
+            this.playCapture();
+            debugLog('🔊 Fallback to capture sound');
+          });
+      }
+    } else {
+      this.playCapture();
+    }
+  }catch(err){
+    warnLog('HTML5 result audio failed:', err);
     this.playCapture();
   }
 },
@@ -387,6 +642,32 @@ setSound(on){
 
 toggleSound(){
   this.setSound(!this.st.soundOn)
+},
+
+// Debug fonksiyonu - geliştirme için
+debugAudio(){
+  if(this.audio?.getDebugInfo){
+    console.log('🔊 Audio Debug Info:', this.audio.getDebugInfo());
+  }
+},
+
+// YENİ FONKSİYON: Ses güvenlik sistemini temizle
+cleanupAudioSecurity(){
+  try {
+    // Audio.prototype.play'i eski haline döndür
+    if (this._originalAudioPlay) {
+      window.Audio.prototype.play = this._originalAudioPlay;
+    }
+    
+    // AudioContext.prototype.createBufferSource'ı eski haline döndür
+    if (this._originalCreateBufferSource) {
+      AudioContext.prototype.createBufferSource = this._originalCreateBufferSource;
+    }
+    
+    debugLog('🧹 Audio security cleanup completed');
+  } catch(err) {
+    warnLog('Audio security cleanup failed:', err);
+  }
 },
 /* Bölüm sonu --------------------------------------------------------------- */
 
