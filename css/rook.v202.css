@@ -1,4 +1,4 @@
-/* rook.css — v201 */
+/* rook.css — v202 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -2040,6 +2040,176 @@ body{
   #rk-countdown{
     will-change: transform, opacity;
     -webkit-font-smoothing: antialiased;
+  }
+}
+/* Bölüm sonu --------------------------------------------------------------- */
+
+
+
+
+/* YENİ BÖLÜM 20: App-Fixed Mode Scroll Overrides */
+
+/* 1 - TOOLBAR SCROLL ENGELİ */
+body.app-fixed .cm-toolbar .rk-toolbar.rk-toolbar--single{
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  scroll-behavior: auto !important;
+  -webkit-overflow-scrolling: auto !important;
+  overscroll-behavior: none !important;
+}
+
+body.app-fixed .cm-toolbar .rk-toolbar.rk-toolbar--single.is-overflowing::after{
+  display: none !important;  /* Scroll gradient'ini kaldır */
+}
+
+/* 2 - COACH BUBBLE SCROLL ENGELİ */
+body.app-fixed .rk-coach__bubble{
+  overflow: hidden !important;
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: auto !important;
+  overscroll-behavior: none !important;
+}
+
+body.app-fixed .rk-coach__bubble::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* 3 - UNDERBAR SCROLL ENGELİ */
+body.app-fixed .rk-underbar{
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  scroll-behavior: auto !important;
+  -webkit-overflow-scrolling: auto !important;
+  overscroll-behavior: none !important;
+}
+
+body.app-fixed .rk-underbar.is-overflowing::after{
+  display: none !important;  /* Scroll gradient'ini kaldır */
+}
+
+/* 4 - BOARD SCROLL ENGELİ (Extra güvenlik) */
+body.app-fixed #cm-board{
+  overflow: hidden !important;
+  -webkit-overflow-scrolling: auto !important;
+  overscroll-behavior: none !important;
+  touch-action: manipulation !important;
+}
+
+/* 5 - GLOBAL SCROLL ENGELLERİ */
+body.app-fixed *{
+  overscroll-behavior: none !important;
+  -webkit-overflow-scrolling: auto !important;
+}
+
+body.app-fixed *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* 6 - iOS SAFARI RUBBER BAND PREVENTION */
+body.app-fixed{
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  -webkit-overflow-scrolling: auto !important;
+  touch-action: manipulation !important;
+}
+
+/* 7 - ANDROID CHROME OVERSCROLL PREVENTION */
+body.app-fixed,
+body.app-fixed *{
+  overscroll-behavior-x: none !important;
+  overscroll-behavior-y: none !important;
+  scroll-behavior: auto !important;
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* 8 - TOUCH ACTION RESTRICTIONS */
+body.app-fixed .cm-btn,
+body.app-fixed .rk-btn,
+body.app-fixed .cm-sel,
+body.app-fixed .cm-ico{
+  touch-action: manipulation !important;
+}
+
+body.app-fixed .cm-toolbar,
+body.app-fixed .rk-underbar,
+body.app-fixed .rk-coach{
+  touch-action: none !important;
+}
+
+/* 9 - VIEWPORT META ENFORCEMENT */
+@supports (-webkit-touch-callout: none) {
+  body.app-fixed{
+    -webkit-text-size-adjust: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+  }
+}
+
+/* 10 - MODAL SCROLL OVERRIDE */
+body.app-fixed.rk-modal-open{
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  position: fixed !important;
+}
+
+body.app-fixed.rk-count-open{
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  position: fixed !important;
+}
+
+/* 11 - SAFE AREA ADJUSTMENTS */
+body.app-fixed{
+  padding-top: env(safe-area-inset-top, 0px) !important;
+  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  padding-left: env(safe-area-inset-left, 0px) !important;
+  padding-right: env(safe-area-inset-right, 0px) !important;
+}
+
+/* 12 - COMPONENT OVERFLOW FIXES */
+body.app-fixed .rk-wrap{
+  overflow: hidden !important;
+  max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
+}
+
+body.app-fixed .rk-grid{
+  overflow: hidden !important;
+}
+
+/* 13 - RESPONSIVE OVERFLOW KONTROLÜ */
+@media (max-width: 768px) {
+  body.app-fixed .cm-toolbar .rk-toolbar--single{
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+  
+  body.app-fixed .rk-underbar .hud-chip{
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body.app-fixed .rk-coach__title,
+  body.app-fixed .rk-coach__subtitle,
+  body.app-fixed .rk-coach__hint,
+  body.app-fixed .rk-coach__desc{
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 }
 /* Bölüm sonu --------------------------------------------------------------- */
