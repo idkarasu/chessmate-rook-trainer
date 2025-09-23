@@ -1,11 +1,11 @@
-<!-- html.html — v200 -->
+<!-- html.html — v201 -->
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en" id="html-root">
 <head>
 <meta charset="UTF-8">
 <!-- Tam ekran uygulama benzeri görünüm ve zoom kilidi -->
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Kale Eğitimi - ChessMate.ink</title>
+<title id="page-title">Rook Training - ChessMate.ink</title>
 </head>
 <body>
 
@@ -31,30 +31,30 @@
 <!-- 3 - Uygulama kapsayıcısı ------------------------------------------------ -->
 <main class="rk-wrap cm-wrap" id="cm-app" role="main" aria-label="Rook Trainer" data-avatar="/wp-content/uploads/2025/08/avatar.png">
 <div class="rk-head">
-<div class="cm-toolbar rk-toolbar-wrap" role="toolbar" aria-label="Oyun Kontrolleri">
-<div class="rk-toolbar rk-toolbar--single" role="toolbar" aria-label="Oyun toolbar">
-<div class="rk-group rk-group--side" aria-label="Taraf">
-<label for="rk-side-select" class="rk-ctl-label">Taraf:</label>
-<select id="rk-side-select" class="cm-sel" aria-label="Taraf">
-<option value="white">Beyaz</option>
-<option value="black">Siyah</option>
+<div class="cm-toolbar rk-toolbar-wrap" role="toolbar" aria-label="Game Controls">
+<div class="rk-toolbar rk-toolbar--single" role="toolbar" aria-label="Game toolbar">
+<div class="rk-group rk-group--side" aria-label="Side">
+<label for="rk-side-select" class="rk-ctl-label" data-i18n="label.side">Side:</label>
+<select id="rk-side-select" class="cm-sel" aria-label="Side">
+<option value="white" data-i18n="side.white">White</option>
+<option value="black" data-i18n="side.black">Black</option>
 </select>
 </div>
-<div class="rk-group rk-group--mode" aria-label="Oyun Modu">
-<label for="rk-mode-select" class="rk-ctl-label">Oyun Modu:</label>
-<select id="rk-mode-select" class="cm-sel" aria-label="Oyun Modu">
-<option value="timed">⏱️ Zamana Karşı</option>
-<option value="levels">🌊 Sekiz Dalga</option>
+<div class="rk-group rk-group--mode" aria-label="Game Mode">
+<label for="rk-mode-select" class="rk-ctl-label" data-i18n="label.mode">Game Mode:</label>
+<select id="rk-mode-select" class="cm-sel" aria-label="Game Mode">
+<option value="timed" data-i18n="mode.timed">⏱️ Timed Mode</option>
+<option value="levels" data-i18n="mode.levels">🌊 Eight Waves</option>
 </select>
 </div>
 <div class="rk-group rk-group--start">
-<button id="rk-start" class="cm-btn rk-btn rk-btn--primary" type="button">▶ Start</button>
+<button id="rk-start" class="cm-btn rk-btn rk-btn--primary" type="button" data-i18n="btn.start">▶ Start</button>
 </div>
 <div class="rk-group rk-group--icons">
-<button id="cm-hints" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="true" title="Hamle ipuçları">🎯</button>
-<button id="cm-board-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-label="Tahtayı değiştir">♟️</button>
-<button id="cm-sound-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="true" title="Sesi aç/kapat">🔊</button>
-<button id="cm-theme-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="false" title="Tema değiştir">🌙</button>
+<button id="cm-hints" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="true" data-i18n-title="tooltip.hints.on" title="Hints: On">🎯</button>
+<button id="cm-board-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" data-i18n-aria="tooltip.board" aria-label="Change Board Theme">♟️</button>
+<button id="cm-sound-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="true" data-i18n-title="tooltip.sound.on" title="Sound: On">🔊</button>
+<button id="cm-theme-toggle" class="cm-btn rk-btn rk-btn--icon" type="button" aria-pressed="false" data-i18n-title="tooltip.theme" title="Toggle Theme">🌙</button>
 </div>
 </div>
 </div>
@@ -62,11 +62,11 @@
 
 <!-- 4 - İçerik: tahta ------------------------------------------------------- -->
 <div class="rk-grid">
-<div id="cm-board" aria-label="Satranç Tahtası"></div>
+<div id="cm-board" data-i18n-aria="aria.board" aria-label="Chess Board"></div>
 </div>
 
 <!-- Tahta altı birleşik panel ----------------------------------------------- -->
-<div class="rk-underbar" id="rk-underbar" role="region" aria-label="Oyun bilgileri">
+<div class="rk-underbar" id="rk-underbar" role="region" data-i18n-aria="aria.gameinfo" aria-label="Game Information">
   <!-- İçerik JS tarafından dinamik eklenir -->
 </div>
 <!-- Bölüm sonu --------------------------------------------------------------- -->
@@ -90,9 +90,9 @@
 <!-- 6 - Noscript ------------------------------------------------------------- -->
 <noscript>
 <div style="padding:20px;margin:20px;border:2px solid #ff6b6b;border-radius:8px;background:#fff2f2;color:#d63031;text-align:center;font-family:Arial,sans-serif;">
-<h2>⚠️ JavaScript Gerekli</h2>
-<p><strong>Kale Eğitimi</strong> uygulaması çalışması için JavaScript'in etkin olması gerekiyor.</p>
-<p>Lütfen tarayıcınızdan JavaScript'i etkinleştirip sayfayı yenileyin.</p>
+<h2>⚠️ JavaScript Required</h2>
+<p><strong>Rook Training</strong> requires JavaScript to function.</p>
+<p>Please enable JavaScript in your browser and refresh the page.</p>
 </div>
 </noscript>
 <!-- Bölüm sonu --------------------------------------------------------------- -->
@@ -121,6 +121,92 @@
     <p class="cm-copy">© ChessMate.ink — Everything About Chess.</p>
   </div>
 </footer>
+<!-- Bölüm sonu --------------------------------------------------------------- -->
+
+<!-- 8 - Dynamic Language System Script --------------------------------------- -->
+<script>
+// Language system initialization - runs before main scripts
+(function() {
+  'use strict';
+  
+  // Get language from URL or storage
+  const getUrlLang = () => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const lang = params.get('lang');
+      return ['en', 'tr', 'de'].includes(lang) ? lang : 'en';
+    } catch(_) {
+      return 'en';
+    }
+  };
+  
+  const getStoredLang = () => {
+    try {
+      return localStorage.getItem('cm-lang') || 'en';
+    } catch(_) {
+      return 'en';
+    }
+  };
+  
+  // Determine current language
+  const urlLang = getUrlLang();
+  const storedLang = getStoredLang();
+  const currentLang = urlLang !== 'en' ? urlLang : storedLang;
+  
+  // Set HTML lang attribute
+  const htmlEl = document.getElementById('html-root');
+  if (htmlEl) {
+    htmlEl.setAttribute('lang', currentLang);
+  }
+  
+  // Title translations
+  const titles = {
+    en: 'Rook Training - ChessMate.ink',
+    tr: 'Kale Eğitimi - ChessMate.ink', 
+    de: 'Turm Training - ChessMate.ink'
+  };
+  
+  // Set page title
+  const titleEl = document.getElementById('page-title');
+  if (titleEl && titles[currentLang]) {
+    titleEl.textContent = titles[currentLang];
+  }
+  
+  // Noscript translations
+  const noscriptTranslations = {
+    en: {
+      title: '⚠️ JavaScript Required',
+      desc: '<strong>Rook Training</strong> requires JavaScript to function.',
+      help: 'Please enable JavaScript in your browser and refresh the page.'
+    },
+    tr: {
+      title: '⚠️ JavaScript Gerekli',
+      desc: '<strong>Kale Eğitimi</strong> uygulaması çalışması için JavaScript\'in etkin olması gerekiyor.',
+      help: 'Lütfen tarayıcınızdan JavaScript\'i etkinleştirip sayfayı yenileyin.'
+    },
+    de: {
+      title: '⚠️ JavaScript Erforderlich', 
+      desc: '<strong>Turm Training</strong> benötigt JavaScript zum Funktionieren.',
+      help: 'Bitte aktivieren Sie JavaScript in Ihrem Browser und laden Sie die Seite neu.'
+    }
+  };
+  
+  // Update noscript content
+  const noscript = document.querySelector('noscript div');
+  if (noscript && noscriptTranslations[currentLang]) {
+    const trans = noscriptTranslations[currentLang];
+    noscript.innerHTML = `
+      <h2>${trans.title}</h2>
+      <p>${trans.desc}</p>
+      <p>${trans.help}</p>
+    `;
+  }
+  
+  // Store language for other scripts
+  window.CM_INITIAL_LANG = currentLang;
+  
+})();
+</script>
 <!-- Bölüm sonu --------------------------------------------------------------- -->
 
 </body>
