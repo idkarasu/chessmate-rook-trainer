@@ -1,4 +1,4 @@
-/* rook.core.js — v210 */
+/* rook.core.js — v211 */
 
 (function(window,document){'use strict';
 
@@ -90,7 +90,7 @@ startTimer(dir){if(this.st.timer)return;this.st.timerDir=(dir==='up')?'up':'down
 stopTimer(){if(this.st.timer){cancelAnimationFrame(this.st.timer)}this.st.timer=null},
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 12 - İpucu sistemi ----------------------------------------------------- */
+/* 12 - İpucu sistemi - GELİŞMİŞ SİSTEM ----------------------------------- */
 boardEl(){return document.getElementById('cm-board')},
 squareEl(sq){return document.querySelector(`#cm-board .square-${sq}`)},
 _hintMarks:[],
@@ -99,6 +99,96 @@ _setHintsActive(on){const el=this.boardEl();if(el)el.classList.toggle('hints-act
 addHintClass(sq,cls){const el=this.squareEl(sq);if(!el)return;el.classList.add(cls);this._hintMarks.push({sq,cls})},
 clearHints(){this._hintMarks.forEach(({sq,cls})=>{const el=this.squareEl(sq);if(el)el.classList.remove(cls)});this._hintMarks.length=0;if(this._srcMarked){const el=this.squareEl(this._srcMarked);if(el)el.classList.remove('square-highlight');this._srcMarked=null}this._setHintsActive(false)},
 showHintsFor(from){if(!this.st.hintsOn)return;this.clearHints();const elFrom=this.squareEl(from);if(elFrom&&!elFrom.classList.contains('square-highlight')){elFrom.classList.add('square-highlight');this._srcMarked=from}this.allSquares().forEach(sq=>{if(sq===from)return;if(this.pathClear(from,sq)){if(this.st.pawns.includes(sq)){this.addHintClass(sq,'square-hint-cap')}else{this.addHintClass(sq,'square-hint')}}});this._setHintsActive(true)},
+
+// YENİ GELİŞMİŞ İPUCU SİSTEMİ
+showAdvancedHintsFor(from){
+  if(!this.st.hintsOn) return;
+  this.clearHints();
+  
+  // Kaynak kareyi vurgula
+  const elFrom = this.squareEl(from);
+  if(elFrom && !elFrom.classList.contains('square-highlight')) {
+    elFrom.classList.add('square-highlight');
+    this._srcMarked = from;
+  }
+  
+  // Hedef kareleri analiz et ve gelişmiş ipuçları ekle
+  this.allSquares().forEach(to => {
+    if(to === from) return;
+    if(this.pathClear(from, to)) {
+      this.addAdvancedHint(from, to);
+    }
+  });
+  
+  this._setHintsActive(true);
+},
+
+addAdvancedHint(from, to){
+  const isCapture = this.st.pawns.includes(to);
+  const direction = this.getDirection(from, to);
+  const pathSquares = this.getPathSquares(from, to);
+  
+  // Yol üzerindeki kareler için gradient efekti
+  pathSquares.forEach(sq => {
+    this.addHintClass(sq, 'square-hint-path');
+  });
+  
+  // Hedef kare için özel efekt
+  if(isCapture) {
+    this.addHintClass(to, 'square-hint-cap');
+    this.addHintClass(to, 'square-hint-destination');
+  } else {
+    this.addHintClass(to, 'square-hint');
+    this.addHintClass(to, 'square-hint-destination');
+  }
+  
+  // Yön okları ekle (sadece boş karelere)
+  if(!isCapture && direction) {
+    this.addHintClass(to, 'square-hint-arrow');
+    this.addHintClass(to, `arrow-${direction}`);
+  }
+},
+
+getDirection(from, to){
+  const files = ['a','b','c','d','e','f','g','h'];
+  const ranks = ['1','2','3','4','5','6','7','8'];
+  const fx = files.indexOf(from[0]);
+  const fy = ranks.indexOf(from[1]);
+  const tx = files.indexOf(to[0]);
+  const ty = ranks.indexOf(to[1]);
+  
+  if(fx === tx) {
+    return (ty > fy) ? 'up' : 'down';
+  } else if(fy === ty) {
+    return (tx > fx) ? 'right' : 'left';
+  }
+  return null;
+},
+
+getPathSquares(from, to){
+  const files = ['a','b','c','d','e','f','g','h'];
+  const ranks = ['1','2','3','4','5','6','7','8'];
+  const fx = files.indexOf(from[0]);
+  const fy = ranks.indexOf(from[1]);
+  const tx = files.indexOf(to[0]);
+  const ty = ranks.indexOf(to[1]);
+  const path = [];
+  
+  if(fx === tx) {
+    const step = (ty > fy) ? 1 : -1;
+    for(let y = fy + step; y !== ty; y += step) {
+      path.push(files[fx] + ranks[y]);
+    }
+  } else if(fy === ty) {
+    const step = (tx > fx) ? 1 : -1;
+    for(let x = fx + step; x !== tx; x += step) {
+      path.push(files[x] + ranks[fy]);
+    }
+  }
+  
+  return path;
+},
+
 applyHints(on){this.st.hintsOn=!!on;safeSetItem('cm-hints',on?'on':'off');if(!on){this.clearHints()}emit('cm-hints',{on:this.st.hintsOn});emit('rk:hints',{on:this.st.hintsOn})},
 toggleHints(){this.applyHints(!this.st.hintsOn)},
 /* Bölüm sonu --------------------------------------------------------------- */
@@ -717,7 +807,7 @@ initBoard(){
         }catch(_){}
       }
       
-      self.showHintsFor(source);
+      self.showAdvancedHintsFor(source);
       self._enableTouchLock();
       let tries=0;
       (function waitDrag(){
