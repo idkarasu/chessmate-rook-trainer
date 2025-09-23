@@ -1,4 +1,4 @@
-/* rook.ui.js — v201 */
+/* rook.ui.js — v202 */
 
 (function(window,document){'use strict';
 
@@ -728,15 +728,6 @@ on(window,'storage',(e)=>{
   }
 },{passive:true});
 /* Bölüm sonu --------------------------------------------------------------- */
-
-/* App-Fixed modu varsayılan aç */
-(function(){
-  try{
-    document.addEventListener('DOMContentLoaded', function(){
-      document.body.classList.add('app-fixed');
-    }, {once:true});
-  }catch(_){}
-})();
 
 /* 12 - UI bağlama --------------------------------------------------------- */
 function initToolbarScroll(){
