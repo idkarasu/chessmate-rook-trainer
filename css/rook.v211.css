@@ -1,4 +1,4 @@
-/* rook.css — v210 */
+/* rook.css — v211 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -838,7 +838,7 @@ body.cm-theme-light .rk-softbar{
   width:var(--board-size);
   max-width:92vw;
   margin:0 auto;
-  margin-top: clamp(20px, 3vh, 40px) !important;
+  margin-top: clamp(10px, 1.5vh, 20px) !important;
   margin-bottom: 0;
   padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px);
   background:rgba(255,255,255,.02);
