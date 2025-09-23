@@ -1,4 +1,4 @@
-/* rook.css — v200 */
+/* rook.css — v201 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -1559,8 +1559,41 @@ body.cm-theme-light #rk-levels-inline .lvl.done{
     margin-top: clamp(1px, calc(var(--board-size) * 0.004), 3px);
   }
   .rk-coach__hint{
-    font-size: clamp(7px, calc(var(--board-size) * 0.022), 9px);
+    font-size: clamp(6px, calc(var(--board-size) * 0.020), 8px);
     margin-top: clamp(2px, calc(var(--board-size) * 0.006), 4px);
+    line-height: 1.2;
+  }
+}
+
+/* YENİ MOBİL İYİLEŞTİRMELER - <480px ve <375px */
+@media (max-width: 480px) {
+  .rk-coach__hint{
+    font-size: clamp(5px, calc(var(--board-size) * 0.019), 7px);
+    line-height: 1.18;
+    margin-top: clamp(1px, calc(var(--board-size) * 0.005), 3px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
+}
+
+@media (max-width: 374px) {
+  .rk-coach__hint{
+    font-size: clamp(5px, calc(var(--board-size) * 0.018), 7px);
+    margin-top: clamp(1px, calc(var(--board-size) * 0.004), 3px);
+    line-height: 1.15;
+    -webkit-line-clamp: 1;
+  }
+}
+
+/* LEGACY DESC CLASS için de aynı küçültme */
+@media (max-width: 480px) {
+  .rk-coach__desc .rk-coach__hint,
+  .rk-coach__desc span.rk-coach__hint{
+    font-size: clamp(5px, calc(var(--board-size) * 0.019), 7px) !important;
+    line-height: 1.18 !important;
   }
 }
 
