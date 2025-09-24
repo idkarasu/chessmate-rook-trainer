@@ -1,4 +1,4 @@
-/* rook.core.js — v211 */
+/* rook.core.js — v214 */
 
 (function(window,document){'use strict';
 
@@ -42,7 +42,11 @@ timeLeft:60,
 timer:null,
 timerDir:'down',
 playing:false,
-levelsStartAt:null
+levelsStartAt:null,
+// COMBO SİSTEMİ DEĞİŞKENLERİ - YENİ
+combo: 0,
+lastCaptureTime: 0,
+comboTimer: null
 },
 /* Bölüm sonu --------------------------------------------------------------- */
 
@@ -90,7 +94,7 @@ startTimer(dir){if(this.st.timer)return;this.st.timerDir=(dir==='up')?'up':'down
 stopTimer(){if(this.st.timer){cancelAnimationFrame(this.st.timer)}this.st.timer=null},
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 12 - İpucu sistemi - GELİŞMİŞ SİSTEM ----------------------------------- */
+/* 12 - İpucu sistemi - GELİŞMİŞ SİSTEM + COMBO SİSTEMİ -------------------- */
 boardEl(){return document.getElementById('cm-board')},
 squareEl(sq){return document.querySelector(`#cm-board .square-${sq}`)},
 _hintMarks:[],
@@ -191,6 +195,79 @@ getPathSquares(from, to){
 
 applyHints(on){this.st.hintsOn=!!on;safeSetItem('cm-hints',on?'on':'off');if(!on){this.clearHints()}emit('cm-hints',{on:this.st.hintsOn});emit('rk:hints',{on:this.st.hintsOn})},
 toggleHints(){this.applyHints(!this.st.hintsOn)},
+
+// YENİ COMBO SİSTEMİ - TAMAMLANMIŞ + BOARD CLASS ENTEGRASYOالنU
+updateCombo() {
+  const now = Date.now();
+  const timeSinceLastCapture = now - this.st.lastCaptureTime;
+  
+  if (timeSinceLastCapture < 3000 && this.st.combo > 0) {
+    this.st.combo++;
+  } else {
+    this.st.combo = 1;
+  }
+  
+  this.st.lastCaptureTime = now;
+  
+  // BOARD CLASS GÜNCELLEME - YENİ
+  this.updateBoardComboClasses();
+  
+  emit('rk:combo', {combo: this.st.combo});
+  emit('rk:combo-change', {combo: this.st.combo, isNew: this.st.combo === 1});
+},
+
+// YENİ FONKSİYON: BOARD COMBO CLASS YÖNETİMİ
+updateBoardComboClasses() {
+  const boardEl = this.boardEl();
+  if (!boardEl) return;
+  
+  // Tüm combo class'larını temizle
+  boardEl.classList.remove('combo-active', 'combo-high', 'combo-super');
+  
+  // Combo seviyesine göre class ekle
+  const combo = this.st.combo || 0;
+  if (combo >= 6) {
+    boardEl.classList.add('combo-super');
+  } else if (combo >= 4) {
+    boardEl.classList.add('combo-high');
+  } else if (combo >= 2) {
+    boardEl.classList.add('combo-active');
+  }
+},
+
+calculateComboScore() {
+  const baseScore = 1;
+  const comboBonus = this.st.combo;
+  return baseScore * comboBonus;
+},
+
+resetComboTimer() {
+  if (this.st.comboTimer) {
+    clearTimeout(this.st.comboTimer);
+  }
+  
+  this.st.comboTimer = setTimeout(() => {
+    if (this.st.combo > 0) {
+      this.st.combo = 0;
+      // BOARD CLASS GÜNCELLEME - YENİ
+      this.updateBoardComboClasses();
+      emit('rk:combo-break', {});
+      emit('rk:combo-change', {combo: 0, isBreak: true});
+    }
+  }, 3000);
+},
+
+resetCombo() {
+  this.st.combo = 0;
+  this.st.lastCaptureTime = 0;
+  if (this.st.comboTimer) {
+    clearTimeout(this.st.comboTimer);
+    this.st.comboTimer = null;
+  }
+  // BOARD CLASS GÜNCELLEME - YENİ
+  this.updateBoardComboClasses();
+  emit('rk:combo-change', {combo: 0, isReset: true});
+},
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 13 - Ses - GELİŞTİRİLMİŞ WEBAUDIO SİSTEMİ ----------------------------- */
@@ -830,17 +907,24 @@ initBoard(){
       const captured=self.st.pawns.includes(target);
       if(captured){
         self.playCapture();
+        
+        // COMBO SİSTEMİ ENTEGRASYONU - YENİ
+        self.updateCombo();
+        const comboScore = self.calculateComboScore();
+        self.st.score += comboScore; // Normal +1 yerine combo çarpanlı skor
+        self.resetComboTimer();
+        
+        emit('rk:score',{score:self.st.score});
+        if(self.modes?.onCapture){self.modes.onCapture(self,target)}
+        
+        // Combo mesajı
+        const comboText = self.st.combo > 1 ? ` (×${self.st.combo} Combo!)` : '';
+        self.updateInfo(self.t('msg.capture') + comboText)
       }else{
         self.playMove();
       }
       
       self.st.rookSq=target;
-      if(captured){
-        self.st.score++;
-        emit('rk:score',{score:self.st.score});
-        if(self.modes?.onCapture){self.modes.onCapture(self,target)}
-        self.updateInfo(self.t('msg.capture'))
-      }
     },
     onSnapEnd(){
       self._disableTouchLock();
@@ -865,9 +949,61 @@ initBoard(){
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 15 - Oyun kontrolleri --------------------------------------------------- */
-hardReset(){this.stopTimer();this.st.playing=false;this.st.score=0;const p=this._startForSide(this.st.side);this.st.rookPiece=p.rookPiece;this.st.pawnPiece=p.pawnPiece;this.setWave(1);this.st.levelsStartAt=null;if(this.st.mode==='levels'){this.st.timeLeft=0;this.st.timerDir='up'}else{this.st.timeLeft=60;this.st.timerDir='down'}if(this.modes?.reset){this.modes.reset(this)}else{this.st.rookSq=p.rookSq;const pool=this.allSquares().filter(sq=>sq!==this.st.rookSq);this.st.pawns=[pool[Math.floor(Math.random()*pool.length)]]}this.updateInfo('—');this.draw()},
-start(){this.hardReset();this.st.score=0;emit('rk:score',{score:0});this.updateInfo('—');if(this.st.mode==='levels'){this.st.levelsStartAt=Date.now()}if(this.modes?.onStart)this.modes.onStart(this);if(!this.st.timer)this.startTimer(this.st.timerDir);this.st.playing=true;emit('rk:start',{mode:this.st.mode})},
-stop(){this.st.playing=false;this.stopTimer();this.updateInfo(this.t('msg.paused'));emit('rk:stop',{})},
+hardReset(){
+  this.stopTimer();
+  this.st.playing=false;
+  this.st.score=0;
+  
+  // COMBO SİSTEMİ RESET - YENİ
+  this.resetCombo();
+  
+  const p=this._startForSide(this.st.side);
+  this.st.rookPiece=p.rookPiece;
+  this.st.pawnPiece=p.pawnPiece;
+  this.setWave(1);
+  this.st.levelsStartAt=null;
+  if(this.st.mode==='levels'){
+    this.st.timeLeft=0;
+    this.st.timerDir='up'
+  }else{
+    this.st.timeLeft=60;
+    this.st.timerDir='down'
+  }
+  if(this.modes?.reset){
+    this.modes.reset(this)
+  }else{
+    this.st.rookSq=p.rookSq;
+    const pool=this.allSquares().filter(sq=>sq!==this.st.rookSq);
+    this.st.pawns=[pool[Math.floor(Math.random()*pool.length)]]
+  }
+  this.updateInfo('—');
+  this.draw()
+},
+start(){
+  this.hardReset();
+  this.st.score=0;
+  
+  // COMBO SİSTEMİ START - YENİ  
+  this.resetCombo();
+  
+  emit('rk:score',{score:0});
+  this.updateInfo('—');
+  if(this.st.mode==='levels'){this.st.levelsStartAt=Date.now()}
+  if(this.modes?.onStart)this.modes.onStart(this);
+  if(!this.st.timer)this.startTimer(this.st.timerDir);
+  this.st.playing=true;
+  emit('rk:start',{mode:this.st.mode})
+},
+stop(){
+  this.st.playing=false;
+  this.stopTimer();
+  
+  // COMBO SİSTEMİ STOP - YENİ
+  this.resetCombo();
+  
+  this.updateInfo(this.t('msg.paused'));
+  emit('rk:stop',{})
+},
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 16 - Cleanup ve önyükleme ----------------------------------------------- */
