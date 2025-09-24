@@ -1,4 +1,4 @@
-/* rook.ui.js — v210 */
+/* rook.ui.js — v213 */
 
 (function(window,document){'use strict';
 
@@ -454,6 +454,15 @@ function ensureUnderbar(){
     hudTime.innerHTML = `<span class="ico">⏱️</span><span class="lbl">${t('hud.time')}</span><span class="val">00:00</span>`;
     leftSection.appendChild(hudTime);
     
+    // YENİ COMBO ELEMENT - sol tarafta
+    const hudCombo = document.createElement('div');
+    hudCombo.id = 'hud-combo';
+    hudCombo.className = 'hud-chip hud-combo';
+    hudCombo.setAttribute('aria-label', 'Combo');
+    hudCombo.innerHTML = `<span class="ico">🔥</span><span class="lbl">Combo</span><span class="val">×1</span>`;
+    hudCombo.style.display = 'none'; // Başlangıçta gizli
+    leftSection.appendChild(hudCombo);
+    
     // Orta grup
     const middleSection = document.createElement('div');
     middleSection.className = 'rk-underbar-middle';
@@ -584,10 +593,67 @@ function updateHudLabels(){
     if($bestWrap)$bestWrap.setAttribute('aria-label',t('hud.fastest'));
   }
 }
+
+// YENİ COMBO DISPLAY FONKSİYONLARI
+function updateComboDisplay(){
+  const RK = window.Rook;
+  if(!RK) return;
+  
+  const hudCombo = $('hud-combo');
+  const comboVal = document.querySelector('#hud-combo .val');
+  const comboChip = hudCombo;
+  
+  if(!hudCombo || !comboVal) return;
+  
+  const combo = RK.st?.combo || 0;
+  
+  if(combo <= 1){
+    // Combo yoksa veya x1 ise gizle
+    hudCombo.style.display = 'none';
+    if(comboChip) comboChip.classList.remove('combo-active', 'combo-high', 'combo-super');
+  } else {
+    // Combo varsa göster
+    hudCombo.style.display = 'inline-flex';
+    comboVal.textContent = `×${combo}`;
+    
+    // Combo seviyesine göre stil
+    if(comboChip) {
+      comboChip.classList.add('combo-active');
+      comboChip.classList.toggle('combo-high', combo >= 3 && combo < 5);
+      comboChip.classList.toggle('combo-super', combo >= 5);
+    }
+  }
+  
+  // Accessibility güncelleme
+  if(combo > 1) {
+    hudCombo.setAttribute('aria-label', `Combo: ${combo} kez`);
+  }
+}
+
+function animateComboChange(combo, isNew, isBreak) {
+  const hudCombo = $('hud-combo');
+  if(!hudCombo) return;
+  
+  // Combo animate CSS classes
+  if(isNew && combo === 1) {
+    // İlk combo başlangıcı
+    hudCombo.classList.add('combo-start');
+    setTimeout(() => hudCombo.classList.remove('combo-start'), 300);
+  } else if(combo > 1) {
+    // Combo artışı
+    hudCombo.classList.add('combo-increase');
+    setTimeout(() => hudCombo.classList.remove('combo-increase'), 400);
+  } else if(isBreak) {
+    // Combo kırıldı
+    hudCombo.classList.add('combo-break');
+    setTimeout(() => hudCombo.classList.remove('combo-break'), 500);
+  }
+}
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 11 - Olay köprüleri ---------------------------------------------------- */
 const throttledUpdateHud=throttle(updateHud,100);
+const throttledUpdateCombo=throttle(updateComboDisplay,50);
 
 on(document,'rk:timeup',({detail})=>{
   if(window.Rook?.st.mode==='timed'){
@@ -614,6 +680,36 @@ on(document,'rk:mode',({detail})=>{
   if(mode==='levels')showLevelsBar();
   else{showTimedBar();resetTimebarFull()}
   throttledUpdateHud()
+});
+
+// YENİ COMBO EVENT LISTENERS
+on(document,'rk:combo-change',({detail})=>{
+  const combo = detail?.combo || 0;
+  const isNew = detail?.isNew || false;
+  const isBreak = detail?.isBreak || false;
+  
+  // Combo display'i güncelle
+  updateComboDisplay();
+  
+  // Combo animasyonunu çal
+  animateComboChange(combo, isNew, isBreak);
+  
+  // Debug log (geliştirme için)
+  // console.log('Combo changed:', {combo, isNew, isBreak});
+});
+
+on(document,'rk:combo',({detail})=>{
+  // Genel combo event'i - ek işlemler için
+  throttledUpdateCombo();
+});
+
+on(document,'rk:combo-break',()=>{
+  // Combo kırıldığında özel animasyon
+  const hudCombo = $('hud-combo');
+  if(hudCombo) {
+    hudCombo.classList.add('combo-break-effect');
+    setTimeout(() => hudCombo.classList.remove('combo-break-effect'), 600);
+  }
 });
 
 // ENHANCED LANGUAGE CHANGE HANDLER
@@ -649,6 +745,12 @@ on(document,'cm-lang',()=>{
   const underbar = $('rk-underbar');
   if (underbar) {
     underbar.setAttribute('aria-label', t('aria.gameinfo'));
+  }
+  
+  // Update combo label
+  const hudCombo = $('hud-combo');
+  if(hudCombo && window.Rook?.st?.combo > 1) {
+    hudCombo.setAttribute('aria-label', `Combo: ${window.Rook.st.combo} kez`);
   }
   
   console.log('Language updated to:', window.Rook?.lang?.current);
@@ -779,6 +881,9 @@ on(document,'rk:ready',()=>{
   updateLevelsBars(RK.st.wave||1);
   updateHud();
   updateHudLabels();
+  
+  // YENİ COMBO DISPLAY INIT
+  updateComboDisplay();
   
   // ENHANCED INITIAL SETUP
   updatePageLanguage();
