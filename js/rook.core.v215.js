@@ -1,4 +1,4 @@
-/* rook.core.js — v214 */
+/* rook.core.js — v215 */
 
 (function(window,document){'use strict';
 
@@ -50,15 +50,15 @@ comboTimer: null
 },
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 5 - Genel yardımcılar --------------------------------------------------- */
+/* 5 - Genel yardımcılar - GÜNCELLENMİŞ 5 TAHTA TEMASI ------------------- */
 use(plugin){try{if(plugin?.install)plugin.install(this)}catch(err){console.warn('Plugin installation failed:',err)}return this},
 pieceTheme(p){return `${this.cfg.pieceBase}/${p}.png`},
 allSquares(){const files=['a','b','c','d','e','f','g','h'];const ranks=['1','2','3','4','5','6','7','8'];const out=[];for(let r=0;r<8;r++){for(let f=0;f<8;f++){out.push(files[f]+ranks[r])}}return out},
 _addTrackedListener(target,event,handler,options={}){target.addEventListener(event,handler,options);this._eventListeners.push({target,event,handler,options})},
 setTheme(theme){const t=(theme==='light')?'light':'dark';this.st.theme=t;safeSetItem('cm-theme',t);emit('cm-theme',{theme:t,from:'rook'});document.body.classList.toggle('cm-theme-light',t==='light');document.body.classList.toggle('cm-theme-dark',t!=='light')},
 toggleTheme(){this.setTheme(this.st.theme==='light'?'dark':'light')},
-setBoardSkin(skin){const list=['classic','green','cmink'];const s=list.includes(skin)?skin:(this.st.boardSkin||'classic');this.st.boardSkin=s;safeSetItem('cm-board',s);emit('cm-board',{skin:s,from:'rook'});const b=document.body;list.forEach(n=>b.classList.remove(`cm-board-${n}`));b.classList.add(`cm-board-${s}`)},
-cycleBoard(){const list=['classic','green','cmink'];const i=Math.max(0,list.indexOf(this.st.boardSkin||'classic'));this.setBoardSkin(list[(i+1)%list.length])},
+setBoardSkin(skin){const list=['classic','green','cmink','azure','emerald'];const s=list.includes(skin)?skin:(this.st.boardSkin||'classic');this.st.boardSkin=s;safeSetItem('cm-board',s);emit('cm-board',{skin:s,from:'rook'});const b=document.body;list.forEach(n=>b.classList.remove(`cm-board-${n}`));b.classList.add(`cm-board-${s}`)},
+cycleBoard(){const list=['classic','green','cmink','azure','emerald'];const i=Math.max(0,list.indexOf(this.st.boardSkin||'classic'));this.setBoardSkin(list[(i+1)%list.length])},
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 6 - Geometri ve yol açıklığı -------------------------------------------- */
