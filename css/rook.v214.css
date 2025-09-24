@@ -1,4 +1,4 @@
-/* rook.css — v212 */
+/* rook.css — v214 */
 
 /* 1 - CSS Variables -------------------------------------------------------- */
 :root{
@@ -12,6 +12,17 @@
   --btn-border:#232831;
   --hint:#3aa9ff;
   --hintA:rgba(58,169,255,.9);
+  
+  /* COMBO RENK SİSTEMİ - YENİ */
+  --hint-normal: #3aa9ff;
+  --hintA-normal: rgba(58,169,255,.9);
+  --hint-combo: #ff8c00;
+  --hintA-combo: rgba(255,140,0,.9);
+  --hint-high: #ff1744;
+  --hintA-high: rgba(255,23,68,.9);
+  --hint-super: #9c27b0;
+  --hintA-super: rgba(156,39,176,.9);
+  
   --modal-backdrop: rgba(0,0,0,.55);
   --vh: 100dvh;
   --hdr: 68px;
@@ -1006,6 +1017,38 @@ body.cm-theme-light .rk-underbar .hud-chip{
   color:var(--text);
   border-color:var(--btn-border);
 }
+
+/* COMBO HUD STİLLERİ */
+.hud-combo {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.hud-combo.combo-active {
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white;
+  border-color: #ff6b35;
+}
+
+.hud-combo.combo-high {
+  background: linear-gradient(135deg, #ff1744, #e91e63);
+  animation: comboGlow 1s ease-in-out infinite alternate;
+}
+
+.hud-combo.combo-super {
+  background: linear-gradient(135deg, #9c27b0, #673ab7);
+  animation: comboSuper 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes comboGlow {
+  0% { box-shadow: 0 2px 8px rgba(255, 23, 68, 0.3); }
+  100% { box-shadow: 0 4px 16px rgba(255, 23, 68, 0.6); }
+}
+
+@keyframes comboSuper {
+  0% { box-shadow: 0 2px 12px rgba(156, 39, 176, 0.4); transform: scale(1); }
+  100% { box-shadow: 0 6px 20px rgba(156, 39, 176, 0.8); transform: scale(1.05); }
+}
+
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 8 - Zaman barı maske yardımcıları -------------------------------------- */
@@ -1171,7 +1214,7 @@ body.cm-theme-light #rk-levels-inline .lvl.done{
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 10 - İpuçları - GELİŞMİŞ SİSTEM ----------------------------------------- */
+/* 10 - İpuçları - GELİŞMİŞ SİSTEM + COMBO RENK SİSTEMİ ----------------------------------------- */
 #cm-board .square-highlight{box-shadow:inset 0 0 0 3px var(--gold)}
 #cm-board .square-hint,#cm-board .square-hint-cap{position:relative}
 #cm-board .square-hint::after{
@@ -1204,7 +1247,7 @@ body.cm-theme-light #rk-levels-inline .lvl.done{
   filter:none;
 }
 
-/* GELİŞMİŞ İPUCU SİSTEMİ - YENİ */
+/* GELİŞMİŞ İPUCU SİSTEMİ - TEMEL */
 .square-hint-arrow {
   position: relative;
 }
@@ -1244,6 +1287,110 @@ body.cm-theme-light #rk-levels-inline .lvl.done{
   animation: destinationPulse 1s ease-in-out infinite;
 }
 
+/* COMBO DURUMUNA GÖRE RENK DEĞİŞİMİ - YENİ */
+/* Normal durum (×1): Mavi - varsayılan */
+
+/* Combo (×2-×3): Turuncu/Sarı */
+#cm-board.combo-active .square-hint-path {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--hintA-combo) 50%, 
+    transparent 100%
+  ) !important;
+}
+
+#cm-board.combo-active .square-hint-destination {
+  background: radial-gradient(circle, 
+    var(--hintA-combo) 30%, 
+    transparent 70%
+  ) !important;
+}
+
+#cm-board.combo-active .square-hint-arrow::after {
+  border-top-color: var(--hint-combo);
+}
+
+#cm-board.combo-active .square-hint::after {
+  background: var(--hintA-combo);
+}
+
+#cm-board.combo-active .square-hint-cap::after {
+  border-color: var(--hint-combo);
+}
+
+/* Yüksek Combo (×4-×5): Kırmızı/Pembe */
+#cm-board.combo-high .square-hint-path {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--hintA-high) 50%, 
+    transparent 100%
+  ) !important;
+  animation: pathGlow 1s ease-in-out infinite alternate;
+}
+
+#cm-board.combo-high .square-hint-destination {
+  background: radial-gradient(circle, 
+    var(--hintA-high) 30%, 
+    transparent 70%
+  ) !important;
+  animation: destinationPulse 0.8s ease-in-out infinite;
+}
+
+#cm-board.combo-high .square-hint-arrow::after {
+  border-top-color: var(--hint-high);
+  animation: arrowPulse 1.2s ease-in-out infinite;
+}
+
+#cm-board.combo-high .square-hint::after {
+  background: var(--hintA-high);
+  animation: hintPulse 1s ease-in-out infinite alternate;
+}
+
+#cm-board.combo-high .square-hint-cap::after {
+  border-color: var(--hint-high);
+  animation: capPulse 1s ease-in-out infinite alternate;
+}
+
+/* Süper Combo (×6+): Mor/Eflatun */
+#cm-board.combo-super .square-hint-path {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--hintA-super) 25%, 
+    rgba(255,215,0,.7) 50%, 
+    var(--hintA-super) 75%, 
+    transparent 100%
+  ) !important;
+  animation: pathRainbow 1.5s ease-in-out infinite;
+}
+
+#cm-board.combo-super .square-hint-destination {
+  background: radial-gradient(circle, 
+    var(--hintA-super) 20%, 
+    rgba(255,215,0,.5) 50%, 
+    transparent 80%
+  ) !important;
+  animation: destinationSuper 1s ease-in-out infinite;
+}
+
+#cm-board.combo-super .square-hint-arrow::after {
+  border-top-color: var(--hint-super);
+  animation: arrowSuper 1s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px var(--hint-super));
+}
+
+#cm-board.combo-super .square-hint::after {
+  background: var(--hintA-super);
+  animation: hintSuper 1.2s ease-in-out infinite;
+  box-shadow: 0 0 12px var(--hintA-super);
+}
+
+#cm-board.combo-super .square-hint-cap::after {
+  border-color: var(--hint-super);
+  animation: capSuper 1.2s ease-in-out infinite;
+  box-shadow: inset 0 0 8px var(--hintA-super);
+}
+
+/* ANİMASYONLAR */
 @keyframes arrowPulse {
   0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
   50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
@@ -1259,7 +1406,69 @@ body.cm-theme-light #rk-levels-inline .lvl.done{
   50% { transform: scale(1.1); }
 }
 
-/* YÖN OKLARINI DİREKSİYONA GÖRE DÖNDÜR */
+@keyframes hintPulse {
+  0% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes capPulse {
+  0% { opacity: 0.8; border-width: 3px; }
+  100% { opacity: 1; border-width: 4px; }
+}
+
+@keyframes pathRainbow {
+  0% { opacity: 0.6; filter: hue-rotate(0deg); }
+  50% { opacity: 1; filter: hue-rotate(30deg); }
+  100% { opacity: 0.6; filter: hue-rotate(0deg); }
+}
+
+@keyframes destinationSuper {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+  50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+}
+
+@keyframes arrowSuper {
+  0%, 100% { 
+    opacity: 0.8; 
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 8px var(--hint-super));
+  }
+  50% { 
+    opacity: 1; 
+    transform: translate(-50%, -50%) scale(1.3) rotate(180deg);
+    filter: drop-shadow(0 0 16px var(--hint-super));
+  }
+}
+
+@keyframes hintSuper {
+  0%, 100% { 
+    transform: scale(1); 
+    box-shadow: 0 0 12px var(--hintA-super);
+  }
+  33% { 
+    transform: scale(1.1); 
+    box-shadow: 0 0 20px rgba(255,215,0,.8);
+  }
+  66% { 
+    transform: scale(1.05); 
+    box-shadow: 0 0 16px var(--hintA-super);
+  }
+}
+
+@keyframes capSuper {
+  0%, 100% { 
+    transform: scale(1); 
+    border-width: 3px;
+    box-shadow: inset 0 0 8px var(--hintA-super);
+  }
+  50% { 
+    transform: scale(1.1); 
+    border-width: 5px;
+    box-shadow: inset 0 0 16px rgba(255,215,0,.6);
+  }
+}
+
+/* YÖN OKLARINI DİREKSİYONA GÖRE DÖNDÜRMEVEDESTİNATİON DÜZENLEMELER */
 .square-hint-arrow.arrow-up::after { 
   transform: translate(-50%, -50%) rotate(0deg); 
   border-top: 12px solid var(--hint);
@@ -1279,6 +1488,28 @@ body.cm-theme-light #rk-levels-inline .lvl.done{
   transform: translate(-50%, -50%) rotate(90deg); 
   border-top: 12px solid var(--hint);
   border-bottom: none;
+}
+
+/* COMBO DURUMUNA GÖRE OK RENKLERİ */
+#cm-board.combo-active .square-hint-arrow.arrow-up::after,
+#cm-board.combo-active .square-hint-arrow.arrow-down::after,
+#cm-board.combo-active .square-hint-arrow.arrow-left::after,
+#cm-board.combo-active .square-hint-arrow.arrow-right::after {
+  border-top-color: var(--hint-combo);
+}
+
+#cm-board.combo-high .square-hint-arrow.arrow-up::after,
+#cm-board.combo-high .square-hint-arrow.arrow-down::after,
+#cm-board.combo-high .square-hint-arrow.arrow-left::after,
+#cm-board.combo-high .square-hint-arrow.arrow-right::after {
+  border-top-color: var(--hint-high);
+}
+
+#cm-board.combo-super .square-hint-arrow.arrow-up::after,
+#cm-board.combo-super .square-hint-arrow.arrow-down::after,
+#cm-board.combo-super .square-hint-arrow.arrow-left::after,
+#cm-board.combo-super .square-hint-arrow.arrow-right::after {
+  border-top-color: var(--hint-super);
 }
 
 /* HOVER EFEKTLERİ */
@@ -1316,6 +1547,19 @@ body.cm-theme-light #rk-levels-inline .lvl.done{
   
   .square-hint-destination {
     transform: none;
+  }
+  
+  /* Combo durumlarında da animasyonları kapat */
+  #cm-board.combo-high .square-hint::after,
+  #cm-board.combo-high .square-hint-cap::after,
+  #cm-board.combo-super .square-hint::after,
+  #cm-board.combo-super .square-hint-cap::after {
+    animation: none !important;
+    box-shadow: none;
+  }
+  
+  #cm-board.combo-super .square-hint-arrow::after {
+    filter: none;
   }
 }
 /* Bölüm sonu --------------------------------------------------------------- */
