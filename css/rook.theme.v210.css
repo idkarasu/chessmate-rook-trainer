@@ -16,13 +16,23 @@ body.cm-theme-light #cm-board .square-highlight,body.cm-theme-light .square-high
 :where(.rk-toolbar) :is(button,[role="button"],select,.rk-btn,.cm-btn):focus-visible{outline-color:var(--gold,#FFD700)}
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 4 - Tahta temaları ------------------------------------------------------- */
+/* 4 - Tahta temaları - GÜNCELLENMİŞ 5 TEMA -------------------------------- */
+/* MEVCUT TEMALAR */
 body.cm-board-classic #cm-board .white-1e1d7,body.cm-board-classic #cm-board .white,body.cm-board-classic #cm-board .square-55d63.white{background:#f0d9b5}
 body.cm-board-classic #cm-board .black-3c85d,body.cm-board-classic #cm-board .black,body.cm-board-classic #cm-board .square-55d63.black{background:#b58863}
 body.cm-board-green #cm-board .white-1e1d7,body.cm-board-green #cm-board .white,body.cm-board-green #cm-board .square-55d63.white{background:#f3f7ea}
 body.cm-board-green #cm-board .black-3c85d,body.cm-board-green #cm-board .black,body.cm-board-green #cm-board .square-55d63.black{background:#6fa066}
 body.cm-board-cmink #cm-board .white-1e1d7,body.cm-board-cmink #cm-board .white,body.cm-board-cmink #cm-board .square-55d63.white{background:#aaaaac}
 body.cm-board-cmink #cm-board .black-3c85d,body.cm-board-cmink #cm-board .black,body.cm-board-cmink #cm-board .square-55d63.black{background:#1e1d1e}
+
+/* YENİ TEMALAR - MAVİ İPUÇLARI VE COMBO RENKLERİ İÇİN OPTİMİZE */
+/* Azure Tema - Mavi tonlarda, ipuçlarıyla mükemmel kontrast */
+body.cm-board-azure #cm-board .white-1e1d7,body.cm-board-azure #cm-board .white,body.cm-board-azure #cm-board .square-55d63.white{background:#f8fafc}
+body.cm-board-azure #cm-board .black-3c85d,body.cm-board-azure #cm-board .black,body.cm-board-azure #cm-board .square-55d63.black{background:#334155}
+
+/* Emerald Tema - Yeşil tonlarda, combo renkleriyle uyumlu */
+body.cm-board-emerald #cm-board .white-1e1d7,body.cm-board-emerald #cm-board .white,body.cm-board-emerald #cm-board .square-55d63.white{background:#f0fdf4}
+body.cm-board-emerald #cm-board .black-3c85d,body.cm-board-emerald #cm-board .black,body.cm-board-emerald #cm-board .square-55d63.black{background:#166534}
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 5 - Koç Baloncuğu -------------------------------------------------------- */
