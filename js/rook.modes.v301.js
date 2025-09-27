@@ -1,4 +1,4 @@
-/* rook.modes.js — v300 */
+/* rook.modes.js — v301 */
 
 (function(window,document){'use strict';
 
@@ -94,21 +94,28 @@ const ModesPlugin={
             core.setWave(nextWave);
             spawnForWave(core,nextWave)
           }else{
-            let elapsedSec=1;
-            if(core.st.levelsStartAt){
+            // 8. dalga bitti
+            if(core.st.playing && core.st.levelsStartAt){
+              // Oyun başlatılmışsa ve süre takibi varsa
+              let elapsedSec=1;
               const rawElapsed=(Date.now()-core.st.levelsStartAt)/1000;
-              elapsedSec=Math.max(1,Math.floor(rawElapsed))
+              elapsedSec=Math.max(1,Math.floor(rawElapsed));
+              
+              emit('rk:levels-finished',{seconds:elapsedSec});
+              
+              if(!core.st.bestLevelsTime||elapsedSec<core.st.bestLevelsTime){
+                core.setBestLevelsTime(elapsedSec)
+              }
+              
+              core.stopTimer();
+              core.st.playing=false;
+              core.st.pawns=[]
+            }else{
+              // Oyun başlatılmamışsa, 1. dalgaya dön
+              core.setWave(1);
+              spawnForWave(core,1);
+              core.updateInfo(core.t('msg.start.first') || "Press Start first.")
             }
-            
-            emit('rk:levels-finished',{seconds:elapsedSec});
-            
-            if(!core.st.bestLevelsTime||elapsedSec<core.st.bestLevelsTime){
-              core.setBestLevelsTime(elapsedSec)
-            }
-            
-            core.stopTimer();
-            core.st.playing=false;
-            core.st.pawns=[]
           }
         }
       }
