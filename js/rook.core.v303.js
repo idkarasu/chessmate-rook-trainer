@@ -1,4 +1,4 @@
-/* rook.core.js — v302 */
+/* rook.core.js — v303 */
 
 (function(window,document){'use strict';
 
@@ -352,29 +352,9 @@ initAudio(){
   const baseUrl = window.location.origin;
   const soundPath = '/wp-content/uploads/chess/sounds/';
   
+  // Sadece WAV formatını kullan - MP3/OGG testini kaldır
   const createAudioWithFallback = (name, volume = 0.7) => {
-    const formats = ['mp3', 'ogg', 'wav'];
-    let audio = null;
-    
-    for (const format of formats) {
-      try {
-        const testAudio = new Audio();
-        const canPlay = testAudio.canPlayType(`audio/${format}`);
-        if (canPlay !== '') {
-          audio = new Audio(`${baseUrl}${soundPath}${name}.${format}`);
-          debugLog(`Using ${format} format for ${name}`);
-          break;
-        }
-      } catch(e) {
-        warnLog(`Failed to test ${format} format:`, e);
-      }
-    }
-    
-    if (!audio) {
-      audio = new Audio(`${baseUrl}${soundPath}${name}.wav`);
-      warnLog(`Fallback to WAV for ${name}`);
-    }
-    
+    const audio = new Audio(`${baseUrl}${soundPath}${name}.wav`);
     audio.preload = 'auto';
     audio.volume = volume;
     audio.crossOrigin = 'anonymous';
@@ -387,6 +367,7 @@ initAudio(){
     }
     
     audio.load();
+    debugLog(`✅ Audio created for ${name}.wav`);
     
     return audio;
   };
@@ -774,8 +755,10 @@ cleanupAudioSecurity(){
       AudioContext.prototype.createBufferSource = this._originalCreateBufferSource;
     }
     
+    const { debugLog } = this._audioDebug || { debugLog: () => {} };
     debugLog('🧹 Audio security cleanup completed');
   } catch(err) {
+    const { warnLog } = this._audioDebug || { warnLog: () => {} };
     warnLog('Audio security cleanup failed:', err);
   }
 },
