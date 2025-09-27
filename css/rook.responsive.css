@@ -1,0 +1,613 @@
+/* rook.responsive.css — v300 */
+
+/* 1 - Responsive Variables ------------------------------------------------- */
+:root {
+  --toolbar-gap-main: 18px;
+  --toolbar-gap-group: 8px;
+  --toolbar-gap-icons: 14px;
+  --toolbar-padding-x: 14px;
+  --toolbar-padding-y: 10px;
+  --btn-height: 44px;
+  --btn-icon-size: 44px;
+  --btn-font-size: 14px;
+  --btn-icon-font: 20px;
+  --btn-padding: 16px;
+  --header-height: 80px;
+  --header-logo: 40px;
+  --header-text: 28px;
+  --header-gap: 16px;
+  --header-padding: 20px;
+  --footer-height: 50px;
+  --footer-icon: 45px;
+  --footer-icon-svg: 22px;
+  --footer-text: 12px;
+  --footer-gap: 5px;
+  --footer-margin: 8px;
+  --modal-width: 420px;
+  --modal-title: 28px;
+  --modal-desc: 20px;
+  --modal-padding: 22px;
+  --modal-gap: 14px;
+  --modal-close: 32px;
+  --modal-close-font: 16px;
+}
+/* Bölüm sonu --------------------------------------------------------------- */
+
+/* 2 - Desktop XL (1920px+) ------------------------------------------------ */
+@media (min-width: 1920px) {
+  .rk-wrap{
+    max-width: 720px;
+    padding: 12px 28px;
+  }
+  
+  .rk-coach__title{
+    font-size: clamp(18px, calc(var(--board-size) * 0.030), 21px);
+  }
+  .rk-coach__subtitle{
+    font-size: clamp(14px, calc(var(--board-size) * 0.024), 17px);
+    margin-top: clamp(3px, calc(var(--board-size) * 0.004), 5px);
+  }
+  .rk-coach__hint{
+    font-size: clamp(11px, calc(var(--board-size) * 0.016), 14px);
+    margin-top: clamp(4px, calc(var(--board-size) * 0.006), 7px);
+  }
+}
+/* Bölüm sonu --------------------------------------------------------------- */
+
+/* 3 - Desktop (1024px-1919px) --------------------------------------------- */
+@media (min-width: 1024px) and (max-width: 1919px) {
+  :root {
+    --toolbar-gap-main: 14px;
+    --toolbar-gap-group: 6px;
+    --toolbar-gap-icons: 12px;
+    --toolbar-padding-x: 12px;
+    --toolbar-padding-y: 8px;
+    --btn-height: 40px;
+    --btn-icon-size: 40px;
+    --btn-font-size: 13px;
+    --btn-icon-font: 18px;
+    --btn-padding: 14px;
+    --header-height: 70px;
+    --header-logo: 36px;
+    --header-text: 24px;
+    --header-gap: 14px;
+    --header-padding: 16px;
+    --footer-height: 45px;
+    --footer-icon: 40px;
+    --footer-icon-svg: 20px;
+    --footer-text: 11px;
+    --footer-gap: 4px;
+    --footer-margin: 6px;
+    --modal-width: 380px;
+    --modal-title: 25px;
+    --modal-desc: 18px;
+    --modal-padding: 20px;
+    --modal-gap: 12px;
+    --modal-close: 30px;
+    --modal-close-font: 15px;
+  }
+  
+  .rk-wrap{
+    max-width: 640px;
+    padding: 10px 24px;
+  }
+  
+  .cm-toolbar .rk-toolbar--single .cm-sel{
+    max-width: 120px;
+    min-width: 55px;
+  }
+  
+  .rk-coach__title{
+    font-size: clamp(16px, calc(var(--board-size) * 0.032), 19px);
+  }
+  .rk-coach__subtitle{
+    font-size: clamp(12px, calc(var(--board-size) * 0.026), 15px);
+    margin-top: clamp(2px, calc(var(--board-size) * 0.004), 4px);
+  }
+  .rk-coach__hint{
+    font-size: clamp(9px, calc(var(--board-size) * 0.018), 12px);
+    margin-top: clamp(3px, calc(var(--board-size) * 0.006), 6px);
+  }
+}
+
+@media (min-width:1024px){
+  .rk-wrap{
+    padding-top:10px;
+  }
+}
+/* Bölüm sonu --------------------------------------------------------------- */
+
+/* 4 - Tablet (768px-1023px) ----------------------------------------------- */
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --toolbar-gap-main: 10px;
+    --toolbar-gap-group: 5px;
+    --toolbar-gap-icons: 8px;
+    --toolbar-padding-x: 10px;
+    --toolbar-padding-y: 6px;
+    --btn-height: 38px;
+    --btn-icon-size: 38px;
+    --btn-font-size: 12px;
+    --btn-icon-font: 16px;
+    --btn-padding: 12px;
+    --header-height: 64px;
+    --header-logo: 32px;
+    --header-text: 22px;
+    --header-gap: 12px;
+    --header-padding: 12px;
+    --footer-height: 40px;
+    --footer-icon: 36px;
+    --footer-icon-svg: 18px;
+    --footer-text: 10px;
+    --footer-gap: 3px;
+    --footer-margin: 4px;
+    --modal-width: 340px;
+    --modal-title: 22px;
+    --modal-desc: 16px;
+    --modal-padding: 18px;
+    --modal-gap: 10px;
+    --modal-close: 28px;
+    --modal-close-font: 14px;
+  }
+  
+  .rk-wrap{
+    max-width: 560px;
+    padding: 8px 20px;
+  }
+  
+  .cm-toolbar .rk-toolbar--single .cm-sel{
+    max-width: 100px;
+    min-width: 50px;
+  }
+  
+  .rk-coach__title{
+    font-size: clamp(14px, calc(var(--board-size) * 0.034), 17px);
+  }
+  .rk-coach__subtitle{
+    font-size: clamp(11px, calc(var(--board-size) * 0.028), 14px);
+    margin-top: clamp(2px, calc(var(--board-size) * 0.004), 4px);
+  }
+  .rk-coach__hint{
+    font-size: clamp(8px, calc(var(--board-size) * 0.020), 11px);
+    margin-top: clamp(3px, calc(var(--board-size) * 0.006), 5px);
+  }
+}
+
+@media (min-width:769px){
+  .rk-wrap{
+    padding-top:8px;
+  }
+}
+
+@media (max-width:768px) and (min-width:561px){
+  .rk-toolbar--top{
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+}
+
+@media (max-width:768px){
+  .cm-toolbar .rk-toolbar--single{
+    gap: var(--toolbar-gap-main);
+    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
+  }
+  
+  .cm-toolbar .rk-toolbar--single .rk-group{
+    margin:0;
+  }
+  
+  .cm-toolbar .rk-toolbar--single .rk-ctl-label{
+    font-size: clamp(7px, 1.2vw, 10px);
+  }
+  
+  .rk-toolbar--top{
+    flex-wrap:wrap;
+    justify-content:center;
+    gap: var(--toolbar-gap-main);
+  }
+  
+  .rk-toolbar--bottom{
+    flex-wrap:wrap;
+    justify-content:center;
+    gap: var(--toolbar-gap-main);
+  }
+  
+  .rk-group--mode, .rk-group--start{
+    margin-left:0;
+  }
+  
+  .rk-underbar{
+    gap: clamp(3px, 0.6vw, 6px);
+    padding: clamp(5px, 1vw, 8px) clamp(8px, 1.6vw, 12px);
+  }
+  
+  .rk-underbar .hud-chip{
+    padding: clamp(5px, 1vw, 8px) clamp(6px, 1.2vw, 10px);
+    gap: clamp(2px, 0.5vw, 4px);
+    font-size: clamp(10px, 1.8vw, 14px);
+  }
+  
+  .rk-underbar .hud-chip .lbl{
+    font-size: clamp(8px, 1.4vw, 11px);
+  }
+  
+  .rk-coach {
+    gap: clamp(6px, 1.4vw, 12px);
+    max-height: clamp(72px, 13vh, 130px);
+    margin-bottom: clamp(3px, 0.4vh, 6px);
+  }
+  
+  #rk-levels-inline{
+    gap: clamp(3px, 0.6vw, 6px);
+    max-height: clamp(50px, 7vh, 70px);
+  }
+  
+  #rk-levels-inline .lvl{
+    width: clamp(18px, 2.8vw, 24px);
+    height: clamp(18px, 2.8vw, 24px);
+    min-width: clamp(18px, 2.8vw, 24px);
+    min-height: clamp(18px, 2.8vw, 24px);
+    font-size: clamp(7px, 1.2vw, 10px);
+  }
+  
+  .rk-btn, .cm-btn{
+    transition-duration: 0.1s;
+  }
+  
+  #rk-countdown{
+    will-change: transform, opacity;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+/* Bölüm sonu --------------------------------------------------------------- */
+
+/* 5 - Mobile (375px-767px) ------------------------------------------------ */
+@media (min-width: 375px) and (max-width: 767px) {
+  :root {
+    --toolbar-gap-main: 6px;
+    --toolbar-gap-group: 3px;
+    --toolbar-gap-icons: 5px;
+    --toolbar-padding-x: 8px;
+    --toolbar-padding-y: 4px;
+    --btn-height: 36px;
+    --btn-icon-size: 36px;
+    --btn-font-size: 11px;
+    --btn-icon-font: 15px;
+    --btn-padding: 10px;
+    --header-height: 56px;
+    --header-logo: 28px;
+    --header-text: 18px;
+    --header-gap: 8px;
+    --header-padding: 8px;
+    --footer-height: 35px;
+    --footer-icon: 32px;
+    --footer-icon-svg: 16px;
+    --footer-text: 9px;
+    --footer-gap: 2px;
+    --footer-margin: 3px;
+    --modal-width: 300px;
+    --modal-title: 19px;
+    --modal-desc: 14px;
+    --modal-padding: 16px;
+    --modal-gap: 8px;
+    --modal-close: 26px;
+    --modal-close-font: 13px;
+  }
+  
+  .rk-wrap{
+    max-width: 480px;
+    padding: 6px 16px;
+    margin: 0 auto;
+  }
+  
+  .cm-toolbar .rk-toolbar--single .cm-sel{
+    max-width: 90px;
+    min-width: 45px;
+    font-size: clamp(8px, 1.4vw, 11px);
+    padding: 0 clamp(5px, 1vw, 8px);
+  }
+  
+  .rk-coach__title{
+    font-size: clamp(12px, calc(var(--board-size) * 0.036), 15px);
+  }
+  .rk-coach__subtitle{
+    font-size: clamp(9px, calc(var(--board-size) * 0.030), 12px);
+    margin-top: clamp(1px, calc(var(--board-size) * 0.004), 3px);
+  }
+  .rk-coach__hint{
+    font-size: clamp(6px, calc(var(--board-size) * 0.020), 8px);
+    margin-top: clamp(2px, calc(var(--board-size) * 0.006), 4px);
+    line-height: 1.2;
+  }
+}
+/* Bölüm sonu --------------------------------------------------------------- */
+
+/* 6 - Small Mobile (<375px) ----------------------------------------------- */
+@media (max-width: 374px) {
+  :root {
+    --toolbar-gap-main: 4px;
+    --toolbar-gap-group: 2px;
+    --toolbar-gap-icons: 3px;
+    --toolbar-padding-x: 6px;
+    --toolbar-padding-y: 3px;
+    --btn-height: 34px;
+    --btn-icon-size: 34px;
+    --btn-font-size: 10px;
+    --btn-icon-font: 14px;
+    --btn-padding: 8px;
+    --header-height: 48px;
+    --header-logo: 24px;
+    --header-text: 16px;
+    --header-gap: 6px;
+    --header-padding: 6px;
+    --footer-height: 30px;
+    --footer-icon: 28px;
+    --footer-icon-svg: 14px;
+    --footer-text: 8px;
+    --footer-gap: 1px;
+    --footer-margin: 2px;
+    --modal-width: 280px;
+    --modal-title: 16px;
+    --modal-desc: 12px;
+    --modal-padding: 14px;
+    --modal-gap: 6px;
+    --modal-close: 24px;
+    --modal-close-font: 12px;
+  }
+  
+  .rk-wrap{
+    max-width: 95vw;
+    padding: 4px 12px;
+    margin: 0 auto;
+  }
+  
+  .cm-toolbar .rk-toolbar--single .cm-sel{
+    max-width: 80px;
+    min-width: 40px;
+    font-size: clamp(7px, 1.2vw, 9px);
+    padding: 0 clamp(4px, 0.8vw, 6px);
+  }
+  
+  .rk-coach__hint{
+    font-size: clamp(5px, calc(var(--board-size) * 0.018), 7px);
+    margin-top: clamp(1px, calc(var(--board-size) * 0.004), 3px);
+    line-height: 1.15;
+    -webkit-line-clamp: 1;
+  }
+}
+
+@media (max-width: 320px) {
+  .cm-toolbar .rk-toolbar.rk-toolbar--single {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+}
+/* Bölüm sonu --------------------------------------------------------------- */
+
+/* 7 - Mobile Specific Adjustments ----------------------------------------- */
+@media (max-width:560px){
+  .cm-toolbar .rk-toolbar--single{
+    gap: var(--toolbar-gap-main);
+    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
+  }
+  
+  .cm-toolbar .rk-toolbar--single .rk-btn--icon{
+    width: clamp(32px, 6vw, 40px);
+    height: clamp(32px, 6vw, 40px);
+    font-size: clamp(14px, 2.4vw, 18px);
+  }
+  
+  .cm-toolbar .rk-toolbar--single #rk-start{
+    padding: 0 clamp(6px, 1.2vw, 10px);
+    font-size: clamp(9px, 1.6vw, 13px);
+    height: clamp(32px, 6vw, 40px);
+  }
+  
+  .cm-toolbar .rk-toolbar--single .rk-ctl-label{
+    font-size: clamp(6px, 1vw, 9px);
+  }
+  
+  .rk-toolbar--top, .rk-toolbar--bottom{
+    flex-wrap:wrap;
+    justify-content:center;
+    gap: var(--toolbar-gap-main);
+  }
+  
+  .rk-group--mode, .rk-group--start{
+    margin-left:0;
+  }
+  
+  button.cm-btn, button.rk-btn, select.cm-sel{ 
+    height:44px; 
+    min-height:44px;
+  }
+  
+  .rk-ctl-label, .cm-toolbar label{ 
+    font-size:12px; 
+  }
+  
+  .rk-group--mode .rk-ctl-label{ 
+    font-size:11px; 
+    line-height:1.05; 
+  }
+  
+  .rk-softbar{ 
+    width:100%; 
+  }
+  
+  .rk-coach{ 
+    width:100%; 
+    margin:3px auto 2px; 
+  }
+  
+  .cm-ico{ 
+    width:44px; 
+    height:44px; 
+  }
+  
+  .cm-ico svg{ 
+    width:22px; 
+    height:22px; 
+  }
+}
+
+@media (max-width:480px){
+  .cm-toolbar .rk-toolbar--single{
+    gap: var(--toolbar-gap-main);
+    padding: var(--toolbar-padding-y) var(--toolbar-padding-x);
+  }
+  
+  .cm-toolbar .rk-toolbar--single .rk-group{
+    flex-wrap:nowrap;
+    justify-content:center;
+    min-width:0;
+  }
+  
+  .cm-toolbar .rk-toolbar--single .rk-group--side,
+  .cm-toolbar .rk-toolbar--single .rk-group--mode{
+    flex-basis:auto;
+    margin-bottom: clamp(1px, 0.2vw, 2px);
+  }
+  
+  .cm-toolbar .rk-toolbar--single .rk-group--start,
+  .cm-toolbar .rk-toolbar--single .rk-group--icons{
+    flex-basis:auto;
+  }
+  
+  .rk-underbar{
+    gap: clamp(2px, 0.4vw, 4px);
+    padding: clamp(4px, 0.8vw, 6px) clamp(6px, 1.2vw, 8px);
+  }
+  
+  .rk-underbar .hud-chip{
+    padding: clamp(4px, 0.8vw, 6px) clamp(5px, 1vw, 7px);
+    gap: clamp(1px, 0.3vw, 3px);
+    font-size: clamp(9px, 1.6vw, 12px);
+  }
+  
+  .rk-underbar .hud-chip .lbl{
+    font-size: clamp(7px, 1.2vw, 9px);
+  }
+  
+  .rk-coach {
+    gap: clamp(4px, 1vw, 8px);
+    max-height: clamp(64px, 11vh, 110px);
+    margin-bottom: clamp(2px, 0.3vh, 4px);
+  }
+  
+  .rk-coach__desc {
+    -webkit-line-clamp: 2;
+    max-height: calc(var(--bubble-height) * 0.55);
+  }
+  
+  .rk-coach__hint{
+    font-size: clamp(5px, calc(var(--board-size) * 0.019), 7px);
+    line-height: 1.18;
+    margin-top: clamp(1px, calc(var(--board-size) * 0.005), 3px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
+  
+  .rk-coach__desc .rk-coach__hint,
+  .rk-coach__desc span.rk-coach__hint{
+    font-size: clamp(5px, calc(var(--board-size) * 0.019), 7px) !important;
+    line-height: 1.18 !important;
+  }
+  
+  #rk-levels-inline{
+    gap: clamp(2px, 0.4vw, 4px);
+    max-height: clamp(44px, 6vh, 60px);
+    justify-content:center;
+    align-content:center;
+  }
+  
+  #rk-levels-inline .lvl{
+    width: clamp(16px, 2.4vw, 20px);
+    height: clamp(16px, 2.4vw, 20px);
+    min-width: clamp(16px, 2.4vw, 20px);
+    min-height: clamp(16px, 2.4vw, 20px);
+    font-size: clamp(6px, 1vw, 9px);
+  }
+}
+
+@media (max-width:360px){
+  #rk-levels-inline{
+    gap: clamp(1px, 0.2vw, 2px);
+    max-height: clamp(40px, 5vh, 50px);
+  }
+  
+  #rk-levels-inline .lvl{
+    width: clamp(14px, 2vw, 18px);
+    height: clamp(14px, 2vw, 18px);
+    min-width: clamp(14px, 2vw, 18px);
+    min-height: clamp(14px, 2vw, 18px);
+    font-size: clamp(5px, 0.8vw, 8px);
+  }
+}
+/* Bölüm sonu --------------------------------------------------------------- */
+
+/* 8 - Erişilebilirlik ve Performans --------------------------------------- */
+@media (min-width:1100px){ 
+  #cm-board{ width: clamp(520px, 68vmin, 720px); } 
+}
+
+@supports (height: 100svh){ :root{ --vh:100svh; } }
+@supports (height: 100dvh){ :root{ --vh:100dvh; } }
+
+.rk-wrap{
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  .rk-coach {
+    margin-top: max(0px, calc(env(safe-area-inset-top) * 0.1));
+  }
+}
+
+@media (hover: none) and (pointer: coarse){
+  #cm-board img{
+    -webkit-touch-callout:none; 
+    -webkit-user-drag:none;
+    -webkit-user-select:none; 
+    user-select:none;
+    pointer-events:none;
+  }
+  
+  .rk-wrap, .cm-btn, .rk-btn, .cm-sel{ touch-action: manipulation; }
+  a, button, .cm-sel{ -webkit-tap-highlight-color: rgba(0,0,0,0); }
+  
+  .cm-btn, .rk-btn, .cm-sel, .cm-ico{
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+    user-select: none;
+  }
+  
+  .cm-btn, .rk-btn{
+    transition: transform 0.1s ease-out, background 0.15s ease;
+  }
+  
+  .cm-btn:active, .rk-btn:active{
+    transform: scale(0.98) translateZ(0);
+  }
+}
+
+@media (prefers-contrast: more){
+  :root{ --line:#AEB6C3; }
+  .rk-softbar, .rk-underbar .hud-chip{ border-width:2px; }
+  .cm-btn, .rk-btn, .cm-ico, .cm-sel{ border-color:#AEB6C3; box-shadow:none; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .cm-btn, .rk-btn, .cm-ico, #cm-board, #rk-levels-inline .lvl, .rk-timefill{ 
+    transition:none !important; 
+    animation:none;
+    scroll-behavior:auto;
+  }
+  #rk-countdown-back, #rk-modal-back{ backdrop-filter:none; }
+}
+/* Bölüm sonu --------------------------------------------------------------- */
