@@ -1,4 +1,4 @@
-/* rook.core.js — v301 */
+/* rook.core.js — v302 */
 
 (function(window,document){'use strict';
 
@@ -851,6 +851,9 @@ initBoard(){
       if(source===target){return 'snapback'}
       if(!self.pathClear(source,target)){return 'snapback'}
       
+      // Kale pozisyonunu HEMEN güncelle - capture kontrolünden ÖNCE
+      self.st.rookSq=target;
+      
       const captured=self.st.pawns.includes(target);
       if(captured){
         self.playCapture();
@@ -868,8 +871,6 @@ initBoard(){
       }else{
         self.playMove();
       }
-      
-      self.st.rookSq=target;
     },
     onSnapEnd(){
       self._disableTouchLock();
