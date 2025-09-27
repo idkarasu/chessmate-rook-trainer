@@ -272,7 +272,7 @@ function showLevelsBar(){
 
 /* 6 - Zaman barı maske yardımcıları --------------------------------------- */
 function setTimebarCoverage(cov){
-  const fill=$('rk-timefill');
+  const fill=document.getElementById('rk-timefill');
   if(!fill)return;
   const clamped=Math.max(0,Math.min(1,cov));
   fill.style.transform=`scaleX(${clamped})`
