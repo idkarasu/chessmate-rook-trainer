@@ -1,9 +1,9 @@
-/* rook.theme.css — v300 */
+/* rook.theme.css — v301 */
 
 /* 1 - Toolbar layout stilleri --------------------------------------------- */
 .rk-wrap .rk-head{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:4px}
 .rk-wrap .rk-head .cm-toolbar{flex:1 1 auto}
-.rk-toolbar-wrap{width:var(--rk-board-w);max-width:92vw;margin:4px auto;display:block}
+.rk-toolbar-wrap{width:var(--board-size);max-width:92vw;margin:4px auto;display:block}
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 2 - Tahta konteyneri ve notasyon ---------------------------------------- */
