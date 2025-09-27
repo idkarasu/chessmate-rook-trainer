@@ -1,15 +1,13 @@
-/* rook.modes.js — v220 */
+/* rook.modes.js — v300 */
 
 (function(window,document){'use strict';
 
-/* 1 - IIFE ve 'use strict' ------------------------------------------------ */
-
-/* 2 - Olay ve yardımcılar ------------------------------------------------- */
+/* 1 - Olay ve yardımcılar ------------------------------------------------- */
 const emit=(name,detail)=>{try{document.dispatchEvent(new CustomEvent(name,{detail}))}catch(err){console.warn(`Event emission failed for ${name}:`,err)}};
 const randPick=(arr)=>{if(!Array.isArray(arr)||arr.length===0)return null;return arr[(Math.random()*arr.length)|0]};
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 3 - Kale-güvenli yardımcılar -------------------------------------------- */
+/* 2 - Kale-güvenli yardımcılar -------------------------------------------- */
 function randomSquares(core,count){
   const rook=core.st.rookSq;
   const occ=new Set([rook]);
@@ -27,7 +25,7 @@ function randomSquares(core,count){
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 4 - Doğurma yardımcıları ------------------------------------------------ */
+/* 3 - Doğurma yardımcıları ------------------------------------------------ */
 function spawnForTimed(core){
   const pool=core.allSquares().filter(sq=>sq!==core.st.rookSq);
   if(pool.length===0){
@@ -48,7 +46,7 @@ function spawnForWave(core,n){
 }
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 5 - Modlar eklentisi iskeleti ------------------------------------------- */
+/* 4 - Modlar eklentisi ---------------------------------------------------- */
 const ModesPlugin={
   _installed:false,
   install(RK){
@@ -56,7 +54,6 @@ const ModesPlugin={
     this._installed=true;
     
     RK.modes={
-      /* 6 - RESET işleyicisi -------------------------------------------- */
       reset(core){
         const p=core._startForSide(core.st.side);
         core.st.rookSq=p.rookSq;
@@ -72,7 +69,6 @@ const ModesPlugin={
         }
       },
       
-      /* 7 - START işleyicisi --------------------------------------------- */
       onStart(core){
         if(core.st.mode==='timed'){
           core.startTimer('down')
@@ -83,7 +79,6 @@ const ModesPlugin={
         }
       },
       
-      /* 8 - CAPTURE işleyicisi ------------------------------------------- */
       onCapture(core,target){
         if(core.st.mode==='timed'){
           core.st.pawns=core.st.pawns.filter(sq=>sq!==target);
@@ -91,7 +86,6 @@ const ModesPlugin={
           return
         }
         
-        // Levels mode
         core.st.pawns=core.st.pawns.filter(sq=>sq!==target);
         
         if(core.st.pawns.length===0){
@@ -100,7 +94,6 @@ const ModesPlugin={
             core.setWave(nextWave);
             spawnForWave(core,nextWave)
           }else{
-            // All levels completed
             let elapsedSec=1;
             if(core.st.levelsStartAt){
               const rawElapsed=(Date.now()-core.st.levelsStartAt)/1000;
@@ -130,7 +123,7 @@ const ModesPlugin={
 };
 /* Bölüm sonu --------------------------------------------------------------- */
 
-/* 9 - Export ve otomatik kurulum ------------------------------------------ */
+/* 5 - Export ve otomatik kurulum ------------------------------------------ */
 window.RookModesPlugin=ModesPlugin;
 
 document.addEventListener('DOMContentLoaded',()=>{
