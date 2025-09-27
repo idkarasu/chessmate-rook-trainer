@@ -1,4 +1,4 @@
-/* rook.core.js — v300 */
+/* rook.core.js — v301 */
 
 (function(window,document){'use strict';
 
@@ -68,7 +68,15 @@ setWave(n){const w=Math.max(1,Math.min(8,n|0));this.st.wave=w;emit('rk:wave',{wa
 
 /* 6 - Skor ve bilgi yönetimi ---------------------------------------------- */
 updateInfo(msg){if(msg)emit('rk:state',{msg})},
-updateBar(max=60){const fill=document.querySelector('.rk-timebar .rk-timefill');if(fill){const clamp01=(v)=>Math.max(0,Math.min(1,v));const fracLeft=clamp01(this.st.timeLeft/max);const scale=(this.st.timerDir==='down')?(1-fracLeft):clamp01((this.st.timeLeft%max)/max);fill.style.transform=`scaleX(${scale})`}},
+updateBar(max=60){
+  const fill=document.getElementById('rk-timefill');
+  if(fill){
+    const clamp01=(v)=>Math.max(0,Math.min(1,v));
+    const fracLeft=clamp01(this.st.timeLeft/max);
+    const scale=(this.st.timerDir==='down')?(1-fracLeft):clamp01((this.st.timeLeft%max)/max);
+    fill.style.transform=`scaleX(${scale})`
+  }
+},
 draw(){if(this.st.board){this.st.board.position(this.makePosition(),false)}this.updateInfo();this.updateBar(60)},
 currentBest(){return(this.st.mode==='timed')?this.st.bestTimed:this.st.bestLevels},
 setBest(v){if(this.st.mode==='timed'){this.st.bestTimed=v;safeSetItem('rk-best-timed',String(v))}else{this.st.bestLevels=v;safeSetItem('rk-best-levels',String(v))}emit('rk:best',{best:v})},
