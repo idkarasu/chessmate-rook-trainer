@@ -1,4 +1,4 @@
-/* rook.theme.js — v220 */
+/* rook.theme.js — v300 */
 
 (function(window,document){'use strict';
 
@@ -8,9 +8,7 @@ const ThemePlugin={_eventListeners:[],_installed:false,_addListener(target,event
 
 /* 2 - Tema fonksiyonları -------------------------------------------------- */
 if(typeof Core.toggleTheme!=='function'){Core.toggleTheme=()=>{const currentTheme=Core.st?.theme||'dark';if(typeof Core.setTheme==='function'){Core.setTheme(currentTheme==='light'?'dark':'light')}}}
-
 if(typeof Core.cycleBoard!=='function'){Core.cycleBoard=()=>{const validSkins=['classic','green','cmink'];const currentSkin=Core.st?.boardSkin||'classic';const currentIndex=Math.max(0,validSkins.indexOf(currentSkin));const nextSkin=validSkins[(currentIndex+1)%validSkins.length];if(typeof Core.setBoardSkin==='function'){Core.setBoardSkin(nextSkin)}}}
-
 this._addListener(window,'beforeunload',()=>this.cleanup(),{passive:true})},uninstall(){this.cleanup()}};
 /* Bölüm sonu --------------------------------------------------------------- */
 
