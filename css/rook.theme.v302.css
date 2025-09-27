@@ -1,4 +1,4 @@
-/* rook.theme.css — v301 */
+/* rook.theme.css — v302 */
 
 /* 1 - Toolbar layout stilleri --------------------------------------------- */
 .rk-wrap .rk-head{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:4px}
@@ -21,12 +21,8 @@ body.cm-board-classic #cm-board .white-1e1d7,body.cm-board-classic #cm-board .wh
 body.cm-board-classic #cm-board .black-3c85d,body.cm-board-classic #cm-board .black,body.cm-board-classic #cm-board .square-55d63.black{background:#b58863}
 body.cm-board-green #cm-board .white-1e1d7,body.cm-board-green #cm-board .white,body.cm-board-green #cm-board .square-55d63.white{background:#f3f7ea}
 body.cm-board-green #cm-board .black-3c85d,body.cm-board-green #cm-board .black,body.cm-board-green #cm-board .square-55d63.black{background:#6fa066}
-body.cm-board-cmink #cm-board .white-1e1d7,body.cm-board-cmink #cm-board .white,body.cm-board-cmink #cm-board .square-55d63.white{background:#aaaaac}
-body.cm-board-cmink #cm-board .black-3c85d,body.cm-board-cmink #cm-board .black,body.cm-board-cmink #cm-board .square-55d63.black{background:#1e1d1e}
 body.cm-board-azure #cm-board .white-1e1d7,body.cm-board-azure #cm-board .white,body.cm-board-azure #cm-board .square-55d63.white{background:#f8fafc}
 body.cm-board-azure #cm-board .black-3c85d,body.cm-board-azure #cm-board .black,body.cm-board-azure #cm-board .square-55d63.black{background:#334155}
-body.cm-board-emerald #cm-board .white-1e1d7,body.cm-board-emerald #cm-board .white,body.cm-board-emerald #cm-board .square-55d63.white{background:#f0fdf4}
-body.cm-board-emerald #cm-board .black-3c85d,body.cm-board-emerald #cm-board .black,body.cm-board-emerald #cm-board .square-55d63.black{background:#166534}
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 5 - Koç Baloncuğu ------------------------------------------------------- */
