@@ -1,4 +1,4 @@
-/* rook.ui.animations.js — v300 */
+/* rook.ui.animations.js — v1 */
 
 (function(window,document){'use strict';
 
