@@ -1,4 +1,4 @@
-/* rook.responsive.css — v300 */
+/* rook.responsive.css — v301 */
 
 /* 1 - Responsive Variables ------------------------------------------------- */
 :root {
@@ -557,17 +557,6 @@
 @supports (height: 100svh){ :root{ --vh:100svh; } }
 @supports (height: 100dvh){ :root{ --vh:100dvh; } }
 
-.rk-wrap{
-  padding-left: max(20px, env(safe-area-inset-left));
-  padding-right: max(20px, env(safe-area-inset-right));
-}
-
-@supports (padding-top: env(safe-area-inset-top)) {
-  .rk-coach {
-    margin-top: max(0px, calc(env(safe-area-inset-top) * 0.1));
-  }
-}
-
 @media (hover: none) and (pointer: coarse){
   #cm-board img{
     -webkit-touch-callout:none; 
@@ -609,5 +598,112 @@
     scroll-behavior:auto;
   }
   #rk-countdown-back, #rk-modal-back{ backdrop-filter:none; }
+}
+/* Bölüm sonu --------------------------------------------------------------- */
+
+/* 9 - Safe Area Support (iOS) --------------------------------------------- */
+@supports (padding-top: env(safe-area-inset-top)) {
+  /* Header safe area */
+  .cm-nav {
+    padding-top: max(env(safe-area-inset-top), 0px);
+  }
+  
+  /* Main container safe areas */
+  .rk-wrap {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+    padding-bottom: max(var(--page-bottom-space), env(safe-area-inset-bottom));
+  }
+  
+  /* Footer safe area */
+  .cm-footer {
+    padding-bottom: max(calc(var(--footer-margin) * 0.5), env(safe-area-inset-bottom));
+  }
+  
+  /* Toolbar safe areas - landscape mode için önemli */
+  .cm-toolbar .rk-toolbar--single {
+    padding-left: max(var(--toolbar-padding-x), env(safe-area-inset-left));
+    padding-right: max(var(--toolbar-padding-x), env(safe-area-inset-right));
+  }
+  
+  /* Modal safe areas */
+  #rk-modal-back {
+    padding: max(16px, env(safe-area-inset-top)) 
+             max(16px, env(safe-area-inset-right))
+             max(16px, env(safe-area-inset-bottom))
+             max(16px, env(safe-area-inset-left));
+  }
+  
+  /* Countdown safe areas */
+  #rk-countdown-back {
+    padding: env(safe-area-inset-top) 
+             env(safe-area-inset-right)
+             env(safe-area-inset-bottom)
+             env(safe-area-inset-left);
+  }
+  
+  /* Underbar safe areas */
+  .rk-underbar {
+    margin-left: max(0px, env(safe-area-inset-left));
+    margin-right: max(0px, env(safe-area-inset-right));
+  }
+  
+  /* Board container - landscape için */
+  #cm-board {
+    margin-left: max(0px, calc(env(safe-area-inset-left) - 20px));
+    margin-right: max(0px, calc(env(safe-area-inset-right) - 20px));
+  }
+}
+
+/* iOS Standalone mode (Home Screen'den açıldığında) */
+@media (display-mode: standalone) {
+  .rk-wrap {
+    min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+  
+  body {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Landscape orientation safe areas */
+@media (orientation: landscape) {
+  @supports (padding-left: env(safe-area-inset-left)) {
+    .rk-wrap {
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
+    }
+    
+    .cm-toolbar .rk-toolbar--single {
+      padding-left: max(var(--toolbar-padding-x), calc(env(safe-area-inset-left) / 2));
+      padding-right: max(var(--toolbar-padding-x), calc(env(safe-area-inset-right) / 2));
+    }
+  }
+}
+
+/* iPhone X+ specific adjustments */
+@supports (padding-top: env(safe-area-inset-top)) and (min-aspect-ratio: 13/6) {
+  /* Extra padding for devices with notch */
+  .cm-nav {
+    padding-top: max(env(safe-area-inset-top), 20px);
+  }
+}
+
+/* Dark mode status bar */
+@media (prefers-color-scheme: dark) {
+  @supports (padding-top: env(safe-area-inset-top)) {
+    :root {
+      --safe-area-bg: rgba(13, 15, 18, 0.95);
+    }
+  }
+}
+
+/* Light mode status bar */
+@media (prefers-color-scheme: light) {
+  @supports (padding-top: env(safe-area-inset-top)) {
+    :root {
+      --safe-area-bg: rgba(245, 247, 250, 0.95);
+    }
+  }
 }
 /* Bölüm sonu --------------------------------------------------------------- */
