@@ -1,4 +1,4 @@
-/* rook.animations.css — v305 */
+/* rook.animations.css — v306 */
 
 /* 1 - İpuçları temel stiller ---------------------------------------------- */
 #cm-board .square-highlight{box-shadow:inset 0 0 0 3px var(--gold)}
@@ -65,13 +65,14 @@
   inset: 0;
   background: linear-gradient(90deg, 
     transparent 0%, 
-    rgba(58, 169, 255, 0.6) 50%, 
+    rgba(58, 169, 255, 1) 50%, 
     transparent 100%
   );
   animation: pathGlow 2s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 5;
   mix-blend-mode: screen;
+  opacity: 0.85;
 }
 
 .square-hint-destination {
@@ -83,7 +84,7 @@
   position: absolute;
   inset: 0;
   background: radial-gradient(circle at center, 
-    rgba(58, 169, 255, 0.3) 30%, 
+    rgba(58, 169, 255, 0.6) 30%, 
     transparent 70%
   );
   animation: destinationPulse 1s ease-in-out infinite;
@@ -118,14 +119,15 @@
 #cm-board.combo-active .square-hint-path::before {
   background: linear-gradient(90deg, 
     transparent 0%, 
-    rgba(255, 140, 0, 0.65) 50%, 
+    rgba(255, 140, 0, 1) 50%, 
     transparent 100%
   );
+  opacity: 0.85;
 }
 
 #cm-board.combo-active .square-hint-destination::before {
   background: radial-gradient(circle at center, 
-    rgba(255, 140, 0, 0.35) 30%, 
+    rgba(255, 140, 0, 0.6) 30%, 
     transparent 70%
   );
 }
@@ -152,15 +154,16 @@
 #cm-board.combo-high .square-hint-path::before {
   background: linear-gradient(90deg, 
     transparent 0%, 
-    rgba(255, 23, 68, 0.7) 50%, 
+    rgba(255, 23, 68, 1) 50%, 
     transparent 100%
   );
+  opacity: 0.9;
   animation: pathGlow 1s ease-in-out infinite alternate;
 }
 
 #cm-board.combo-high .square-hint-destination::before {
   background: radial-gradient(circle at center, 
-    rgba(255, 23, 68, 0.4) 30%, 
+    rgba(255, 23, 68, 0.7) 30%, 
     transparent 70%
   );
   animation: destinationPulse 0.8s ease-in-out infinite;
@@ -191,18 +194,19 @@
 #cm-board.combo-super .square-hint-path::before {
   background: linear-gradient(90deg, 
     transparent 0%, 
-    rgba(156, 39, 176, 0.6) 25%, 
-    rgba(255, 215, 0, 0.5) 50%, 
-    rgba(156, 39, 176, 0.6) 75%, 
+    rgba(156, 39, 176, 1) 25%, 
+    rgba(255, 215, 0, 0.9) 50%, 
+    rgba(156, 39, 176, 1) 75%, 
     transparent 100%
   );
+  opacity: 0.85;
   animation: pathRainbow 1.5s ease-in-out infinite;
 }
 
 #cm-board.combo-super .square-hint-destination::before {
   background: radial-gradient(circle at center, 
-    rgba(156, 39, 176, 0.35) 20%, 
-    rgba(255, 215, 0, 0.25) 50%, 
+    rgba(156, 39, 176, 0.7) 20%, 
+    rgba(255, 215, 0, 0.5) 50%, 
     transparent 80%
   );
   animation: destinationSuper 1s ease-in-out infinite;
