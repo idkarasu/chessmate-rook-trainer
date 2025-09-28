@@ -1,4 +1,4 @@
-/* rook.animations.css — v303 */
+/* rook.animations.css — v304 */
 
 /* 1 - İpuçları temel stiller ---------------------------------------------- */
 #cm-board .square-highlight{box-shadow:inset 0 0 0 3px var(--gold)}
@@ -57,21 +57,39 @@
 
 .square-hint-path {
   position: relative;
+}
+
+.square-hint-path::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   background: linear-gradient(90deg, 
     transparent 0%, 
-    var(--hintA) 50%, 
+    rgba(58, 169, 255, 0.25) 50%, 
     transparent 100%
-  ) !important;
+  );
   animation: pathGlow 2s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 5;
+  mix-blend-mode: screen;
 }
 
 .square-hint-destination {
   position: relative;
-  background: radial-gradient(circle, 
-    var(--hintA) 30%, 
+}
+
+.square-hint-destination::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, 
+    rgba(58, 169, 255, 0.3) 30%, 
     transparent 70%
-  ) !important;
+  );
   animation: destinationPulse 1s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 5;
+  mix-blend-mode: screen;
 }
 
 .square-hint-arrow.arrow-up::after { 
@@ -97,19 +115,19 @@
 /* Bölüm sonu --------------------------------------------------------------- */
 
 /* 3 - Combo renk sistemi -------------------------------------------------- */
-#cm-board.combo-active .square-hint-path {
+#cm-board.combo-active .square-hint-path::before {
   background: linear-gradient(90deg, 
     transparent 0%, 
-    var(--hintA-combo) 50%, 
+    rgba(255, 140, 0, 0.3) 50%, 
     transparent 100%
-  ) !important;
+  );
 }
 
-#cm-board.combo-active .square-hint-destination {
-  background: radial-gradient(circle, 
-    var(--hintA-combo) 30%, 
+#cm-board.combo-active .square-hint-destination::before {
+  background: radial-gradient(circle at center, 
+    rgba(255, 140, 0, 0.35) 30%, 
     transparent 70%
-  ) !important;
+  );
 }
 
 #cm-board.combo-active .square-hint-arrow::after {
@@ -131,20 +149,20 @@
   border-top-color: var(--hint-combo);
 }
 
-#cm-board.combo-high .square-hint-path {
+#cm-board.combo-high .square-hint-path::before {
   background: linear-gradient(90deg, 
     transparent 0%, 
-    var(--hintA-high) 50%, 
+    rgba(255, 23, 68, 0.35) 50%, 
     transparent 100%
-  ) !important;
+  );
   animation: pathGlow 1s ease-in-out infinite alternate;
 }
 
-#cm-board.combo-high .square-hint-destination {
-  background: radial-gradient(circle, 
-    var(--hintA-high) 30%, 
+#cm-board.combo-high .square-hint-destination::before {
+  background: radial-gradient(circle at center, 
+    rgba(255, 23, 68, 0.4) 30%, 
     transparent 70%
-  ) !important;
+  );
   animation: destinationPulse 0.8s ease-in-out infinite;
 }
 
@@ -170,23 +188,23 @@
   border-top-color: var(--hint-high);
 }
 
-#cm-board.combo-super .square-hint-path {
+#cm-board.combo-super .square-hint-path::before {
   background: linear-gradient(90deg, 
     transparent 0%, 
-    var(--hintA-super) 25%, 
-    rgba(255,215,0,.7) 50%, 
-    var(--hintA-super) 75%, 
+    rgba(156, 39, 176, 0.25) 25%, 
+    rgba(255, 215, 0, 0.2) 50%, 
+    rgba(156, 39, 176, 0.25) 75%, 
     transparent 100%
-  ) !important;
+  );
   animation: pathRainbow 1.5s ease-in-out infinite;
 }
 
-#cm-board.combo-super .square-hint-destination {
-  background: radial-gradient(circle, 
-    var(--hintA-super) 20%, 
-    rgba(255,215,0,.5) 50%, 
+#cm-board.combo-super .square-hint-destination::before {
+  background: radial-gradient(circle at center, 
+    rgba(156, 39, 176, 0.35) 20%, 
+    rgba(255, 215, 0, 0.25) 50%, 
     transparent 80%
-  ) !important;
+  );
   animation: destinationSuper 1s ease-in-out infinite;
 }
 
