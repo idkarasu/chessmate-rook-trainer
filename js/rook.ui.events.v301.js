@@ -1,4 +1,4 @@
-/* rook.ui.events.js — v300 */
+/* rook.ui.events.js — v301 */
 
 (function(window,document){'use strict';
 
@@ -15,25 +15,25 @@ on(document,'rk:timeup',({detail})=>{
     window.RookUIAnimations?.rkConfetti(1800,500);
     throttledUpdateHud()
   }
-});
+},{passive:true});
 
 on(document,'rk:levels-finished',({detail})=>{
   const sec=detail?.seconds??0;
   window.RookUIAnimations?.openResultModal(t('modal.levels.title'),t('modal.levels.desc',fmtMMSS(sec)));
   window.RookUIAnimations?.rkConfetti(1800,500);
   throttledUpdateHud()
-});
+},{passive:true});
 
 on(document,'rk:wave',({detail})=>{
   if(detail?.wave)updateLevelsBars(detail.wave)
-});
+},{passive:true});
 
 on(document,'rk:mode',({detail})=>{
   const mode=detail?.mode;
   if(mode==='levels')showLevelsBar();
   else{showTimedBar();resetTimebarFull()}
   throttledUpdateHud()
-});
+},{passive:true});
 
 on(document,'rk:combo-change',({detail})=>{
   const combo = detail?.combo || 0;
@@ -42,11 +42,11 @@ on(document,'rk:combo-change',({detail})=>{
   
   updateComboDisplay();
   animateComboChange(combo, isNew, isBreak);
-});
+},{passive:true});
 
 on(document,'rk:combo',({detail})=>{
   throttledUpdateCombo();
-});
+},{passive:true});
 
 on(document,'rk:combo-break',()=>{
   const hudCombo = $('hud-combo');
@@ -54,7 +54,7 @@ on(document,'rk:combo-break',()=>{
     hudCombo.classList.add('combo-break-effect');
     setTimeout(() => hudCombo.classList.remove('combo-break-effect'), 600);
   }
-});
+},{passive:true});
 
 on(document,'cm-lang',()=>{
   updatePageLanguage();
@@ -84,12 +84,12 @@ on(document,'cm-lang',()=>{
   }
   
   console.log('Language updated to:', window.Rook?.lang?.current);
-});
+},{passive:true});
 
-on(document,'rk:timer',throttledUpdateHud);
-on(document,'rk:score',throttledUpdateHud);
-on(document,'rk:best',throttledUpdateHud);
-on(document,'rk:bestTime',throttledUpdateHud);
+on(document,'rk:timer',throttledUpdateHud,{passive:true});
+on(document,'rk:score',throttledUpdateHud,{passive:true});
+on(document,'rk:best',throttledUpdateHud,{passive:true});
+on(document,'rk:bestTime',throttledUpdateHud,{passive:true});
 
 on(document,'cm-sound',(e)=>{
   const onNow=!!(e?.detail?.on);
